@@ -1,0 +1,52 @@
+CGI::CMS version 0.28
+
+ABOUT
+
+    CGI::CMS is Content Managment System that runs under mod_perl and and as cgi script.
+    see http://lindnerei.sourceforge.net.
+
+
+INSTALLATION
+ 
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+#mod_perl
+   if you want to run CGI::CMS under mod_perl
+   add the following lines to your server,config
+
+      #LoadModule perl_module                    /usr/lib/apache2/mod_perl.so
+      <IfModule mod_perl.c>
+            PerlModule Apache2
+            PerlRequire "/srv/www/cgi-bin/config/startup.pl"
+            ScriptAlias /perl/ "/srv/www/cgi-bin/"
+            <Location /perl/>
+                  SetHandler perl-script
+                  PerlResponseHandler ModPerl::Registry
+                  PerlOptions +ParseHeaders
+            </Location>
+      </IfModule>
+
+DEPENDENCIES
+
+This module requires these other modules and libraries:
+
+Test::More
+Module::Build
+HTML::Menu::TreeView
+CGI::QuickForm
+DBI
+CGI.pm
+HTML::Parser
+Syntax::Highlight::Perl
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2006-2008 by Hr. Dirk Lindner 
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details. 
+ 

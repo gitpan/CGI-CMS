@@ -1,0 +1,1 @@
+DROP TABLE `actions` ,`box` ,`cats` ,`navigation` ,`news` ,`querys` ,`replies` ,`submenuadmin` ,`trash` ,`users`;

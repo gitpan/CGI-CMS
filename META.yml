@@ -1,0 +1,80 @@
+---
+name: CGI-CMS
+version: 0.28
+author:
+  - 'Dirk Lindner <lze@cpan.org>'
+abstract: Weblog and CMS that runs under mod_perland and as cgi script
+license: lgpl
+resources:
+  license: http://opensource.org/licenses/artistic-license.php
+requires:
+  CGI: '>=3.29'
+  CGI::QuickForm: '>=1.93'
+  DBI: '>=1.50'
+  HTML::Menu::TreeView: '>=0.85'
+  HTML::Parser: '>=3.56'
+  MD5: '>=2.03'
+  Module::Build: '>=0.2808'
+  Syntax::Highlight::Perl: '>=1.00'
+  Test::More: '>=0.7'
+provides:
+  CGI::CMS:
+    file: lib/CGI/CMS.pm
+    version: 0.28
+  CGI::CMS::Actions:
+    file: lib/CGI/CMS/Actions.pm
+    version: 0.28
+  CGI::CMS::Config:
+    file: lib/CGI/CMS/Config.pm
+    version: 0.28
+  CGI::CMS::GUI:
+    file: lib/CGI/CMS/GUI.pm
+    version: 0.28
+  CGI::CMS::Main:
+    file: lib/CGI/CMS/Main.pm
+    version: 0.28
+  CGI::CMS::Session:
+    file: lib/CGI/CMS/Session.pm
+    version: 0.28
+  CGI::CMS::Settings:
+    file: lib/CGI/CMS/Settings.pm
+    version: 0.28
+  CGI::CMS::Translate:
+    file: lib/CGI/CMS/Translate.pm
+    version: 0.28
+  DBI::Library:
+    file: lib/DBI/Library.pm
+    version: 0.28
+  DBI::Library::Database:
+    file: lib/DBI/Library/Database.pm
+    version: 0.28
+  DBI::Library::Database::db:
+    file: lib/DBI/Library/Database.pm
+  DBI::Library::Database::st:
+    file: lib/DBI/Library/Database.pm
+  DBI::Library::db:
+    file: lib/DBI/Library.pm
+  DBI::Library::st:
+    file: lib/DBI/Library.pm
+  HTML::Editor:
+    file: lib/HTML/Editor.pm
+    version: 0.28
+  HTML::Editor::BBCODE:
+    file: lib/HTML/Editor/BBCODE.pm
+    version: 0.28
+  HTML::Menu::Pages:
+    file: lib/HTML/Menu/Pages.pm
+    version: 0.28
+  HTML::TabWidget:
+    file: lib/HTML/TabWidget.pm
+    version: 0.28
+  HTML::Window:
+    file: lib/HTML/Window.pm
+    version: 0.28
+  Template::Quick:
+    file: lib/Template/Quick.pm
+    version: 0.28
+generated_by: Module::Build version 0.2808
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2

@@ -1,0 +1,13 @@
+User-agent: *
+Disallow:/showlogin.html
+Disallow:/showlogin.html
+Disallow:/profile.html
+Disallow:/edit*
+Disallow:/reply*
+Disallow:/makeNews.html
+Disallow:/addnews.html
+Disallow:/delete.html*
+Disallow:/login.html 
+Disallow:/logout.html 
+Disallow:/profile.html
+Disallow:/reg.html

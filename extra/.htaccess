@@ -1,0 +1,41 @@
+RewriteEngine on
+Options FollowSymLinks
+RewriteRule ^$ /%ALIAS%/lze.pl?action=news
+RewriteRule ^$ /%ALIAS%/lze.pl
+RewriteRule ^index.html /%ALIAS%/lze.pl
+RewriteRule ^about.html(.*)?$ /%ALIAS%/lze.pl?action=about?$1 [PT]
+RewriteRule ^news.html(.*)?$  /%ALIAS%/lze.pl?action=news?$1 [PT]
+RewriteRule ^showMessage(.+)\.html$ /%ALIAS%/lze.pl?action=showThread&reply=$1 [PT]
+RewriteRule  news(\d+)\.html$ /%ALIAS%/lze.pl?action=showThread&reply=$1 [PT]
+RewriteRule  edit([^-]+)-(.+)\.html$ /%ALIAS%/lze.pl?action=edit&edit=$2&thread=$1 [PT]
+RewriteRule  reply([^\d]+)-(.+)\.html$ /%ALIAS%/lze.pl?action=reply&reply=$2&thread=$1 [PT]
+RewriteRule ^makeNews.html /%ALIAS%/lze.pl?action=makenews
+RewriteRule ^addnews.html /%ALIAS%/lze.pl?action=addnews
+RewriteRule  (.+)/(.+)/news.html(.+)? /%ALIAS%/lze.pl?action=news&von=$1&bis=$2$3 [PT]
+RewriteRule  (.+)/(.+)/showthread(\d+)\.html? /%ALIAS%/lze.pl?action=showthread&von=$1&bis=$2&reply=$3 [PT]
+RewriteRule ^edit.html(.+) /%ALIAS%/lze.pl?action=edit$1
+RewriteRule ^delete.html(.+) /%ALIAS%/lze.pl?action=delete$1
+RewriteRule  (.+)/(.+)/fulltext\.html(.+) /%ALIAS%/lze.pl?action=fulltext&von=$1&bis=$2$3 [PT]
+RewriteRule  (.+)/(.+)/showEntry\.html(.+) /%ALIAS%/lze.pl?action=showEntry&von=$1&bis=$2$3 [PT]
+RewriteRule ^reallydelete.html(.+) /%ALIAS%/lze.pl?action=reallydelete$1
+RewriteRule ^neues.html$ /%ALIAS%/lze.pl?action=news
+RewriteRule ^viewrss.html$  /%ALIAS%/lze.pl?action=viewrss
+RewriteRule ^showrss(.*)\.html$ /%ALIAS%/lze.pl?action=viewrss&url=$1 [PT]
+RewriteRule ^impressum.html$ /%ALIAS%/lze.pl?action=impressum
+RewriteRule ^links.html /%ALIAS%/lze.pl?action=links
+RewriteRule ^login.html /%ALIAS%/lze.pl?action=login
+RewriteRule ^logout.html /%ALIAS%/lze.pl?action=logout
+RewriteRule ^showlogin.html /%ALIAS%/lze.pl?action=showlogin
+RewriteRule  profile.html /%ALIAS%/lze.pl?action=profile
+RewriteRule  changepro.html /%ALIAS%/lze.pl?action=changepro
+RewriteRule ^search.html /%ALIAS%/lze.pl?action=search
+RewriteRule ^reg.html    /%ALIAS%/lze.pl?action=reg
+RewriteRule ^news.rss$   /%ALIAS%/lze.pl?action=rss
+RewriteRule ^admin.html /%ALIAS%/lze.pl?action=admin
+RewriteRule settings.html  /%ALIAS%/lze.pl?action=settings
+RewriteRule env.html  /%ALIAS%/lze.pl?action=env
+RewriteRule errorlog.html  /%ALIAS%/lze.pl?action=errorlog
+RewriteRule uploadLinks.html  /%ALIAS%/lze.pl?action=uploadLinks
+RewriteRule ^(.+)editTreeview\.html /%ALIAS%/lze.pl?action=editTreeview&dump=$1 [PT]
+RewriteRule ^([^/]*)\.html(.*)? /%ALIAS%/lze.pl?action=$1&$2 [PT]
+
