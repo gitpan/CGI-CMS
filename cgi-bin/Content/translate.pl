@@ -1,6 +1,6 @@
 # my $ACCEPT_LANGUAGE = 'de';
 
-use CGI::QuickForm;
+# use CGI::QuickForm;
 CGI::CMS::Settings::loadSettings("$settings->{cgi}{bin}/config/settings.pl");
 
 my $TITLE = 'Edit Translation';
@@ -64,10 +64,12 @@ sub addTranslation {
                 $lng->{$lg}{$key} = $txt;
                 print "Translation added $lg<br/>$key:  $lng->{$lg}{$key}<br/>";
                 saveTranslate("$settings->{cgi}{bin}/config/translate.pl");
-
+                loadTranslate("$settings->{cgi}{bin}/config/translate.pl");
         } else {
                 print "Key already defined<br/>$key:  $lng->{$lg}{$key}<br/>";
         }
+        my $rs = ($settings->{cgi}{mod_rewrite}) ? '/translate.html' : "$ENV{SCRIPT_NAME}?action=translate";
+        print qq(<a href="$rs">) . translate('next') . '</a></div>';
 }
 
 1;

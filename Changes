@@ -1,4 +1,7 @@
-Revision history for Perl CGI::CMS 0.28
+Revision history for Perl CGI::CMS 0.29
+
+0.29 
+        ./Build install_examples, testdb , gbook,.a few fixes
 
 0.28
         alle module in eine distrubtion zusammengefasst

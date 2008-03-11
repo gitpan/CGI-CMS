@@ -1,4 +1,3 @@
-use lib qw(lib/);
 use strict;
 use CGI::CMS::Session;
 use vars qw($session);

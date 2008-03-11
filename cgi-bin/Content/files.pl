@@ -28,7 +28,7 @@ sub showDir {
                     . '&#160;|&#160;'
                     . a({href => "javascript:var a = prompt('Neues Verzeichnis');location.href = '$ENV{SCRIPT_NAME}?action=makeDir&file=$subfolder&d='+a;", class => "treeviewLink$size"}, "New Directory")
                     . '&#160;|&#160;'
-                    . a({href => "javascript:var a = prompt('Enter Chmod: 0755');location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$subfolder&chmod='+a;", class => "treeviewLink$size"}, "Chmod")
+                    . a({href => "javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$subfolder&chmod='+a;", class => "treeviewLink$size"}, "Chmod")
                     . br()
                     . Tree(\@t)
         );
@@ -56,7 +56,7 @@ sub showDir {
                                                     empty   => 1,
                                                     columns => [sprintf("%s", $sb->size), sprintf("%04o", $sb->mode & 07777), sprintf("%s", scalar localtime $sb->mtime)],
                                                     addition =>
-                                                      qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout"><tr><td><a class="treeviewLink$size" href="javascript:var a = prompt('Enter Chmod: 0755');location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$fl&chmod='+a;">&#160;chmod</a></td><td><a class="treeviewLink$size" href="javascript:var a = prompt('Enter File Name');location.href = '$ENV{SCRIPT_NAME}?action=newFile&file='+a+'&dir=$dir';"><img src="/style/$style/$size/mimetypes/filenew.png" border="0" alt="new"/></a></td><td><a class="treeviewLink$size" href="$href"><img src="/style/$style/$size/mimetypes/edit.png" border="0" alt="edit"/></a></td><td><a class="treeviewLink$size" href="javascript:if(confirm('Realy delete ?') == TRUE)loaction.href='$ENV{SCRIPT_NAME}?action=deleteFile&amp;file=$fl'"><img src="/style/$style/$size/mimetypes/editdelete.png" border="0" alt="delete"/></a></td></td></tr></table>|
+                                                      qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout"><tr><td><a class="treeviewLink$size" href="javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$fl&chmod='+a;">&#160;chmod</a></td><td><a class="treeviewLink$size" href="javascript:var a = prompt('Enter File Name');location.href = '$ENV{SCRIPT_NAME}?action=newFile&file='+a+'&dir=$dir';"><img src="/style/$style/$size/mimetypes/filenew.png" border="0" alt="new"/></a></td><td><a class="treeviewLink$size" href="$href"><img src="/style/$style/$size/mimetypes/edit.png" border="0" alt="edit"/></a></td><td><a class="treeviewLink$size" href="$ENV{SCRIPT_NAME}?action=deleteFile&amp;file=$fl" onclick="return confirm('Realy delete ?')"><img src="/style/$style/$size/mimetypes/editdelete.png" border="0" alt="delete"/></a></td></td></tr></table>|
                                                   };
                                                 last TYPE;
                                         }
@@ -68,7 +68,7 @@ sub showDir {
                                                     href    => "$href",
                                                     columns => [sprintf("%s", $sb->size), sprintf("%04o", $sb->mode & 07777), sprintf("%s", scalar localtime $sb->mtime)],
                                                     addition =>
-                                                      qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout"><tr><td><a class="treeviewLink$size" href="javascript:var a = prompt('Enter Chmod: 0755');location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$fl&chmod='+a;">&#160;chmod</a></td><td><a class="treeviewLink$size" href="$href"><img src="/style/$style/$size/mimetypes/edit.png" border="0" alt="edit"/></a></td><td><a class="treeviewLink$size" href="javascript:if(confirm('Realy delete ?'))loaction.href='$ENV{SCRIPT_NAME}?action=deleteFile&amp;file=$fl'"><img src="/style/$style/$size/mimetypes/editdelete.png" border="0" alt="delete"/></a></td></tr></table>|,
+                                                      qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout"><tr><td><a class="treeviewLink$size" href="javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$fl&chmod='+a;">&#160;chmod</a></td><td><a class="treeviewLink$size" href="$href"><img src="/style/$style/$size/mimetypes/edit.png" border="0" alt="edit"/></a></td><td><a class="treeviewLink$size" href="$ENV{SCRIPT_NAME}?action=deleteFile&amp;file=$fl" onclick="return confirm('Realy delete ?')"><img src="/style/$style/$size/mimetypes/editdelete.png" border="0" alt="delete"/></a></td></tr></table>|,
                                                     image => (-e "$settings->{cgi}{DocumentRoot}/style/$style/$size/mimetypes/$suffix.png") ? "$suffix.png" : 'link.gif',
                                                   };
                                         }

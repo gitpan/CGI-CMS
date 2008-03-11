@@ -49,7 +49,7 @@ sub on_valid_form {
         my $cyrptpass = $md5->hexdigest();
 
         if(
-           $database->checkPass($user, $cyrptpass) && $newpass eq $retry && $newpass =~ /^\S{2,50}$/;
+           $database->checkPass($user, $cyrptpass) && $newpass eq $retry && $newpass =~ /^\S{2,50}$/
           )
         {       use MD5;
                 my $md5 = new MD5;

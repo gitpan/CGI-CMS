@@ -20,6 +20,7 @@ use vars qw(
   $headline
   $html
   $template
+  $atemp
 );
 require Exporter;
 use Template::Quick;
@@ -27,9 +28,24 @@ use Template::Quick;
 @HTML::Editor::EXPORT_OK   = qw(initEditor show );
 %HTML::Editor::EXPORT_TAGS = ('all' => [qw(initEditor show )]);
 
-$HTML::Editor::VERSION = '0.28';
+$HTML::Editor::VERSION = '0.29';
 
 $DefaultClass = 'HTML::Editor' unless defined $HTML::Editor::DefaultClass;
+
+=head1 NAME
+
+HTML::TabWidget - A BBCODE and HTML Editor
+
+=head3 export_ok
+
+initEditor show
+
+=head3 function sets 
+
+Here is a list of the function sets you can import:
+
+:all initEditor show
+
 
 =head2 new()
 
@@ -47,31 +63,31 @@ sub new {
 
        my %parameter =(
 
-       action   = > 'action',
+                action   = > 'action',
 
-       body     => 'body of the message',
+                body     => 'body of the message',
 
-       class    => "min",
+                class    => "min",
 
-       attach   => '1',
+                attach   => '1',
 
-       maxlength => '100',
+                maxlength => '100',
 
-       path   => "/srv/www/cgi-bin/templates",#default : '/srv/www/cgi-bin/templates'
+                path   => "/srv/www/cgi-bin/templates",#default : '/srv/www/cgi-bin/templates'
 
-       reply    =>  '', #default : ''
+                reply    =>  '', #default : ''
 
-       server   => "http://localhost", #default : 'http://localhost'
+                server   => "http://localhost", #default : 'http://localhost'
 
-       style    =>  $style, #default : 'Crystal'
+                style    =>  $style, #default : 'Crystal'
 
-       thread   =>  'news',#default : ''
+                thread   =>  'news',#default : ''
 
-       headline    => "&New Message", #default : 'headline'
+                headline    => "&New Message", #default : 'headline'
 
-       html     => 1 , # html enabled ? 0 for bbcode default : 0
+                html     => 1 , # html enabled ? 0 for bbcode default : 0
 
-       text     => 'the body', #default : 'headline'
+                text     => 'the body', #default : 'headline'
 
        );
 
@@ -98,6 +114,7 @@ sub initEditor {
         $right     = defined $hash->{right}     ? $hash->{right}     : 0;
         $html      = $hash->{html}              ? $hash->{html}      : 0;
         $template  = defined $hash->{template}  ? $hash->{template}  : "editor.htm";
+        $atemp  = defined $hash->{atemp}  ? $hash->{atemp}  : '';
         $class = 'min' unless (defined $class);
         my %template = (path => $hash->{path}, style => $style, template => $template,);
         $self->SUPER::initTemplate(\%template);
@@ -112,8 +129,8 @@ sub show {
         $self->initEditor(@p) if(@p);
         my %parameter = (path => $path, style => $style, title => $title, server => $server, id => 'winedit', class => $class,);
         my $output    = '<br/>';
-        my $window2   = new HTML::Window(\%parameter);
-        $output .= $window2->windowHeader();
+        my $window   = new HTML::Window(\%parameter);
+        $output .= $window->windowHeader();
         my $att = ($right >= 2) ? '<tr><td align="center">' . translate('chooseFile') . ':<input name="file" type="file" accept="text/*" maxlength="2097152" size ="30" title="Datei zum Hochladen ausw&#228;hlen"/></td></tr>' : "";
         my %editor = (
                       name      => 'editor',
@@ -128,10 +145,11 @@ sub show {
                       headline  => $headline,
                       catlist   => $catlist,
                       attach    => $att,
-                      html      => $html
+                      html      => $html,
+                      atemp     => $atemp,
         );
         $output .= $self->SUPER::appendHash(\%editor);
-        $output .= $window2->windowFooter();
+        $output .= $window->windowFooter();
         return $output;
 
 }

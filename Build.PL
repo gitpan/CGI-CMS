@@ -41,6 +41,7 @@ sub ACTION_realclean {
 }
 sub ACTION_install {
         my $self = shift;
+                $self->SUPER::ACTION_install;
         my %conf = ( name => $self->{'properties'}{dbname}, host => $self->{'properties'}{sqlhost}, user => $self->{'properties'}{dbuser},);
         $conf{password} = $self->{'properties'}{dbpass} unless $self->{'properties'}{dbpass} =~/^$/;
         eval 'use DBI::Library ';
@@ -55,9 +56,9 @@ sub ACTION_install {
                 print  $/,$sql,$/,$@ if $@;
         }
         }else{
-                print $/,$@,$/;
+                warn $@;
         }
-        $self->SUPER::ACTION_install;
+
              if($settings->{cgi}{mod_rewrite}) {
                 &replace('%ALIAS%', $settings->{cgi}{alias}, "$settings->{cgi}{DocumentRoot}/.htaccess");
         }
@@ -74,7 +75,7 @@ sub ACTION_uninstall {
         if(defined $self->{'properties'}{dbpass} ){
         $conf{password} = $self->{'properties'}{dbpass} unless $self->{'properties'}{dbpass} =~/^$/;
         }
-        eval 'use DBI::Library qw(all)';
+        eval 'use DBI::Library ';
         unless($@){
         my $database = new DBI::Library();
         $database->initDB(\%conf);
@@ -83,6 +84,7 @@ sub ACTION_uninstall {
                 my $file = <IN>;
         foreach my $sql (split /;\n/, $file) {
                 $database->void($sql . ";");
+                print $@ if $@;
         }
         }
 }
@@ -127,7 +129,24 @@ sub replace {
 }
 sub ACTION_testdb {
         my $self = shift;
+        eval("use File::Copy;");
+        unless( $@ ){
+        copy("extra/00-DBI-Database.t","t/00-DBI-Database.t") or die "Copy failed: $!";
+        copy("extra/00-DBI-OO.t","t/00-DBI-OO.t") or die "Copy failed: $!";
+        copy("extra/00-DBI-FO.t","t/00-DBI-FO.t") or die "Copy failed: $!";
         $self->SUPER::ACTION_test;
+        unlink("t/00-DBI-Database.t");
+        unlink("t/00-DBI-OO.t");
+        unlink("t/00-DBI-FO.t") ;
+        }
+}
+sub ACTION_install_examples {
+       my $self = shift;
+       my $prefix = defined $inctance->{phash}{runtime_params}{disk}{prefix} ? $inctance->{phash}{runtime_params}{disk}{prefix} :'';
+       $release= "$prefix/$self->{properties}{cgi}/examples";
+       $dir     = 'examples/';
+       &change($dir);
+       system("chmod 0755 -R  $release");
 }
 END
 
@@ -247,7 +266,7 @@ $settings = {
              scriptAlias   => $inctance->{properties}{alias},
              uploads       => {maxlength => 2003153, path => "$inctance->{properties}{htd}/downloads/", chmod => 0644, enabled => 1},
              tree      => {navigation => "$inctance->{properties}{cgi}config/tree.pl", links => "$inctance->{properties}{cgi}config/links.pl"},
-             version   => '0.28',
+             version   => '0.29',
              session   => "$inctance->{properties}{cgi}/config/session.pl",
              actions   => "$inctance->{properties}{cgi}/config/actions.pl",
              translate => "$inctance->{properties}{cgi}/config/translate.pl",

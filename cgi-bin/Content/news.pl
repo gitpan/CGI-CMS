@@ -1,6 +1,8 @@
 use vars qw($akt $end $length $start $thread $replyId $replylink);
 
 sub show {
+        my $threadlength = $database->tableLength('news');
+        $von = $von > $threadlength ? $threadlength- 1 : $von;
         my %needed = (action => 'news', start => $von, end => $bis, thread => 'news', id => 'c',);
         my $newMessage = translate('newMessage');
         print
@@ -24,6 +26,7 @@ sub show {
                          catlist   => $catlist,
                          right     => $right,
                          html      => 0,
+                         atemp     => qq(<input  name="von" value="$von" style="display:none;"/><input  name="bis" value="$bis" style="display:none;"/>),
         );
         use HTML::Editor;
         my $editor = new HTML::Editor(\%parameter);
@@ -120,6 +123,7 @@ sub editNews {
                          right     => $right,
                          catlist   => ($th eq 'news') ? $catlist : '&#160;',
                          html      => $html,
+                         atemp     => qq(<input  name="von" value="$von" style="display:none;"/><input  name="bis" value="$bis" style="display:none;"/>),
         );
         use HTML::Editor;
         my $editor = new HTML::Editor(\%parameter);
@@ -149,6 +153,7 @@ sub reply {
                          right     => $right,
                          catlist   => "",
                          html      => 0,
+                         atemp     => qq(<input  name="von" value="$von" style="display:none;"/><input  name="bis" value="$bis" style="display:none;"/>),
         );
         use HTML::Editor;
         my $editor = new HTML::Editor(\%parameter);
@@ -221,10 +226,10 @@ sub showMessage {
                 my %reply      = (title => translate('reply'), descr => translate('reply'), src => 'reply.png', location => $answerlink, style => $style,);
                 my $thread     = defined param('thread') ? param('thread') : '';
                 $menu .= action(\%reply) unless ($thread =~ /.*\d$/ && $right < 5);
-                my $editlink = $settings->{cgi}{mod_rewrite} ? "/edit$thread-$ref->{id}.html" : "$ENV{SCRIPT_NAME}?action=edit&amp;edit=$ref->{id}&amp;thread=news";
+                my $editlink = $settings->{cgi}{mod_rewrite} ? "/edit$thread-$ref->{id}.html" : "$ENV{SCRIPT_NAME}?action=edit&amp;edit=$ref->{id}&amp;thread=news&amp;von=$von&amp;bis=$bis;";
                 my %edit = (title => translate('edit'), descr => translate('edit'), src => 'edit.png', location => $editlink, style => $style,);
                 $menu .= action(\%edit) if($right >= 5);
-                my $deletelink = $settings->{cgi}{mod_rewrite} ? "/delete.html&amp;delete=$ref->{id}&amp;thread=news" : "$ENV{SCRIPT_NAME}?action=delete&amp;delete=$ref->{id}&amp;thread=news";
+                my $deletelink = $settings->{cgi}{mod_rewrite} ? "/delete.html&amp;delete=$ref->{id}&amp;thread=news&amp;von=$von&amp;bis=$bis;" : "$ENV{SCRIPT_NAME}?action=delete&amp;delete=$ref->{id}&amp;thread=news&amp;von=$von&amp;bis=$bis;";
                 my %delete = (title => translate('delete'), descr => translate('delete'), src => 'delete.png', location => $deletelink, style => $style,);
                 $menu .= action(\%delete) if($right >= 5);
                 print br(), $window->windowHeader(), qq(
@@ -241,11 +246,12 @@ sub showMessage {
                         </td>
                         </tr>
                         <tr><td align='left'>$ref->{body}</td></tr>);
-                        print qq(<tr><td><a href="/downloads/$ref->{attach}">$ref->{attach}</a></td></tr>) if(-e "$settings->{uploads}{path}/$ref->{attach}");
+                print qq(<tr><td><a href="/downloads/$ref->{attach}">$ref->{attach}</a></td></tr>) if(-e "$settings->{uploads}{path}/$ref->{attach}");
                 print "</table>", $window->windowFooter();
                 my @rps = $database->fetch_array("select count(*) from replies where refererId = $id;");
 
                 if($rps[0] > 0) {
+                        $von = $von > $rps[0] ? $rps[0]- 1 : $von;
                         my %needed = (action => 'showthread', start => $von, end => $bis, thread => 'replies', replyId => $id, id => 'c',);
                         print showThread(\%needed);
                 }
@@ -305,6 +311,7 @@ sub preview {
                          right     => $right,
                          catlist   => ($thread eq 'news') ? $catlist : '&#160;',
                          html      => $html,
+                         atemp     => qq(<input  name="von" value="$von" style="display:none;"/><input  name="bis" value="$bis" style="display:none;"/>),
         );
         use HTML::Editor;
         my $editor = new HTML::Editor(\%parameter);
@@ -312,59 +319,6 @@ sub preview {
         print $editor->show();
         print '</div>';
 }
-
-sub saveUpload {
-        my $ufi = param('file');
-        if($ufi) {
-                my $attach = (split(/[\\\/]/, param('file')))[-1];
-                my $cit = $attach =~ /^(\S+)\.[^\.]+$/ ? $1 : 0;
-                my $type = ($attach =~ /\.([^\.]+)$/) ? $1 : 0;
-                $cit =~ s/("|'|\s| )//g;
-                my $sra = "$cit.$type";
-                my $up  = upload('file');
-                use Symbol;
-                my $fh = gensym();
-
-                #my $ctype = uploadInfo($ufi)->{'Content-Type'};#do something with it
-                open $fh, ">$settings->{uploads}{path}/$sra.bak" or warn "news.pl::saveUpload: $!";
-
-                while(<$up>) {
-                        print $fh $_;
-                }
-                close $fh;
-
-                rename "$settings->{uploads}{path}/$sra.bak", "$settings->{uploads}{path}/$cit.$type" or warn "news.pl::saveUpload: $!";
-                chmod("$settings->{'uploads'}{'chmod'}", "$settings->{uploads}{path}/$sra") if(-e "$settings->{uploads}{path}/$sra");
-        }
-}
-
-# sub newAction {
-#         print start_form(-method => "POST", -action => "$ENV{SCRIPT_NAME}",),
-#           table(
-#                 {-align => 'center', -border => 0, width => "80%%"},
-#                 Tr({-align => 'left', -valign => 'top'}, td("Action"), td(textfield({-style => "width:100%", -name  => 'new_action',}, 'Action'))),
-#                 Tr({-align => 'left', -valign => 'top'}, td("File"),   td(textfield({-name  => 'new_file',   -style => "width:100%"},  'File'))),
-#                 Tr({-align => 'left', -valign => 'top'}, td("Title"),  td(textfield({-name  => 'new_title',  -style => "width:100%"},  'Title'))),
-#                 Tr({-align => 'left',  -valign => 'top'}, td("right "), td(popup_menu(-name => 'new_right', -values                 => [0,            1,        2,       3,                        4,    5],    -style => "width:100%"))),
-#                 Tr({-align => 'left',  -valign => 'top'}, td("Box"),    td(textfield({-name => 'new_box',   -style                  => "width:100%"}, ''))),
-#                 Tr({-align => 'left',  -valign => 'top'}, td("sub"),    td(textfield({-name => 'new_sub',   -style                  => "width:100%"}, ''))),
-#                 Tr({-align => 'left',  -valign => 'top'}, td({colspan   => 2},              script({type    => 'text/javascript',}, "html = 1;bbcode = false;printButtons();"))),
-#                 Tr({-align => 'left',  -valign => 'top'}, td({colspan   => 2},              textarea(-name  => 'txt',               -id               => 'txt', -default => 'print "new action";', -rows => 50, -style => "width:100%;height:300px;"))),
-#                 Tr({-align => 'right', -valign => 'top'}, td({colspan   => 2},              submit))
-#           ),
-#           hidden({-name => 'enquiry'}, '1'), hidden({-name => 'action'}, 'addnewAction'), end_form;
-# }
-#
-# sub addnewAction {
-#         my $new_action = param('new_action') ? param('new_action') : $id;
-#         my $new_file   = param('new_file')   ? param('new_file')   : $file;
-#         my $new_title  = param('new_title')  ? param('new_title')  : $title;
-#         my $new_right  = param('new_right')  ? param('new_right')  : $nright;
-#         my $new_box    = param('new_box')    ? param('new_box')    : '';
-#         my $new_sub    = param('new_sub')    ? param('new_sub')    : 'main';
-#         my $sql = q/INSERT INTO actions (`action`,`file`,title,`right`,box,sub,) VALUES (?,?,?,?,?,?)/;
-#         $database->void($sql, $new_action, $new_file, $new_title, $new_right, $new_box, $new_sub);
-# }
 
 sub showThread {
         my $needed = shift;
@@ -474,10 +428,10 @@ sub threadBody {
                                 my %reply = (title => translate('reply'), descr => translate('reply'), src => 'reply.png', location => $answerlink, style => $style,);
                                 $menu .= action(\%reply);
                         }
-                        my $editlink = $settings->{cgi}{mod_rewrite} ? "/edit$th-$id.html" : "$ENV{SCRIPT_NAME}?action=edit&amp;edit=$id&amp;thread=$th";
+                        my $editlink = $settings->{cgi}{mod_rewrite} ? "/edit$th-$id.html" : "$ENV{SCRIPT_NAME}?action=edit&amp;edit=$id&amp;thread=$th&amp;von=$von&amp;bis=$bis;";
                         my %edit = (title => translate('edit'), descr => translate('edit'), src => 'edit.png', location => $editlink, style => $style,);
                         $menu .= action(\%edit) if($right > 1);
-                        my $deletelink = $settings->{cgi}{mod_rewrite} ? "/delete.html&amp;delete=$id&amp;thread=$th" : "$ENV{SCRIPT_NAME}?action=delete&amp;delete=$id&amp;thread=$th";
+                        my $deletelink = $settings->{cgi}{mod_rewrite} ? "/delete.html&amp;delete=$id&amp;thread=$th&amp;von=$von&amp;bis=$bis" : "$ENV{SCRIPT_NAME}?action=delete&amp;delete=$id&amp;thread=$th&amp;von=$von&amp;bis=$bis";
                         my %delete = (title => translate('delete'), descr => translate('delete'), src => 'delete.png', location => $deletelink, style => $style,);
                         $menu .= action(\%delete) if($right >= 5);
                         my %parameter = (path => "$settings->{cgi}{bin}/templates", style => $style, title => qq(<div style="white-space:nowrap;">$headline</div>), server => $settings->{cgi}{serverName}, id => $id, class => 'min',);
@@ -494,7 +448,7 @@ sub threadBody {
                         BBCODE(\$body, $right) if($format eq 'bbcode');
                         $h1 .=
                           qq(<table align="left" border ="0" cellpadding="0" cellspacing="0" summary="threadBody"  width="100%"><tr ><td align="left">$menu</td></tr><tr><td align="left"><table align="left" border ="0" cellpadding="0" cellspacing="0" summary="user_datum"  width="100%"><tr><td align="left">$username</td><td align="right">$datum</td></tr></table></td></tr><tr><td align="left">$body</td></tr>);
-                          $h1 .= qq(<tr><td><a href="/downloads/$attach">$attach</a></td></tr>) if(-e "$settings->{uploads}{path}/$attach");
+                        $h1 .= qq(<tr><td><a href="/downloads/$attach">$attach</a></td></tr>) if(-e "$settings->{uploads}{path}/$attach");
                         $h1 .= qq(<tr><td align="left">$reply</td></tr></table>);
                         $h1 .= $win->windowFooter();
                         push @output, "$h1</td></tr>";
@@ -502,5 +456,30 @@ sub threadBody {
                 push @output, "</table>";
         }
         return "@output";
+}
+
+sub saveUpload {
+        my $ufi = param('file');
+        if($ufi) {
+                my $attach = (split(/[\\\/]/, param('file')))[-1];
+                my $cit = $attach =~ /^(\S+)\.[^\.]+$/ ? $1 : 0;
+                my $type = ($attach =~ /\.([^\.]+)$/) ? $1 : 0;
+                $cit =~ s/("|'|\s| )//g;
+                my $sra = "$cit.$type";
+                my $up  = upload('file');
+                use Symbol;
+                my $fh = gensym();
+
+                #my $ctype = uploadInfo($ufi)->{'Content-Type'};#do something with it
+                open $fh, ">$settings->{uploads}{path}/$sra.bak" or warn "news.pl::saveUpload: $!";
+
+                while(<$up>) {
+                        print $fh $_;
+                }
+                close $fh;
+
+                rename "$settings->{uploads}{path}/$sra.bak", "$settings->{uploads}{path}/$cit.$type" or warn "news.pl::saveUpload: $!";
+                chmod("$settings->{'uploads'}{'chmod'}", "$settings->{uploads}{path}/$sra") if(-e "$settings->{uploads}{path}/$sra");
+        }
 }
 1;

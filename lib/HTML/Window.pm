@@ -13,7 +13,7 @@ use Template::Quick;
 @HTML::Window::ISA         = qw(Template::Quick);
 @HTML::Window::EXPORT_OK   = qw( set_title set_class set_style set_closeable set_resizeable set_collapse set_moveable initWindow windowHeader windowFooter);
 %HTML::Window::EXPORT_TAGS = ('all' => [qw(set_title set_class set_style set_closeable set_resizeable set_collapse set_moveable initWindow windowHeader windowFooter)]);
-$HTML::Window::VERSION     = '0.28';
+$HTML::Window::VERSION     = '0.29';
 
 $DefaultClass = 'HTML::Window' unless defined $HTML::Window::DefaultClass;
 
@@ -21,7 +21,7 @@ $DefaultClass = 'HTML::Window' unless defined $HTML::Window::DefaultClass;
 
 =head1 NAME
 
-HTML::Window.pm - html window
+HTML::Window.pm - move-,resize-,collapse- and closeable Html Window.
 
 =head1 SYNOPSIS
 
@@ -48,9 +48,9 @@ use HTML::Window qw(:all);
 
       windowHeader();
 
-       print 'this is the content';
+      print 'this is the content';
 
-       windowFooter();
+      windowFooter();
 
 
 =head1 DESCRIPTION
@@ -204,19 +204,19 @@ sub set_class {
 
        my %parameter =(
 
-       path   => "path to templates",
+                path   => "path to templates",
 
-       style    => "style to use",
+                style    => "style to use",
 
-       title    => "title
+                title    => "title
 
-       server   => "http://servername",
+                server   => "http://servername",
 
-       id       => $id,
+                id       => $id,
 
-       class    => min or max,
+                class    => min or max,
 
-       hidden   => '', #set the window hidden
+                hidden   => '', #set the window hidden
 
        );
 

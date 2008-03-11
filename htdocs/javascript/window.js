@@ -40,7 +40,7 @@ function menu(id,moveable,collapse,resizeable,closeable){
           document.write("<td><img alt = 'maxwino' border='0'   src = '/style/"+style+"/window/maxwin.png' style = 'cursor:pointer;' title='Maximieren' onclick =\"maxMin('window"+id+"');if(this.src == buttonMaxO.src ){this.src = buttonResize.src}if(this.src == buttonResizeO.src){ this.src = buttonMax.src;}\" onmouseout =\"if(this.src == buttonMaxO.src ){this.src = buttonMax.src}if(this.src == buttonResizeO.src){ this.src = buttonResize.src;}\" onmouseover = \"if(this.src == buttonMax.src ){this.src = buttonMaxO.src;}if(this.src == buttonResize.src){ this.src = buttonResizeO.src;}\"/></td>");
      }
      if(closeable == 1){
-         document.write("<td><img  style='cursor:pointer;'  src='/style/"+style+"/window/closewin.png'  onmouseover=\"this.src = buttonCloseO.src;\"  onmouseout='this.src = buttonClose.src'  alt='Close' title='Schliessen'  border='0' onclick=\"addWindow('window"+id+"');this.src = buttonClose.src\"/></td>");
+         document.write("<td><img  style='cursor:pointer;'  src='/style/"+style+"/window/closewin.png'  onmouseover=\"this.src = buttonCloseO.src;\"  onmouseout='this.src = buttonClose.src'  alt='Close' title='Schliessen'  border='0' onclick=\"addWindow('"+id+"');this.src = buttonClose.src\"/></td>");
      }
      document.write("</tr></table>");
 }
@@ -147,6 +147,7 @@ if(document.getElementById('window'+win) && document.getElementById('tr'+win)){
      visible('dynamicTab1');
      visible('dynamicTab2');
      visible('dynamicTab3');
+     visible('showWindows');
      document.getElementById('window'+win).style.visibility='hidden';
      document.getElementById('tr'+win).style.visibility='hidden';
      
@@ -156,6 +157,8 @@ function displayWindows(){
      hide('dynamicTab1');
      hide('dynamicTab2');
      hide('dynamicTab3');
+     hide('showWindows');
+
      for(var i = 0; i < windows.length;i++){
       if( document.getElementById('window'+windows[i]) &&  document.getElementById('tr'+windows[i])){
           document.getElementById('window'+windows[i]).style.position ="";
@@ -186,4 +189,13 @@ function restoreStatus(){
                         visible('dynamicTab3');
                 }
         }
+}
+function hide(id){
+if(document.getElementById(id))
+     document.getElementById(id).style.display = "none";
+}
+// visible(Id);
+function visible(id){
+if(document.getElementById(id))
+     document.getElementById(id).style.display = "";
 }

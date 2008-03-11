@@ -1,37 +1,3 @@
-#kontakt
-        news.pl zu referer zurück nach edit
-        for next release.
-        html, css syntax check,
-        error log checken,
-        alle actions durchgehen
-demnächst:
-        platzhalter translations.
-        quickaction
-        bug buster
-        update.
-        tables.pl
-                (mehrfach auswahl)
-                attribute,datenbanken bearbeiten.
-                mysql dump (ohne sql dump)
-                datenbank wechseln.
-tutorial:
-        1. User.
-               1.1 Regestrieren, Editor, BBCODE, Profile,windows.
-        2. Admin.
-                2.1 Installation,konfiguration.
-        3. Developer L<> based on module2treeview
-
-    German users should install CGI::CMS::Tutorial::German.
-
-Demo Videos.
-install_examples
-admin password bei installation setzen
-CGI::CMS::Main HTML ... umbenennen
-file::copy anstatt traverse Build.PL, windows support
-
-simple && system style.
+test it !
 Entgültiger namespace
 
-./Build install_examples.
-./Build backup
-./Build restore

@@ -1,4 +1,4 @@
-package CGI::CMS::Main;
+package Template::Quick::Main;
 use Template::Quick;
 use strict;
 use warnings;
@@ -8,19 +8,19 @@ our $style = 'Crystal';
 our $title = '';
 our $size  = 16;
 our $server;
-@CGI::CMS::Main::EXPORT_OK   = qw(all initMain Header Footer);
-%CGI::CMS::Main::EXPORT_TAGS = ('all' => [qw(initMain Header Footer)]);
-@CGI::CMS::Main::ISA         = qw( Exporter Template::Quick);
-$CGI::CMS::Main::VERSION     = '0.29';
-$DefaultClass                = 'CGI::CMS::Main' unless defined $CGI::CMS::Main::DefaultClass;
+@Template::Quick::Main::EXPORT_OK   = qw(all initMain Header Footer);
+%Template::Quick::Main::EXPORT_TAGS = ('all' => [qw(initMain Header Footer)]);
+@Template::Quick::Main::ISA         = qw( Exporter Template::Quick);
+$Template::Quick::Main::VERSION     = '0.29';
+$DefaultClass                       = 'Template::Quick::Main' unless defined $Template::Quick::Main::DefaultClass;
 
 =head1 NAME
 
-CGI::CMS::Main.pm
+Template::Quick::Main.pm
 
 =head1 SYNOPSIS
 
-use CGI::CMS::Main;
+use Template::Quick::Main;
 
 =head1 DESCRIPTION
 
@@ -113,8 +113,8 @@ see L<HTML::Menu::TreeView>
 =cut
 
 sub getSelf {
-        return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'CGI::CMS::Main');
-        return (defined($_[0]) && (ref($_[0]) eq 'CGI::CMS::Main' || UNIVERSAL::isa($_[0], 'CGI::CMS::Main'))) ? @_ : ($CGI::CMS::Main::DefaultClass->new, @_);
+        return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'Template::Quick::Main');
+        return (defined($_[0]) && (ref($_[0]) eq 'Template::Quick::Main' || UNIVERSAL::isa($_[0], 'Template::Quick::Main'))) ? @_ : ($Template::Quick::Main::DefaultClass->new, @_);
 }
 
 =head1 AUTHOR

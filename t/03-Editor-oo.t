@@ -1,5 +1,5 @@
-use HTML::Editor qw(:all);
-no warnings;
+# use lib("../lib");
+use HTML::Editor;
 $ENV{HTTP_ACCEPT_LANGUAGE} = "de";
 my %parameter = (
 
@@ -13,8 +13,7 @@ my %parameter = (
 
         maxlength => '100',
 
-        path => "blib/perl/templates/",
-
+        path  => "blib/perl/templates",
         reply => '',
 
         server => "http://localhost",
@@ -29,9 +28,8 @@ my %parameter = (
 
 );
 
-initEditor(\%parameter);
+my $editor = new HTML::Editor(\%parameter);
 
 use Test::More tests => 1;
-ok(1);
+ok(length($editor->show()) > 0);
 
-# ok(length(show()) > 0);

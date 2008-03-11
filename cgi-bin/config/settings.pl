@@ -19,7 +19,7 @@ $VAR1 = {
                          'enabled' => 1
                        },
           'session' => '/srv/www/cgi-bin//config/session.pl',
-          'scriptAlias' => 'perl',
+          'scriptAlias' => 'cgi-bin',
           'admin' => {
                        'firstname' => 'Firstname',
                        'email' => 'your@email.org',
@@ -28,7 +28,7 @@ $VAR1 = {
                        'town' => 'Berlin'
                      },
           'language' => 'en',
-          'version' => '0.28',
+          'version' => '0.29',
           'cgi' => {
                      'bin' => '/srv/www/cgi-bin/',
                      'style' => 'Crystal',
@@ -36,7 +36,7 @@ $VAR1 = {
                      'cookiePath' => '/',
                      'title' => 'Lindnerei',
                      'mod_rewrite' => '1',
-                     'alias' => 'perl',
+                     'alias' => 'cgi-bin',
                      'DocumentRoot' => '/srv/www/htdocs',
                      'expires' => '+1y'
                    },

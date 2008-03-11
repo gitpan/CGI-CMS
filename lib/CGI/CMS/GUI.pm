@@ -48,14 +48,14 @@ use vars qw(
 @CGI::CMS::GUI::EXPORT = qw(action Body maxlength openFile );
 @ISA                   = qw(Exporter CGI::CMS);
 
-$CGI::CMS::GUI::VERSION = '0.28';
+$CGI::CMS::GUI::VERSION = '0.29';
 $mod_perl = ($ENV{MOD_PERL}) ? 1 : 0;
 
 local $^W = 0;
 
 =head1 NAME
 
-CGI::CMS::GUI
+CGI::CMS::GUI - CGI::CMS user front end
 
 =head1 SYNOPSIS
 
@@ -182,7 +182,7 @@ sub Body {
                            zoom      => $zoom,
                            path      => "$settings->{cgi}{bin}/templates",
                            style     => $style,
-                           title     => $title,
+                           title     => translate($title),
                            server    => $settings->{cgi}{'serverName'},
                            login     => $logIn,
                            size      => $size,
@@ -197,6 +197,7 @@ sub Body {
                 if($settings->{sidebar}{left}) {
                         print '<td  valign="top" class="leftSidebar">';
                         my @lboxes = $database->fetch_AoH("select * from box where `position` = 'left' && `right` <= '$right'");
+                        print '<table  border="0" cellpadding="0" cellspacing="10" summary="contentLayout" width="100%"><tr><td></td></tr>';
                         foreach (my $i = 0 ; $i <= $#lboxes ; $i++) {
                                 print '<br/>';
                                 do("$settings->{cgi}{bin}/Sidebar/$lboxes[$i]->{file}");
@@ -205,7 +206,6 @@ sub Body {
                         }
                         if(defined $act->{box}) {
                                 my @boxes = split /;/, $act->{box};
-                                print '<table  border="0" cellpadding="0" cellspacing="10" summary="contentLayout" width="100%"><tr><td></td></tr>';
                                 foreach my $box (@boxes) {
                                         my $bx = $database->fetch_hashref("select * from box where `dynamic` = 'left' && `file` = '$box.pl' && `right` <= '$right'");
                                         do("$settings->{cgi}{bin}/Sidebar/$bx->{file}") if(defined $bx->{file} && -e "$settings->{cgi}{bin}/Sidebar/$bx->{file}");
@@ -218,7 +218,7 @@ sub Body {
                 }
                 print '<td align="center" valign="top" class="content">';
                 my %parameter = (path => "$settings->{cgi}{bin}/templates/", style => $style, action => $action, file => $file, right => $right, mod_rewrite => $settings->{cgi}{mod_rewrite}, template => 'lzetabwidget.htm');
-                my $sth = $dbh->prepare("select title,action,src from `navigation` where `right` <= $right && position='top'");
+                my $sth = $dbh->prepare("select title,action,src from `topnavigation` where `right` <= $right");
                 $sth->execute() or warn $dbh->errstr;
                 my $hasCurrentlink = 0;
 
@@ -247,7 +247,21 @@ sub Body {
                 if($right >= $act->{right}) {
                         if(defined $file and defined $sub) {
                                 if(param('include')) {
-                                        includeIt(param('include'));
+                                        my $qstring = param('include') ? param('include') : @_ ? @_ : 0;
+                                        CGI::upload_hook(\&hook);
+                                        if(defined $qstring) {
+                                                session($qstring);
+                                                if(defined $params->{file} && defined $params->{sub}) {
+                                                        if(-e $params->{file}) {
+                                                                do("$params->{file}");
+                                                                eval($params->{sub}) if $params->{sub} ne 'main';
+                                                                warn $@ if($@);
+                                                        } else {
+                                                                do("$settings->{cgi}{bin}/Content/exploit.pl");
+                                                                warn $@ if($@);
+                                                        }
+                                                }
+                                        }
                                 } else {
                                         do("$settings->{cgi}{bin}/Content/$file");
                                         eval($sub) if $sub ne 'main';
@@ -260,12 +274,13 @@ sub Body {
                 } else {
                         do("$settings->{cgi}{bin}/Content/news.pl");
                         warn "Error : $@ " if($@);
-                        }
-                        print br();
+                }
+                print br();
                 print tabwidgetFooter();
                 print '<br/></td>';
                 if($settings->{sidebar}{right}) {
                         print '<td valign="top" class="rightSidebar">';
+                        print '<table border="0" cellpadding="0" cellspacing="10" summary="contentLayout"  width="100%"><tr><td></td></tr>';
                         my @rboxes = $database->fetch_AoH("select * from box where `position` = 'right' && `right` <= '$right'");
                         foreach (my $i = 0 ; $i <= $#rboxes ; $i++) {
                                 do("$settings->{cgi}{bin}/Sidebar/$rboxes[$i]->{file}");
@@ -274,14 +289,13 @@ sub Body {
                         }
                         if(defined $act->{box}) {
                                 my @boxes = split /;/, $act->{box};
-                                print '<table border="0" cellpadding="0" cellspacing="10" summary="contentLayout"  width="100%"><tr><td></td></tr>';
                                 foreach my $box (@boxes) {
                                         my $bx = $database->fetch_hashref("select * from box where `dynamic` = 'right' && `file` = '$box.pl' && `right` <= '$right'");
                                         do("$settings->{cgi}{bin}/Sidebar/$bx->{file}") if(defined $bx->{file} && -e "$settings->{cgi}{bin}/Sidebar/$bx->{file}");
                                         warn "Error : $@ " if($@);
                                 }
-                                print '</table>';
                         }
+                        print '</table>';
                         print '</td>';
                 }
                 print '</tr></table>';
@@ -289,28 +303,6 @@ sub Body {
                 print Footer();
         }
 
-=head2  includeIt
-
-
-=cut
-
-        sub includeIt {
-                my $qstring = param('include') ? param('include') : @_ ? @_ : 0;
-                CGI::upload_hook(\&hook);
-                if(defined $qstring) {
-                        session($qstring);
-                        if(defined $params->{file} && defined $params->{sub}) {
-                                if(-e $params->{file}) {
-                                        do("$params->{file}");
-                                        eval($params->{sub}) if $params->{sub} ne 'main';
-                                        warn $@ if($@);
-                                } else {
-                                        do("$settings->{cgi}{bin}/Content/exploit.pl");
-                                        warn $@ if($@);
-                                }
-                        }
-                }
-        }
 }
 
 =head2  maxlength()

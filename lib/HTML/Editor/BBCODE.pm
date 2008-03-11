@@ -5,7 +5,7 @@ use vars qw(@EXPORT @ISA );
 require Exporter;
 @HTML::Editor::BBCODE::EXPORT  = qw(BBCODE);
 @ISA                           = qw(Exporter);
-$HTML::Editor::BBCODE::VERSION = '0.28';
+$HTML::Editor::BBCODE::VERSION = '0.29';
 use HTML::Entities;
 
 =head1 NAME
@@ -91,15 +91,8 @@ sub BBCODE {
                         $formatter->set_format($type, [qq|<a onclick="window.open('http://perldoc.perl.org/search.html?q='+this.innerHTML)" class="$style">|, "</a>"]);
                 }
                 $rplc = $formatter->format_string($1);
-                $rplc    =~ s?\n?<br/>?g;
+                $rplc    =~ qq(<div  style="width:100%;overlow:scroll;"><pre>$rplc</pre></div>);
                 $$string =~ s/\[code\](.*?)\[\/code\]/\[Formatstring\/\]/gs;
-        }
-        if($eval > 4) {
-                my $return;
-                if($$string =~ /\[eval\](.*?)\[\/eval\]/) {
-                        $return = eval $1;
-                }
-                $$string =~ s/\[eval\](.*?)\[\/eval\]/$return/gs;
         }
         $$string = encode_entities($$string);
         $$string =~ s:\[(u)\](.*?)\[/\1\]:<$1>$2</$1>:gs;

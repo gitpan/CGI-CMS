@@ -1,9 +1,10 @@
 #!/usr/bin/perl -w
-use lib("lib");
 use HTML::Editor;
 use HTML::Editor::BBCODE;
 use CGI::CMS qw(:all);
-init("/home/groups/l/li/lindnerei/cgi-bin/config/settings.pl");
+use vars qw($settings);
+init();
+*settings= \$CGI::CMS::settings;
 print header;
 print start_html(-title => 'HTML::Editor', -script => [{-type => 'text/javascript', -src => '/javascript/editor.js'}], -style => '/style/Crystal/editor.css',);
 if(param('action') && param('action') eq 'add') {
@@ -31,11 +32,11 @@ if(param('action') && param('action') eq 'add') {
 
                 maxlength => '100',
 
-                path => "/home/groups/l/li/lindnerei/cgi-bin/templates/",
+                path => "$settings->{cgi}{bin}/templates/",
 
                 reply => '',
 
-                server => "http://localhost",
+                server => "$settings->{cgi}{serverName}",
 
                 style => 'Crystal',
 
@@ -50,5 +51,4 @@ if(param('action') && param('action') eq 'add') {
 
         print $editor->show();
 }
-use showsource;
-&showSource("./editor.pl");
+use showsource;&showSource($0);

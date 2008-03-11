@@ -17,6 +17,7 @@ RewriteRule ^edit.html(.+) /%ALIAS%/lze.pl?action=edit$1
 RewriteRule ^delete.html(.+) /%ALIAS%/lze.pl?action=delete$1
 RewriteRule  (.+)/(.+)/fulltext\.html(.+) /%ALIAS%/lze.pl?action=fulltext&von=$1&bis=$2$3 [PT]
 RewriteRule  (.+)/(.+)/showEntry\.html(.+) /%ALIAS%/lze.pl?action=showEntry&von=$1&bis=$2$3 [PT]
+RewriteRule  (.+)/(.+)/gbook\.html /%ALIAS%/lze.pl?action=gbook&von=$1&bis=$2$3 [PT]
 RewriteRule ^reallydelete.html(.+) /%ALIAS%/lze.pl?action=reallydelete$1
 RewriteRule ^neues.html$ /%ALIAS%/lze.pl?action=news
 RewriteRule ^viewrss.html$  /%ALIAS%/lze.pl?action=viewrss

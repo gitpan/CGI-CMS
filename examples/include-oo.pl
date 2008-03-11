@@ -14,4 +14,5 @@ if(param('include')) {
         print qq(Action wurde erzeugt.);
         print $cgi->br(), $cgi->a({href => "$ENV{SCRIPT_NAME}?include=$qstring"}, 'next');
 }
-
+print "Content Source<br/>";
+use showsource;&showSource('./content.pl');

@@ -6,7 +6,7 @@ use vars qw($settings $DefaultClass @EXPORT  @ISA $defaultconfig);
 @CGI::CMS::Settings::EXPORT = qw(loadSettings saveSettings $settings);
 use CGI::CMS::Config;
 @ISA                         = qw(Exporter CGI::CMS::Config);
-$CGI::CMS::Settings::VERSION = '0.28';
+$CGI::CMS::Settings::VERSION = '0.29';
 $DefaultClass                = 'CGI::CMS::Settings' unless defined $CGI::CMS::Settings::DefaultClass;
 $defaultconfig               = '%CONFIG%';
 

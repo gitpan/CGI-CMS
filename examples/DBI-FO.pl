@@ -1,5 +1,6 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 use strict;
+use lib qw(../lib);
 use DBI::Library qw(:independent );
 use vars qw($db $user $host $password $settings);
 use CGI::CMS qw(header init);
@@ -15,4 +16,6 @@ local $/ = "<br/>\n";
 foreach my $key (keys %{$showQuery}) {
         print "$key: ", $showQuery->{$key}, $/;
 }
+use showsource;
+&showSource($0);
 

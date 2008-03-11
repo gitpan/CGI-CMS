@@ -1,8 +1,8 @@
-CGI::CMS version 0.28
+CGI::CMS version 0.29
 
 ABOUT
 
-    CGI::CMS is Content Managment System that runs under mod_perl and and as cgi script.
+    CGI::CMS is Content Managment System that runs under mod_perl as well as cgi script.
     see http://lindnerei.sourceforge.net.
 
 
@@ -14,7 +14,8 @@ To install this module type the following:
    make
    make test
    make install
-
+   make testdb
+   make install_examples # /cgi-bin/examples/
 #mod_perl
    if you want to run CGI::CMS under mod_perl
    add the following lines to your server,config

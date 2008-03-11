@@ -513,10 +513,12 @@ function getText(id){
 }
 // hide(Id)
 function hide(id){
+if(document.getElementById(id))
      document.getElementById(id).style.display = "none";
 }
 // visible(Id);
 function visible(id){
+if(document.getElementById(id))
      document.getElementById(id).style.display = "";
 }
 //API>>
@@ -545,6 +547,7 @@ if(document.getElementById('window'+win) && document.getElementById('tr'+win)){
      visible('dynamicTab1');
      visible('dynamicTab2');
      visible('dynamicTab3');
+     visible('showWindows');
      document.getElementById('window'+win).style.visibility='hidden';
      document.getElementById('tr'+win).style.visibility='hidden';
      document.getElementById('window'+win).style.visibility='hidden';
@@ -555,6 +558,7 @@ function displayWindows(){
      hide('dynamicTab1');
      hide('dynamicTab2');
      hide('dynamicTab3');
+     hide('showWindows');
      for(var i = 0; i < windows.length;i++){
       if( document.getElementById('window'+windows[i]) &&  document.getElementById('tr'+windows[i])){
           document.getElementById('window'+windows[i]).style.position ="";

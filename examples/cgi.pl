@@ -1,10 +1,10 @@
 #!/usr/bin/perl -w
+use lib qw(../lib);
 use CGI::CMS;
 use strict;
 my $cgi = CGI::CMS->new();
-$cgi->init("/srv/www/cgi-bin/config/settings.pl");
 print $cgi->header;
-if(param('include')) {
+if($cgi->param('include')) {
         $cgi->include();
         print $cgi->a({href => "$ENV{SCRIPT_NAME}"}, 'next');
         $cgi->clearSession();
@@ -14,4 +14,7 @@ if(param('include')) {
         print qq(Action wurde erzeugt.);
         print $cgi->br(), $cgi->a({href => "$ENV{SCRIPT_NAME}?include=$qstring"}, 'next');
 }
+
+use showsource;
+&showSource($0);
 

@@ -1,6 +1,5 @@
 use strict;
 use warnings;
-use lib("lib");
 use HTML::Window qw(:all);
 my %parameter = (path => "cgi-bin/templates", server => "http://localhost",);
 set_closeable(1);

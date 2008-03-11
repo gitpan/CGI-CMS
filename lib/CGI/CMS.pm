@@ -33,12 +33,10 @@ $CGI::DefaultClass      = 'CGI';
 $DefaultClass           = 'CGI::CMS' unless defined $CGI::CMS::DefaultClass;
 $defaultconfig          = '%CONFIG%';
 $CGI::AutoloadClass     = 'CGI';
-$CGI::CMS::VERSION = '0.28';
+$CGI::CMS::VERSION = '0.29';
 $mod_perl               = ($ENV{MOD_PERL}) ? 1 : 0;
 our $hold = 120;    #session ist 120 sekunden gültig.
 @ISA = qw(Exporter CGI );
-
-# @CGI::CMS::EXPORT = qw/translate init session $lng createSession $params clearSession includeAction sessionValidity/;
 @CGI::CMS::EXPORT_OK =
   qw(start_table end_table include h1 h2 h3 h4 h5 h6 p br hr ol ul li dl dt dd menu code var strong em tt u i b blockquote pre img a address cite samp dfn html head base body Link nextid title meta kbd start_html end_html input Select option comment charset escapeHTML div table caption th td TR Tr sup Sub strike applet Param embed basefont style span layer ilayer font frameset frame script small big Area Map abbr acronym bdo col colgroup del fieldset iframe ins label legend noframes noscript object optgroup Q thead tbody tfoot blink fontsize center textfield textarea filefield password_field hidden checkbox checkbox_group submit reset defaults radio_group popup_menu button autoEscape scrolling_list image_button start_form end_form startform endform start_multipart_form end_multipart_form isindex tmpFileName uploadInfo URL_ENCODED MULTIPART param upload path_info path_translated request_uri url self_url script_name cookie Dump raw_cookie request_method query_string Accept user_agent remote_host content_type remote_addr referer server_name server_software server_port server_protocol virtual_port virtual_host remote_ident auth_type http append save_parameters restore_parameters param_fetch remote_user user_name header redirect import_names put Delete Delete_all url_param cgi_error ReadParse PrintHeader HtmlTop HtmlBot SplitParam Vars https $ACCEPT_LANGUAGE  translate init session createSession $params clearSession $qy sessionValidity includeAction);
 
@@ -95,7 +93,7 @@ our $hold = 120;    #session ist 120 sekunden gültig.
         ],
         'push' => [qw/multipart_init multipart_start multipart_end multipart_final/],
         'all'  => [
-        qw/h1 h2 h3 h4 h5 h6 p br hr ol ul li dl dt dd menu code var strong em tt u i b blockquote pre img a address cite samp dfn html head base body Link nextid title meta kbd start_html end_html input Select option comment charset escapeHTML div table caption th td TR Tr sup Sub strike applet Param embed basefont style span layer ilayer font frameset frame script small big Area Map abbr acronym bdo col colgroup del fieldset iframe ins label legend noframes noscript object optgroup Q thead tbody tfoot blink fontsize center textfield textarea filefield password_field hidden checkbox checkbox_group submit reset defaults radio_group popup_menu button autoEscape scrolling_list image_button start_form end_form startform endform start_multipart_form end_multipart_form isindex tmpFileName uploadInfo URL_ENCODED MULTIPART param upload path_info path_translated request_uri url self_url script_name cookie Dump raw_cookie request_method query_string Accept user_agent remote_host content_type remote_addr referer server_name server_software server_port server_protocol virtual_port virtual_host remote_ident auth_type http append save_parameters restore_parameters param_fetch remote_user user_name header redirect import_names put Delete Delete_all url_param cgi_error ReadParse PrintHeader HtmlTop HtmlBot SplitParam Vars https $ACCEPT_LANGUAGE  translate init session createSession $params clearSession $qy sessionValidity includeAction include/
+        qw/h1 h2 h3 h4 h5 h6 p br hr ol ul li dl dt dd menu code var strong em tt u i b blockquote pre img a address cite samp dfn html head base body Link nextid title meta kbd start_html end_html input Select option comment charset escapeHTML div table caption th td TR Tr sup Sub strike applet Param embed basefont style span layer ilayer font frameset frame script small big Area Map abbr acronym bdo col colgroup del fieldset iframe ins label legend noframes noscript object optgroup Q thead tbody tfoot blink fontsize center textfield textarea filefield password_field hidden checkbox checkbox_group submit reset defaults radio_group popup_menu button autoEscape scrolling_list image_button start_form end_form startform endform start_multipart_form end_multipart_form isindex tmpFileName uploadInfo URL_ENCODED MULTIPART param upload path_info path_translated request_uri url self_url script_name cookie Dump raw_cookie request_method query_string Accept user_agent remote_host content_type remote_addr referer server_name server_software server_port server_protocol virtual_port virtual_host remote_ident auth_type http append save_parameters restore_parameters param_fetch remote_user user_name header redirect import_names put Delete Delete_all url_param cgi_error ReadParse PrintHeader HtmlTop HtmlBot SplitParam Vars  $ACCEPT_LANGUAGE  translate init session createSession $params clearSession $qy sessionValidity includeAction include/
         ],
         'lze' => [qw/$ACCEPT_LANGUAGE translate init session createSession $params clearSession $qy include sessionValidity includeAction/],
 
@@ -103,11 +101,7 @@ our $hold = 120;    #session ist 120 sekunden gültig.
 
 =head1 NAME
 
-CGI::CMS.pm
-
-=head1 NAME
-
-CGI::CMS
+CGI::CMS - Content Managment System that runs under mod_perl and and as cgi script.
 
 =head1 SYNOPSIS
 
@@ -115,49 +109,23 @@ use CGI::CMS;
 
 =head1 DESCRIPTION
 
-CGI::CMS is a CGI subclass, This Module is mainly written for CGI::CMS::GUI.
+CGI::CMS is a CGI subclass, This Module is mainly written for L<CGI::CMS::GUI>.
 
-But there is no reason to use it not standalone. Also it is much more easier
+But you can it also use standalone.
 
-to update, test and distribute the parts standalone.
-
-You can use CGI::CMS as a standalone "CMS", for session managment or for multilanguage
-
-applications. Look into the example directory .
+Take a look in example directory.
 
 =head2 EXPORT
 
-exportok:
+export_ok:
 
 $ACCEPT_LANGUAGE translate init session createSession $params clearSession $qy include sessionValidity includeAction 
 
-and all stuff from CGI.pm
 
 export tags:
-        lze:
-                $ACCEPT_LANGUAGE
+lze: $ACCEPT_LANGUAGE translate init session createSession $params clearSession $qy include sessionValidity includeAction
 
-                translate
-
-                init
-
-                session
-
-                createSession
-
-                $params
-
-                clearSession
-
-                $qy
-
-                include
-
-                sessionValidity
-
-                includeAction
-
-and all exporttags from CGI.pm
+and all export tags from L<CGI.pm>
 
 =head1 Public
 
@@ -205,7 +173,7 @@ sub init {
 
 sub include {
         my ($self, @p) = getSelf(@_);
-        my $qstring = param('include') ? param('include') : $p[0] ? $p[0] : 0;
+        my $qstring = $p[0] ? $p[0] : param('include') ? param('include')  : 0;
         CGI::upload_hook(\&hook);
         if(defined $qstring) {
                 session($qstring);
@@ -341,7 +309,7 @@ sub clearSession {
 
 set the session Validity in seconds in scalar context:
 
-        sessionValidity(120); #120is the dafaultvalue
+        sessionValidity(120); #120is the dafault value
 
 or get it in void context:
 
@@ -368,7 +336,7 @@ see L<CGI::CMS::Translate>
 
 sub translate {
         my ($self, @p) = getSelf(@_);
-        my $key = $p[0];
+        my $key = lc $p[0];
         my @a   = split(/,/, defined $ENV{HTTP_ACCEPT_LANGUAGE} ? $ENV{HTTP_ACCEPT_LANGUAGE} : 'de,en');
         my $i   = 0;
         while($i <= $#a) {
@@ -378,7 +346,8 @@ sub translate {
                         return $lng->{$a[$i]}{$key};
                 }
                 $i++;
-        }
+                }
+#                 warn $p[0];
         return $p[0];
 }
 
@@ -417,7 +386,7 @@ sub getSelf {
 
 =head2 see Also
 
-L<CGI> L<CGI::CMS::Actions> L<CGI::CMS::Translate> L<CGI::CMS::Settings> L<CGI::CMS::Config>
+L<CGI> L<CGI::CMS::GUI> L<CGI::CMS::Actions> L<CGI::CMS::Translate> L<CGI::CMS::Settings> L<CGI::CMS::Config>
 
 =head1 AUTHOR
 

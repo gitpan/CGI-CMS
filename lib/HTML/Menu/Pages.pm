@@ -20,7 +20,7 @@ use vars qw(
 @HTML::Menu::Pages::EXPORT = qw(makePages);
 @ISA                       = qw(Exporter);
 
-$HTML::Menu::Pages::VERSION = '0.28';
+$HTML::Menu::Pages::VERSION = '0.29';
 
 $DefaultClass = 'HTML::Menu::Pages' unless defined $HTML::Menu::Pages::DefaultClass;
 
@@ -34,57 +34,50 @@ use HTML::Menu::Pages;
 
 =head2 OO Syntax.
 
-my $test = new HTML::Menu::Pages;
+        my $test = new HTML::Menu::Pages;
 
-my %needed =(
+                my %needed =(
 
-length => '345',
+                        length => '345',
 
-style => 'Crystal',
+                        style => 'Crystal',
 
-mod_rewrite => 0,
+                        mod_rewrite => 0,
 
-action => 'dbs',
+                        action => 'dbs',
 
-start  => param('von') ? param('von') : 0,
+                        start  => param('von') ? param('von') : 0,
 
-path => "/home/groups/l/li/lindnerei/cgi-bin/",
+                        path => "/srv/www/cgi-bin/",
 
-append => '?queryString=testit'
+                        append => '?queryString=testit'
 
-);
+                );
 
-print $test->makePages(\%needed );
+        print $test->makePages(\%needed );
 
 =head2 FO Syntax.
 
-my %needed =(
+        my %needed =(
 
-length => '345',
+                length => '345',
 
-style => 'Crystal',
+                style => 'Crystal',
 
-mod_rewrite => 0,
+                mod_rewrite => 0,
 
-action => 'dbs',
+                action => 'dbs',
 
-start  => param('von') ? param('von') : 0,
+                start  => param('von') ? param('von') : 0,
 
-path => "/home/groups/l/li/lindnerei/cgi-bin/",
+                path => "/srv/www/cgi-bin/",
 
-append => '?queryString=testit'
+                append => '?queryString=testit'
 
-);
+        );
 
-print makePages(\%needed );
+        print makePages(\%needed );
 
-=head1 DESCRIPTION
-
-This Module is mainly written for CGI::CMS::GUI.
-
-But there is no reason to use it not standalone. Also it is much more easier
-
-to update, test and distribute the parts standalone.
 
 =head2 EXPORT
 

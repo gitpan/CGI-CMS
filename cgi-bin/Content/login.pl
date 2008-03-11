@@ -1,8 +1,9 @@
 sub lostpass {
         my $name = param('user') ? param('user') : 'Name';
         my $mail = param('mail') ? param('mail') : 'mail';
+        
         print
-          qq(<br/><br/><table align="center" border="0" cellpadding="0" cellspacing="0" summary="contentHeader"><tr><td height="18"  valign="middle"><form  action=""  target="_parent" method="post"  name="lostpass">&#160;Name:&#160;<input style="height:18px;width:60px;" type="text" id="user" name="user" value="$name"  maxlength="100" align="left"/>&#160;Email:&#160;<input type="hidden" name="action" value="getpass"/><input style="height:18px;width:150px;" type="text" id="email" name="mail" value ="$mail" size="10"  alt="password" align="left"/>&#160;<input type="submit"  name="submit" value="passwort senden" size="12" maxlength="15" alt="Absenden" align="left" style="height:18px;"/></form></td></tr></table>);
+        qq(<br/><br/><table align="center" border="0" cellpadding="0" cellspacing="0" summary="lostpassHeader"><tr><td valign="middle"><form  action=""  target="_parent" method="post"  name="lostpass">&#160;Name:&#160;<input style="width:60px;" type="text" id="username" name="user" value="$name" maxlength="100" align="left"/>&#160;Email:&#160;<input type="hidden" name="action" value="getpass"/><input style="width:150px;" type="text" id="email" name="mail" value ="$mail" size="10"  alt="password" align="left"/>&#160;<input type="submit"  name="submit" value="submit" alt="submit" align="left" /></form></td></tr></table>);
 }
 
 sub getpass {
