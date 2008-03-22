@@ -2,9 +2,6 @@ sub reg {
         my $userRegName = param('username');
         $userRegName = ($userRegName =~ /^(\w{3,10})$/) ? $1 : translate('insertname');
         $userRegName = lc $userRegName;
-        my $pass = param('password');
-        $pass = ($pass =~ /^(\w{3,10})$/) ? $1 : translate('insertpass');
-        $pass = lc $pass;
         my $email     = param('email');
         my %vars      = (title => 'reg', user => 'guest', action => 'makeUser', file => "$settings->{cgi}{bin}/Content/reg.pl", sub => 'make', right => 0);
         my $qstring   = createSession(\%vars);
@@ -18,7 +15,7 @@ sub reg {
         my $t_regtext = translate('t_regtext');
         print qq(<table  border="0" cellpadding="0" cellspacing="10" summary="contentLayout" width="100%"><tr><td valign="top" align="center">);
         print br(), $window->windowHeader(),
-        qq(<div align="center">$t_regtext<br/><form action="$ENV{SCRIPT_NAME}"  method="post"  name="Login" ><label for="username">Name</label><br/><input type="text" name="username" id="username" title="Bitte geben Sie ihren Namen  ein." value="$userRegName" size="20" maxlength="10" alt="Login" align="left"/><br/><label for="email">Email</label><br/><input type="text" name="email" value="$email" id="email" size="20" maxlength="200" alt="email" align="left"/><br/><input type="hidden" name="include" value="$qstring"/><br/><input type="submit"  name="submit" value="$register" size="15" alt="$register" align="left"/></form></div>),
+          qq(<div align="center">$t_regtext<br/><form action="$ENV{SCRIPT_NAME}"  method="post"  name="Login" ><label for="username">Name</label><br/><input type="text" name="username" id="username" title="Bitte geben Sie ihren Namen  ein." value="$userRegName" size="20" maxlength="10" alt="Login" align="left"/><br/><label for="email">Email</label><br/><input type="text" name="email" value="$email" id="email" size="20" maxlength="200" alt="email" align="left"/><br/><input type="hidden" name="include" value="$qstring"/><br/><input type="submit"  name="submit" value="$register" size="15" alt="$register" align="left"/></form></div>),
           $window->windowFooter();
         print '</td></tr></table>';
 

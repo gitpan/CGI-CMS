@@ -1,23 +1,23 @@
-# my $ACCEPT_LANGUAGE = 'de';
-
-# use CGI::QuickForm;
-CGI::CMS::Settings::loadSettings("$settings->{cgi}{bin}/config/settings.pl");
 
 my $TITLE = 'Edit Translation';
+use CGI::QuickForm;
+
 use CGI::CMS::Translate;
 loadTranslate($settings->{translate});
 *lng = \$CGI::CMS::Translate::lang;
 my @translate;
 my $lg = param('lang') ? param('lang') : "de";
 
-foreach my $key (keys %{$lng->{$lg}}) {
+foreach my $key (sort keys %{$lng->{$lg}}) {
         push @translate, {-LABEL => $key, -TYPE => '', '-values' => $lng->{$lg}{$key},};
 }
 my @l;
-foreach my $key (keys %{$lng}) {
+foreach my $key (sort keys %{$lng}) {
         push @l, $key;
         print a({href => "$ENV{SCRIPT_NAME}?action=translate&lang=$key"}, "$key"), "&#160;";
 }
+
+print br(), a({href => "$ENV{SCRIPT_NAME}?action=showaddTranslation"}, translate('addTranslation')), "&#160;";
 
 show_form(
           -HEADER   => qq(<br/><h2>Edit Translations</h2>),
@@ -28,17 +28,6 @@ show_form(
           -BUTTONS => [{-name => translate('save')},],
           -FOOTER  => '<br/>',
 );
-
-print start_form(-method => "GET", -action => "$ENV{SCRIPT_NAME}?action=addTranslation",), hidden('action', "addTranslation"),
-  table(
-        {-align => 'center', -border => 0, width => "70%"},
-        caption('Add translation'),
-        Tr({-align => 'left', -valign => 'top'}, td("Key"), td(textfield({-style => "width:100%", -name => 'key'}, 'name'))),
-        Tr({-align => 'left', -valign => 'top'}, td("Txt"), td(textfield({-style => "width:100%", -name => 'txt'}, 'txt'))),
-        Tr({-align => 'left',  -valign => 'top'}, td("Language "), td(popup_menu(-onchange => "setLang(this.options[this.options.selectedIndex].value)", -name => 'lang', -values => [@l], -style => "width:100%"),)),
-        Tr({-align => 'right', -valign => 'top'}, td({colspan      => 2},                  submit(-value                                                 => 'Add Translation')))
-  ),
-  end_form;
 
 sub on_valid_form {
 
@@ -54,22 +43,6 @@ sub on_valid_form {
         my $rs = ($settings->{cgi}{mod_rewrite}) ? '/translate.html' : "$ENV{SCRIPT_NAME}?action=translate";
         print qq(<a href="$rs">) . translate('next') . '</a></div>';
 
-}
-
-sub addTranslation {
-        my $key = param('key');
-        my $txt = param('txt');
-        my $lg  = param('lang');
-        unless (defined $lng->{$lg}{$key}) {
-                $lng->{$lg}{$key} = $txt;
-                print "Translation added $lg<br/>$key:  $lng->{$lg}{$key}<br/>";
-                saveTranslate("$settings->{cgi}{bin}/config/translate.pl");
-                loadTranslate("$settings->{cgi}{bin}/config/translate.pl");
-        } else {
-                print "Key already defined<br/>$key:  $lng->{$lg}{$key}<br/>";
-        }
-        my $rs = ($settings->{cgi}{mod_rewrite}) ? '/translate.html' : "$ENV{SCRIPT_NAME}?action=translate";
-        print qq(<a href="$rs">) . translate('next') . '</a></div>';
 }
 
 1;

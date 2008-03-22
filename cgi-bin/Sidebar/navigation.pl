@@ -13,7 +13,7 @@ sub fetchMenu {
                 }
                 if($actions[$i]->{submenu}) {
                         my @sumenu = fetchMenu($database->fetch_AoH("select * from $actions[$i]->{submenu} where `right` <= $right order by title"));
-                        push @ret, {text =>  translate($actions[$i]->{title}), href => $fm, subtree => [@sumenu],};
+                        push @ret, {text => translate($actions[$i]->{title}), href => $fm, subtree => [@sumenu],};
                 } else {
                         push @ret, {text => translate($actions[$i]->{title}), href => $fm,};
                 }

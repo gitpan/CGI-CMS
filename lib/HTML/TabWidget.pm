@@ -6,7 +6,7 @@ use vars qw($DefaultClass @ISA  $mod_perl);
 our $style;
 use Template::Quick;
 @HTML::TabWidget::ISA         = qw( Exporter Template::Quick);
-$HTML::TabWidget::VERSION     = '0.29';
+$HTML::TabWidget::VERSION     = '0.3';
 $DefaultClass                 = 'HTML::TabWidget' unless defined $HTML::TabWidget::DefaultClass;
 @HTML::TabWidget::EXPORT_OK   = qw(initTabWidget Menu tabwidgetHeader tabwidgetFooter);
 %HTML::TabWidget::EXPORT_TAGS = ('all' => [qw(initTabWidget tabwidgetHeader Menu tabwidgetFooter)]);
@@ -16,11 +16,7 @@ no warnings;
 
 =head1 NAME
 
-HTML::TabWidget - A Html TabWidget
-
-=head1 NAME
-
-HTML::Window.pm - Produce a move-,resize-,collapse- and closeable Html Window.
+HTML::TabWidget - simple Html TabWidget
 
 =head1 SYNOPSIS
 

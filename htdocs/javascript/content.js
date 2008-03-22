@@ -1,8 +1,8 @@
 //content.js
 var dir =  "";
-var style ="Crystal";
-var right = 0;
-var htmlright =2;
+// var style ="system";
+// var right = 0;
+// var htmlright =2;
 var bbcode = true;
 var buttonClose = new Image();
 buttonClose.src = dir+"/style/"+style+"/window/closewin.png";
@@ -531,7 +531,7 @@ function menu(id,moveable,collapse,resizeable,closeable){
           document.write("<td><img alt ='minwin' border='0'  src = '/style/"+style+"/window/collapsewin.png' style ='cursor:pointer;' title='Fensterheber'  onclick =\"displayWin('"+id+"');if(document.getElementById('messageBody"+id+"').style.display  == 'none'){this.src = buttonExpand.src;}else{this.src =buttonCollapse.src;}\" onmouseout = \"if(this.src == buttonCollapseO.src ){this.src = buttonCollapse.src}if(this.src == buttonExpandO.src){ this.src = buttonExpand.src;};\" onmouseover =\"if(this.src == buttonCollapse.src ){this.src = buttonCollapseO.src;}if(this.src == buttonExpand.src){ this.src = buttonExpandO.src;}\"/></td>");
      }
      if(resizeable == 1){
-          document.write("<td><img alt = 'maxwino' border='0'   src = '/style/"+style+"/window/maxwin.png' style = 'cursor:pointer;' title='Maximieren' onclick =\"maxMin('window"+id+"');if(this.src == buttonMaxO.src ){this.src = buttonResize.src}if(this.src == buttonResizeO.src){ this.src = buttonMax.src;}\" onmouseout =\"if(this.src == buttonMaxO.src ){this.src = buttonMax.src}if(this.src == buttonResizeO.src){ this.src = buttonResize.src;}\" onmouseover = \"if(this.src == buttonMax.src ){this.src = buttonMaxO.src;}if(this.src == buttonResize.src){ this.src = buttonResizeO.src;}\"/></td>");
+          document.write("<td><img alt ='' border='0'   src = '/style/"+style+"/window/maxwin.png' style = 'cursor:pointer;' title='Maximieren' onclick =\"maxMin('window"+id+"');if(this.src == buttonMaxO.src ){this.src = buttonResize.src}if(this.src == buttonResizeO.src){ this.src = buttonMax.src;}\" onmouseout =\"if(this.src == buttonMaxO.src ){this.src = buttonMax.src}if(this.src == buttonResizeO.src){ this.src = buttonResize.src;}\" onmouseover = \"if(this.src == buttonMax.src ){this.src = buttonMaxO.src;}if(this.src == buttonResize.src){ this.src = buttonResizeO.src;}\"/></td>");
      }
      if(closeable == 1){
             document.write("<td><img  style='cursor:pointer;'  src='/style/"+style+"/window/closewin.png'  onmouseover=\"this.src = buttonCloseO.src;\"  onmouseout='this.src = buttonClose.src'  alt='Close' title='Schliessen'  border='0' onclick=\"addWindow('"+id+"');this.src = buttonClose.src;\"/></td>");

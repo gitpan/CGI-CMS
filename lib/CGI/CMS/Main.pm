@@ -11,16 +11,16 @@ our $server;
 @CGI::CMS::Main::EXPORT_OK   = qw(all initMain Header Footer);
 %CGI::CMS::Main::EXPORT_TAGS = ('all' => [qw(initMain Header Footer)]);
 @CGI::CMS::Main::ISA         = qw( Exporter Template::Quick);
-$CGI::CMS::Main::VERSION     = '0.29';
+$CGI::CMS::Main::VERSION     = '0.3';
 $DefaultClass                = 'CGI::CMS::Main' unless defined $CGI::CMS::Main::DefaultClass;
 
 =head1 NAME
 
-CGI::CMS::Main.pm
+CGI::CMS::Main.pm  Main template for CGI::LZE::GUI
 
 =head1 SYNOPSIS
 
-use CGI::CMS::Main;
+see l<CGI::LZE::GUI>
 
 =head1 DESCRIPTION
 

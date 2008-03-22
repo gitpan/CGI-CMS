@@ -1,6 +1,6 @@
 package DBI::Library;
-# use strict;
-# use warnings;
+use strict;
+use warnings;
 use vars qw( $dbh $dsn $DefaultClass $settings  @EXPORT_OK @ISA %functions $style $right $tbl);
 $DefaultClass = 'DBI::Library' unless defined $DBI::Library::DefaultClass;
 @DBI::Library::EXPORT_OK = qw( useexecute quote void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute tableLength tableExists initDB $dsn $dbh selectTable);
@@ -9,12 +9,10 @@ $DefaultClass = 'DBI::Library' unless defined $DBI::Library::DefaultClass;
                               'dynamic'     => [qw( useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute selectTable)],
                               'independent' => [qw(tableLength tableExists initDB useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute selectTable)],
 );
-$DBI::Library::VERSION = '0.29';
+$DBI::Library::VERSION = '0.3';
 $tbl                   = 'querys';
 require Exporter;
 use DBI;
-
-# @DBI::Library::ISA = qw( Exporter DBI);
 
 use base qw/Exporter DBI/;
 
@@ -22,7 +20,7 @@ use base qw/Exporter DBI/;
 
 =head1 NAME
 
-DBI::Library
+DBI::Library - DBI subclass providing a dynamic SQL Libary.
 
 =head1 SYNOPSIS
 
@@ -74,8 +72,8 @@ use DBI::Library;
 
 =head2 Export Tags
 
-:all 
-        execute useexecute quote void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute       addexecute tableLength tableExists initDB
+:all
+    execute useexecute quote void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute       addexecute tableLength tableExists initDB
 
 :dynamic execute useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute
 
@@ -83,15 +81,8 @@ independent: tableLength tableExists initDB :dynamic
 
 =head1 DESCRIPTION
 
-DBI::Library is a DBI subclass providing a SQL Libary.
+DBI::Library is a DBI subclass providing a dynamic SQL Libary.
 
-This Module is mainly written for CGI::CMS::GUI,
-
-but there is no reason to use it not standalone.
-
-Also it is much more easier
-
-to update, test and distribute the parts standalone.
 
 
 =head2 new()
@@ -315,16 +306,13 @@ example:
 sub useexecute {
         my ($self, @p) = getSelf(@_);
         my $title = shift(@p);
-        my $ref;
-        if(ref $p[0] eq 'HASH') {
-                $ref = shift(@p);
-        }
         my $sql = "select `sql`,`return` from querys where `title` = ?";
         my $sth = $dbh->prepare($sql);
         $sth->execute($title) or warn $dbh->errstr;
         my ($sqlexec, $return) = $sth->fetchrow_array();
         $sqlexec =~ s/<TABLE>/$tbl/g;
-        if(ref $ref eq 'HASH') {
+        if(ref  $p[0]  eq 'HASH') {
+                my $ref = shift(@p);
                 foreach my $key (keys %{$ref->{identifier}}) {
                         $sqlexec =~ s/table_$key/$dbh->quote_identifier($ref->{identifier}{$key})/ge;
                 }

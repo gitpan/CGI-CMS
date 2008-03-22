@@ -1,6 +1,6 @@
 $VAR1 = {
           'htmlright' => 2,
-          'actions' => '/srv/www/cgi-bin//config/actions.pl',
+          'actions' => '/srv/www/cgi-bin/config/actions.pl',
           'tree' => {
                       'navigation' => '/srv/www/cgi-bin/config/tree.pl',
                       'links' => '/srv/www/cgi-bin/config/links.pl'
@@ -14,11 +14,12 @@ $VAR1 = {
           'size' => 22,
           'uploads' => {
                          'maxlength' => 2003153,
-                         'path' => '/srv/www/htdocs/downloads/',
+                         'path' => '/srv/www//htdocs/downloads/',
                          'chmod' => 420,
                          'enabled' => 1
                        },
-          'session' => '/srv/www/cgi-bin//config/session.pl',
+          'floodtime' => 10,
+          'session' => '/srv/www/cgi-bin/config/session.pl',
           'scriptAlias' => 'cgi-bin',
           'admin' => {
                        'firstname' => 'Firstname',
@@ -28,16 +29,16 @@ $VAR1 = {
                        'town' => 'Berlin'
                      },
           'language' => 'en',
-          'version' => '0.29',
+          'version' => '0.3',
           'cgi' => {
-                     'bin' => '/srv/www/cgi-bin/',
+                     'bin' => '/srv/www/cgi-bin',
                      'style' => 'Crystal',
-                     'serverName' => 'http://localhost',
+                     'serverName' => 'localhost',
                      'cookiePath' => '/',
                      'title' => 'Lindnerei',
                      'mod_rewrite' => '1',
                      'alias' => 'cgi-bin',
-                     'DocumentRoot' => '/srv/www/htdocs',
+                     'DocumentRoot' => '/srv/www//htdocs',
                      'expires' => '+1y'
                    },
           'database' => {
@@ -50,8 +51,8 @@ $VAR1 = {
                          'left' => 1,
                          'right' => 1
                        },
-          'translate' => '/srv/www/cgi-bin//config/translate.pl',
-          'config' => '/srv/www/cgi-bin//config/settings.pl',
+          'translate' => '/srv/www/cgi-bin/config/translate.pl',
+          'config' => '/srv/www/cgi-bin/config/settings.pl',
           'news' => {
                       'maxlength' => 5000,
                       'messages' => 10

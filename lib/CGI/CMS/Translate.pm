@@ -6,13 +6,13 @@ use vars qw($ACCEPT_LANGUAGE $lang $DefaultClass @EXPORT  @ISA $defaultconfig);
 @CGI::CMS::Translate::EXPORT = qw(loadTranslate saveTranslate $lang);
 use CGI::CMS::Config;
 @ISA                          = qw(Exporter CGI::CMS::Config);
-$CGI::CMS::Translate::VERSION = '0.29';
+$CGI::CMS::Translate::VERSION = '0.3';
 $DefaultClass                 = 'CGI::CMS::Translate' unless defined $CGI::CMS::Translate::DefaultClass;
 $defaultconfig                = '%CONFIG%';
 
 =head1 NAME
 
-CGI::CMS::Translate
+CGI::CMS::Translate - manage translations for CGI::LZE
 
 =head1 SYNOPSIS
 

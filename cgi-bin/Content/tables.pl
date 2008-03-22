@@ -36,8 +36,8 @@ sub showEntry {
         use HTML::Menu::Pages;
         my @count   = $database->fetch_array("SELECT count(*) FROM `$tb`");
         my @caption = $database->fetch_AoH("show columns from `$tb`");
-        $von = ($von >= $count[0])? ( ( ($count[0]- 10) > 0) ? ( $count[0]- 10) : 0) : $von;
-        my @a       = $database->fetch_AoH("select * from `$tb` order by '$caption[0]->{'Field'}' desc  LIMIT $von , 10"); 
+        $von = ($von >= $count[0]) ? ((($count[0]- 10) > 0) ? ($count[0]- 10) : 0) : $von;
+        my @a = $database->fetch_AoH("select * from `$tb` order by '$caption[0]->{'Field'}' desc  LIMIT $von , 10");
         if($count[0] > 0) {
                 my %needed = (start => $von, length => $count[0], style => $style, mod_rewrite => $settings->{mod_rewrite}, action => "showEntry", append => "&table=$tb", path => $settings->{cgi}{bin});
                 print makePages(\%needed);
@@ -56,7 +56,7 @@ sub showEntry {
                 my $id       = $a[$i]->{'id'};
                 my $trdelete = translate('delete');
                 print
-                qq|<td><a href="$ENV{SCRIPT_NAME}?action=editEntry&amp;table=$tb&amp;edit=$id&amp;von=$von&amp;bis=$bis;"><img src="/style/$style/buttons/edit.png" border="0" alt="Edit" title="Edit Entry"/></a><a href ="$ENV{SCRIPT_NAME}?action=deleteEntry&amp;table=$tb&amp;delete=$id&amp;von=$von;&amp;bis=$bis;" onclick="return confirm('$trdelete ?')"><img src="/style/$style/buttons/delete.png" border="0" alt="delete"/></a></td></td></tr>|;
+                  qq|<td><a href="$ENV{SCRIPT_NAME}?action=editEntry&amp;table=$tb&amp;edit=$id&amp;von=$von&amp;bis=$bis;"><img src="/style/$style/buttons/edit.png" border="0" alt="Edit" title="Edit Entry"/></a><a href ="$ENV{SCRIPT_NAME}?action=deleteEntry&amp;table=$tb&amp;delete=$id&amp;von=$von;&amp;bis=$bis;" onclick="return confirm('$trdelete ?')"><img src="/style/$style/buttons/delete.png" border="0" alt="delete"/></a></td></td></tr>|;
         }
         print '</table>';
         &showNewEntry($tb);
@@ -159,7 +159,7 @@ sub newEntry {
 sub deleteEntry {
         my $tbl = param('table');
         my $ids = param('delete');
-        $database->void("DELETE FROM `$tbl` where id  = '$ids'");
+        $database->void("DELETE FROM `$tbl` where id  = ?", $ids);
         &showEntry($tbl);
 }
 
@@ -208,13 +208,13 @@ sub sqldump {
 
 }
 
-#         sub change_col_typ{
+# sub change_col_typ{
 #         #ALTER TABLE table1 MODIFY ? VARCHAR(10) NOT NULL;
 #         my $tbl      = param('table') ? param('table') : shift;
 #         my @caption  = $database->fetch_AoH("show columns from `$tbl`");
 #         my $newentry = translate('editTable');
 #         print
-#         qq(<div align="center"><p>$tbl:</p><form action="$ENV{SCRIPT_NAME}?" method="get" name="action" enctype="multipart/form-data"><input type="hidden" name="action" value="newEntry"/><table align="center" border="0" cellpadding="1"  cellspacing="1" summary="layout"><tbody><tr><td class="caption">Field</td><td class="caption">Value</td><td class="caption">Type</td><td class="caption">Null</td><td class="caption">Key</td><td class="caption">Default</td><td class="caption">Extra</td></tr>);
+#         qq(<div align="center"><p>$tbl:</p><form action="$ENV{SCRIPT_NAME}?" method="get" name="action" enctype="multipart/form-data"><input type="hidden" name="action" value="change_col_typ"/><table align="center" border="0" cellpadding="1"  cellspacing="1" summary="layout"><tbody><tr><td class="caption">Field</td><td class="caption">Value</td><td class="caption">Type</td><td class="caption">Null</td><td class="caption">Key</td><td class="caption">Default</td><td class="caption">Extra</td></tr>);
 #         for(my $j = 0 ; $j <= $#caption ; $j++) {
 #         SWITCH: {
 #         if($caption[$j]->{'Type'} eq "text") {
@@ -228,7 +228,7 @@ sub sqldump {
 #         }
 #         my $save = translate('save');
 #         print qq(</table><br/><input type="submit" value="$save"/><input type="hidden" name="table" value="$tbl"/><br/><br/></form></div>);
-#         }
+# }
 #
 #         sub alter_col{
 #                 #ALTER TABLE table1 MODIFY ? VARCHAR(10) NOT NULL;

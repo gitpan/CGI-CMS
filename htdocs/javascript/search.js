@@ -17,6 +17,9 @@ document.write('<option value="get:http://www.google.com/search?q=site:cpprefere
 document.write('<option value="get:http://trolltech.com/search?SearchableText=%KEYWORD%">Qt Trolltech</option>');
 document.write('<option value="get:http://www.heise.de/newsticker/search.shtml?T=%KEYWORD%&button=los%21">Heise.de</option>');
 document.write('<option value="get:http://www.google.de/search?hl=de&ie=UTF-8&q=%KEYWORD%&btnG=Suche&meta=lr%3Dlang_de">Google</option>');
+document.write('<option value="get:http://sourceforge.net/search/?type_of_search=soft&type_of_search=soft&words=%KEYWORD%">Sourceforge</option>');
+document.write('<option value="get: http://www.google.com/custom?q=%KEYWORD%&sa=Google+Search&cof=LW%3A179%3BL%3Ahttp%3A%2F%2Fwww.debian.org%2FPics%2Fdebian.jpg%3BLH%3A61%3BAH%3Acenter%3BAWFID%3Ab092bd86f7b55508%3B&domains=www.debian.org&sitesearch=www.debian.org">Debian</option>');
+document.write('<option value="get:http://www.google.com/translate_t?langpair=en|de&text=%KEYWORD%">Translate en|de</option>');
 document.write('</select> ');
 document.write('</form>');
 var uA = navigator.userAgent;

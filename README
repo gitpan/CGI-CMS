@@ -1,4 +1,4 @@
-CGI::CMS version 0.29
+CGI::CMS version 0.3
 
 ABOUT
 
@@ -43,7 +43,7 @@ CGI::QuickForm
 DBI
 CGI.pm
 HTML::Parser
-Syntax::Highlight::Perl
+Syntax::Highlight::Engine::Kate
 
 COPYRIGHT AND LICENCE
 

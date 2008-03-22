@@ -1,13 +1,22 @@
+use vars qw($r);
+use URI::Escape;
+
 sub showDir {
         my $subfolder = param('subfolder') ? param('subfolder') : shift;
         $subfolder = defined $subfolder ? $subfolder : $settings->{cgi}{bin};
-        my $r = 0;
+        $subfolder =~ s?/$??g;
+        my $links = $subfolder =~ ?^(.*/)[^/]+$? ? $1 : $subfolder;
+        $links =~ s?//?/?g;
+        my  $elinks = uri_escape($links );
+        my $esubfolder = uri_escape($subfolder );
+        $r = 0;
+
         my @t = readFiles($subfolder, 0);
         columns(
-                a({href => "$ENV{SCRIPT_NAME}?action=openFile&file=$subfolder&sort=1",     class => "treeviewLink$size"}, 'Name') . '&#160;',
-                a({href => "$ENV{SCRIPT_NAME}?action=openFile&file=$subfolder&byColumn=0", class => "treeviewLink$size"}, 'Size') . '&#160;',
-                a({href => "$ENV{SCRIPT_NAME}?action=openFile&file=$subfolder&byColumn=1", class => "treeviewLink$size"}, 'Permission') . '&#160;',
-                a({href => "$ENV{SCRIPT_NAME}?action=openFile&file=$subfolder&byColumn=2", class => "treeviewLink$size"}, 'Last Modified') . '&#160;'
+        a({href => "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&sort=1",     class => "treeviewLink$size"}, 'Name') . '&#160;',
+        a({href => "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&byColumn=0", class => "treeviewLink$size"}, 'Size') . '&#160;',
+        a({href => "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&byColumn=1", class => "treeviewLink$size"}, 'Permission') . '&#160;',
+        a({href => "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&byColumn=2", class => "treeviewLink$size"}, 'Last Modified') . '&#160;'
         );
         border(1);
         if(defined param('byColumn')) {
@@ -15,20 +24,18 @@ sub showDir {
         } elsif (param('sort')) {
                 sortTree(1);
         }
-        $subfolder =~ s?/$??g;
-        my $links = $subfolder =~ ?^(.*/)[^/]+$? ? $1 : $subfolder;
-        $links =~ s?//?/?g;
-        my $hf = "$ENV{SCRIPT_NAME}?action=openFile&file=$links";
+
+        my $hf = "$ENV{SCRIPT_NAME}?action=openFile&file=$elinks";
 
         print div(
                   {align => 'center'},
                   a({href => $hf, class => "treeviewLink$size"}, $links)
                     . br()
-                    . a({href => "javascript:var a = prompt('Enter File Name');location.href = '$ENV{SCRIPT_NAME}?action=newFile&file='+a+'&dir=$subfolder';", class => "treeviewLink$size"}, "New File")
+                    . a({href => "javascript:var a = prompt('Enter File Name');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=newFile&file='+encodeURIComponent(a)+'&dir=$esubfolder';", class => "treeviewLink$size"}, "New File")
                     . '&#160;|&#160;'
-                    . a({href => "javascript:var a = prompt('Neues Verzeichnis');location.href = '$ENV{SCRIPT_NAME}?action=makeDir&file=$subfolder&d='+a;", class => "treeviewLink$size"}, "New Directory")
+                    . a({href => "javascript:var a = prompt('Neues Verzeichnis');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=makeDir&file=$esubfolder&d='+encodeURIComponent(a);", class => "treeviewLink$size"}, "New Directory")
                     . '&#160;|&#160;'
-                    . a({href => "javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$subfolder&chmod='+a;", class => "treeviewLink$size"}, "Chmod")
+                    . a({href => "javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$esubfolder&chmod='+encodeURIComponent(a);", class => "treeviewLink$size"}, "Chmod")
                     . br()
                     . Tree(\@t)
         );
@@ -37,6 +44,7 @@ sub showDir {
         sub readFiles {
                 my @TREEVIEW;
                 my $dir = shift;
+                my $edir = uri_escape($dir );
                 my $rk  = shift;
                 $r++ if($rk);
                 if(-d "$dir" && -r "$dir") {
@@ -46,8 +54,9 @@ sub showDir {
                                 use File::stat;
                                 my $sb = stat($fl);
                               TYPE: {
-                                        last TYPE if($d =~ /^\.+$/);
-                                        my $href = "$ENV{SCRIPT_NAME}?action=openFile&file=$fl";
+                              last TYPE if($d =~ /^\.+$/);
+                             my  $efl = uri_escape($fl );
+                             my $href = "$ENV{SCRIPT_NAME}?action=openFile&amp;file=$efl";
                                         if(-d $fl) {
                                                 push @TREEVIEW,
                                                   {
@@ -56,7 +65,7 @@ sub showDir {
                                                     empty   => 1,
                                                     columns => [sprintf("%s", $sb->size), sprintf("%04o", $sb->mode & 07777), sprintf("%s", scalar localtime $sb->mtime)],
                                                     addition =>
-                                                      qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout"><tr><td><a class="treeviewLink$size" href="javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$fl&chmod='+a;">&#160;chmod</a></td><td><a class="treeviewLink$size" href="javascript:var a = prompt('Enter File Name');location.href = '$ENV{SCRIPT_NAME}?action=newFile&file='+a+'&dir=$dir';"><img src="/style/$style/$size/mimetypes/filenew.png" border="0" alt="new"/></a></td><td><a class="treeviewLink$size" href="$href"><img src="/style/$style/$size/mimetypes/edit.png" border="0" alt="edit"/></a></td><td><a class="treeviewLink$size" href="$ENV{SCRIPT_NAME}?action=deleteFile&amp;file=$fl" onclick="return confirm('Realy delete ?')"><img src="/style/$style/$size/mimetypes/editdelete.png" border="0" alt="delete"/></a></td></td></tr></table>|
+                                                    qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout"><tr><td><a class="treeviewLink$size" href="javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$efl&chmod='+encodeURIComponent(a);">&#160;chmod</a></td><td><a class="treeviewLink$size" href="javascript:var a = prompt('Enter File Name');location.href = '$ENV{SCRIPT_NAME}?action=newFile&file='+encodeURIComponent(a)+'&dir=$edir';"><img src="/style/$style/$size/mimetypes/filenew.png" border="0" alt="new"/></a></td><td><a class="treeviewLink$size" href="$ENV{SCRIPT_NAME}?action=deleteFile&amp;file=$efl" onclick="return confirm('Realy delete ?')"><img src="/style/$style/$size/mimetypes/editdelete.png" border="0" alt="delete"/></a></td></td></tr></table>|
                                                   };
                                                 last TYPE;
                                         }
@@ -68,7 +77,7 @@ sub showDir {
                                                     href    => "$href",
                                                     columns => [sprintf("%s", $sb->size), sprintf("%04o", $sb->mode & 07777), sprintf("%s", scalar localtime $sb->mtime)],
                                                     addition =>
-                                                      qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout"><tr><td><a class="treeviewLink$size" href="javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$fl&chmod='+a;">&#160;chmod</a></td><td><a class="treeviewLink$size" href="$href"><img src="/style/$style/$size/mimetypes/edit.png" border="0" alt="edit"/></a></td><td><a class="treeviewLink$size" href="$ENV{SCRIPT_NAME}?action=deleteFile&amp;file=$fl" onclick="return confirm('Realy delete ?')"><img src="/style/$style/$size/mimetypes/editdelete.png" border="0" alt="delete"/></a></td></tr></table>|,
+                                                    qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout"><tr><td><a class="treeviewLink$size" href="javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$efl&chmod='+encodeURIComponent(a);">&#160;chmod</a></td><td><a class="treeviewLink$size" href="$href"><img src="/style/$style/$size/mimetypes/edit.png" border="0" alt="edit"/></a></td><td><a class="treeviewLink$size" href="$ENV{SCRIPT_NAME}?action=deleteFile&amp;file=$efl" onclick="return confirm('Realy delete ?')"><img src="/style/$style/$size/mimetypes/editdelete.png" border="0" alt="delete"/></a></td></tr></table>|,
                                                     image => (-e "$settings->{cgi}{DocumentRoot}/style/$style/$size/mimetypes/$suffix.png") ? "$suffix.png" : 'link.gif',
                                                   };
                                         }
@@ -81,9 +90,12 @@ sub showDir {
 }
 
 sub openFile {
-        my $f = defined param('file') ? param('file') : '';
+my $f = defined param('file') ? param('file') : '';
+
+ 
+
       SWITCH: {
-                if(-d $f) {
+      if(-d $f) {
                         &showDir($f);
                         last SWITCH;
                 }

@@ -5,20 +5,17 @@ require Exporter;
 use vars qw($config $DefaultClass @EXPORT  @ISA $defaultconfig);
 @CGI::CMS::Config::EXPORT  = qw(loadConfig saveConfig $config);
 @ISA                       = qw(Exporter);
-$CGI::CMS::Config::VERSION = '0.29';
+$CGI::CMS::Config::VERSION = '0.3';
 $DefaultClass              = 'CGI::CMS::Config' unless defined $CGI::CMS::Config::DefaultClass;
 $defaultconfig             = '%CONFIG%';
 
 =head1 NAME
 
-CGI::CMS::Config
+CGI::CMS::Config  - config for CGI::LZE
 
 =head1 DESCRIPTION
 
-Config for CGI::CMS.
-
-use this for whatever you want to store.
-
+see L<CGI::LZE::GUI>
 
 =head2 EXPORT
 

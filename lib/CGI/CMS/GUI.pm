@@ -11,6 +11,7 @@ use HTML::Menu::TreeView qw(:all);
 use HTML::Entities;
 use HTML::Editor;
 use HTML::Editor::BBCODE;
+use URI::Escape;
 
 require Exporter;
 use vars qw(
@@ -48,7 +49,7 @@ use vars qw(
 @CGI::CMS::GUI::EXPORT = qw(action Body maxlength openFile );
 @ISA                   = qw(Exporter CGI::CMS);
 
-$CGI::CMS::GUI::VERSION = '0.29';
+$CGI::CMS::GUI::VERSION = '0.3';
 $mod_perl = ($ENV{MOD_PERL}) ? 1 : 0;
 
 local $^W = 0;
@@ -83,6 +84,7 @@ sub Body {
         $database = new DBI::Library::Database();
         $database->rewrite($settings->{cgi}{mod_rewrite});
         $database->serverName($settings->{cgi}{serverName});
+        $database->floodtime($settings->{floodtime});
         $dbh = $database->initDB({name => $settings->{database}{name}, host => $settings->{database}{host}, user => $settings->{database}{user}, password => $settings->{database}{password},});
         my $cookiepath = $settings->{cgi}{cookiePath};
         $action = param('action') ? param('action') : lc($settings->{defaultAction});
@@ -272,8 +274,8 @@ sub Body {
                                 warn "Error : $@ " if($@);
                         }
                 } else {
-                        do("$settings->{cgi}{bin}/Content/news.pl");
-                        warn "Error : $@ " if($@);
+                        do("$settings->{cgi}{bin}/Content/exploit.pl");
+                        warn $@ if($@);
                 }
                 print br();
                 print tabwidgetFooter();

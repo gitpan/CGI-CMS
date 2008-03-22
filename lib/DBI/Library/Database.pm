@@ -1,11 +1,10 @@
 package DBI::Library::Database;
-
 use strict;
 use warnings;
 use HTML::Entities;
 
-use vars qw( $dbh $dsn $DefaultClass @EXPORT_OK @ISA %functions $rewrite  $right $install $mod_rewrite
-  $serverName);
+use vars qw( $dbh $dsn $DefaultClass @EXPORT_OK @ISA %functions  $mod_rewrite
+  $serverName $min_secs);
 $DefaultClass = 'DBI::Library::Database' unless defined $DBI::Library::Database::DefaultClass;
 require Exporter;
 use DBI::Library qw(:all $dbh $dsn);
@@ -21,12 +20,12 @@ use DBI::Library qw(:all $dbh $dsn);
         'independent' => [qw(tableLength tableExists initDB useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute)],
         'lze'         => [qw(addUser hasAcount isMember createMenu catright topicright right getAction checkPass checkSession setSid getName rss readMenu deleteMessage reply editMessage addMessage rewrite checkFlood)],
 );
-$DBI::Library::Database::VERSION = '0.29';
+$DBI::Library::Database::VERSION = '0.3';
 $mod_rewrite                     = 0;
 
 =head1 NAME
 
-DBI::Library::Database
+DBI::Library::Database - Database interface for CGI::CMS::GUI
 
 =head1 SYNOPSIS
 
@@ -67,9 +66,9 @@ sub new {
           user => $user,
 
           attach => $filename,
-          
+
           ip => remote_addr(),
-          
+
 
      );
 
@@ -134,7 +133,6 @@ sub addMessage {
 sub editMessage {
         my ($self, @p) = getSelf(@_);
         if($self->checkFlood($p[0]->{ip})) {
-
                 my $thread = defined $p[0]->{thread} ? $p[0]->{thread} : 'trash';
                 $thread = ($thread =~ /^(\w{3,50})$/) ? $1 : 'trash';
                 my $refid    = defined $p[0]->{id}    ? $p[0]->{id}    : 1;
@@ -145,15 +143,16 @@ sub editMessage {
                 my $attach = defined $p[0]->{attach} ? $p[0]->{attach} : 0;
                 my $format = defined $p[0]->{format} ? $p[0]->{format} : 'bbcode';
                 my $cat    = defined $p[0]->{cat}    ? $p[0]->{cat}    : 'news';
+
                 if($attach ne '0.0') {
                         my $sql_insert = qq/update $thread set title =?, body =? , attach= ?,format =?,user =?,cat =?,`right` =? where id = ?;/;
                         my $sth        = $dbh->prepare($sql_insert);
                         $sth->execute($headline, $body, $attach, $format, $user, $cat, $self->catright($cat), $refid) or warn $dbh->errstr;
                         $sth->finish();
                 } else {
-                        my $sql_insert = qq/update $thread set title =?, body = ? ,format = ?,user = ?,cat = ? where id = ?;/;
+                        my $sql_insert = qq/update $thread set title =?, body = ? ,format = ?,user = ?,cat = ?,`right` =?  where id = ?;/;
                         my $sth        = $dbh->prepare($sql_insert);
-                        $sth->execute($headline, $body, $format, $user, $cat, $refid) or warn $dbh->errstr;
+                        $sth->execute($headline, $body, $format, $user, $cat, $self->catright($cat), $refid) or warn $dbh->errstr;
                         $sth->finish();
                 }
         }
@@ -503,7 +502,7 @@ sub isMember {
                 $sth->execute($user);
                 my ($member) = $sth->fetchrow_array();
                 $sth->finish();
-                return ($user eq $member) ? 1 : 0;
+                return defined $member ? ($user eq $member) ? 1 : 0 : 0;
         } else {
                 return 1;
         }
@@ -588,6 +587,22 @@ sub serverName {
 
 }
 
+=head2 floodtime()
+
+set floodtime.
+
+=cut
+
+sub floodtime {
+        my ($self, @p) = getSelf(@_);
+        if(defined $p[0]) {
+                $min_secs = $p[0];
+        } else {
+                return $min_secs;
+        }
+
+}
+
 =head2 searchDB()
 
        searchDB($query,$spalte,$table);
@@ -662,9 +677,9 @@ checkFlood(ip,optionaler abstand in sekunden )
 
 sub checkFlood {
         my ($self, @p) = getSelf(@_);
-        my $ip       = $p[0];
-        my $min_secs = defined $p[1] ? $p[1] : 10;
-        my $return   = 0;
+        my $ip = $p[0];
+        $min_secs = defined $p[1] ? $p[1] : $min_secs;
+        my $return = 0;
         if(defined $ip) {
                 my $sql = qq(SELECT ti  FROM flood where remote_addr = ?);
                 my $sth = $dbh->prepare($sql) or warn $dbh->errstr;

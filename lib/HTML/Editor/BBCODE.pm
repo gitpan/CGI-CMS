@@ -1,22 +1,22 @@
 package HTML::Editor::BBCODE;
 use strict;
 use warnings;
-use vars qw(@EXPORT @ISA );
+use vars qw(@EXPORT @ISA $currentstring @formatString);
 require Exporter;
 @HTML::Editor::BBCODE::EXPORT  = qw(BBCODE);
 @ISA                           = qw(Exporter);
-$HTML::Editor::BBCODE::VERSION = '0.29';
+$HTML::Editor::BBCODE::VERSION = '0.3';
 use HTML::Entities;
 
 =head1 NAME
 
-HTML::Editor::BBCODE
+HTML::Editor::BBCODE - BBCODE for HTML::Editor
 
 =head1 required Modules
 
 HTML::Entities,
 
-Syntax::Highlight::Perl
+Syntax::Highlight::Engine::kate
 
 =head1 SYNOPSIS
 
@@ -24,7 +24,7 @@ Syntax::Highlight::Perl
 
         my $test = '
 
-        [code]
+        [code=Perl]
 
         print "testIt";
 
@@ -38,7 +38,98 @@ Syntax::Highlight::Perl
 
 =head1 DESCRIPTION
 
-bbcode to html
+Supported BBCODE
+
+     [left]left[/left]
+
+     [center]center[/center]
+
+     [right]right[/right]
+
+     [b]bold[/b]
+
+     [i]italic[/i]
+
+     [s]strike[/s]
+
+     [u]underline[/u]
+
+     [sub]sub[/sub] 
+
+     [sup]sup[/sup]
+
+     [img]http://url[/img]
+
+     [url=http://url.de]link[/url]
+
+     [email=email@url.de]mail me[/email]
+
+     [color=red]color[/color]
+
+     [google]lindnerei.de[/google]
+
+     [blog=http://referer]text[/blog]
+
+     [h1]h1[/h1]
+
+     [h2]h2[/h2]
+
+     [h3]h3[/h3]
+
+     [h4]h4[/h4]
+
+     [h5]h5[/h5]
+
+     [ul]
+
+     [li]1[/li]
+
+     [li]2[/li]
+
+     [li]3[/li]
+
+     [/ul]
+
+     [ol]
+
+     [li]1[/li]
+
+     [li]2[/li]
+
+     [li]3[/li]
+
+     [/ol]
+
+     [hr]
+
+Syntax Highlight tags
+
+[code=lang]...[/code]
+
+lang tags:
+
+        Bash
+
+        C++
+
+        CSS
+
+        HTML
+
+        Java
+
+        JavaScript
+
+        PHP
+
+        Perl
+
+        Python
+
+        Ruby
+
+        XML
+
 
 =head2 EXPORT
 
@@ -55,45 +146,12 @@ BBCODE()
 =cut
 
 sub BBCODE {
-        my $string = shift;
-        my $eval   = shift;
-        $eval = defined $eval ? $eval : 0;
+        my $string          = shift;
+        my $ACCEPT_LANGUAGE = shift;
+        $ACCEPT_LANGUAGE = defined $ACCEPT_LANGUAGE ? $ACCEPT_LANGUAGE : 'de';
         my $rplc;
-        if($$string =~ /\[code\](.*?)\[\/code\]/gs) {
-                use Syntax::Highlight::Perl ':FULL';
-                my $color_Keys = {
-                                  'Variable_Scalar'   => 'Variable_ # or Scalar',
-                                  'Variable_Array'    => 'Variable_Array',
-                                  'Variable_Hash'     => 'Variable_Hash',
-                                  'Variable_Typeglob' => 'Variable_Typeglob',
-                                  'Subroutine'        => 'Subroutine',
-                                  'Quote'             => 'Quote',
-                                  'String'            => 'String',
-                                  'Comment_Normal'    => 'Comment_Normal',
-                                  'Comment_POD'       => 'Comment_POD',
-                                  'Bareword'          => 'Bareword',
-                                  'Package'           => 'Package',
-                                  'Number'            => 'Number',
-                                  'Operator'          => 'Operator',
-                                  'Symbol'            => 'Symbol',
-                                  'Character'         => 'Character',
-                                  'Directive'         => 'Directive',
-                                  'Label'             => 'Label',
-                                  'Line'              => 'Line',
-                };
-                my $formatter = new Syntax::Highlight::Perl;
-                $formatter->define_substitution('<' => '&lt;', '>' => '&gt;', '&' => '&amp;',);    # HTML escapes.
-                while(my ($type, $style) = each %{$color_Keys}) {
-                        $formatter->set_format($type, [qq|<span class="$style">|, '</span>']);
-                }
-                my $perldoc_Keys = {'Builtin_Operator' => 'Builtin_Operator', 'Builtin_Function' => 'Builtin_Function', 'Keyword' => 'Keyword',};
-                while(my ($type, $style) = each %{$perldoc_Keys}) {
-                        $formatter->set_format($type, [qq|<a onclick="window.open('http://perldoc.perl.org/search.html?q='+this.innerHTML)" class="$style">|, "</a>"]);
-                }
-                $rplc = $formatter->format_string($1);
-                $rplc    =~ qq(<div  style="width:100%;overlow:scroll;"><pre>$rplc</pre></div>);
-                $$string =~ s/\[code\](.*?)\[\/code\]/\[Formatstring\/\]/gs;
-        }
+        $$string =~ s/\[(code)=(Perl|Java|C\+\+|XML|Ruby|Python|PHP|JavaScript|HTML|CSS|Bash)\](.*?)\[\/code\]/formatString($3,$2)/egs;
+        $$string =~ s/\[code\](.*?)\[\/code\]/formatString($1,'Perl')/egs;
         $$string = encode_entities($$string);
         $$string =~ s:\[(u)\](.*?)\[/\1\]:<$1>$2</$1>:gs;
         $$string =~ s:\[(b)\](.*?)\[/\1\]:<$1>$2</$1>:gs;
@@ -128,7 +186,55 @@ sub BBCODE {
         $$string =~ s/:-\*/<img src="\/images\/kiss.gif" alt=":-*" border="0"\/>/g;
         $$string =~ s/:\(/<img src="\/images\/angry.gif" alt=":(" border="0"\/>/g;
         $$string =~ s/:\(/<img src="\/images\/angry.gif" alt=":(" border="0"\/>/g;
-        $$string =~ s/\[Formatstring\/\]/$rplc/gs;
+        $$string =~ s/\[Formatstring(\d+)\/\]/$formatString[$1]/egs;
+
+        if($ACCEPT_LANGUAGE eq 'de') {
+                $$string =~ s/\[(en)\](.*?)\[\/en\]//gs;
+                $$string =~ s/\[(de)\](.*?)\[\/de\]/$1/gs;
+        } else {
+                $$string =~ s/\[(en)\](.*?)\[\/en\]/$1/gs;
+                $$string =~ s/\[(de)\](.*?)\[\/de\]//gs;
+        }
+}
+
+sub formatString {
+        my ($string, $lang) = @_;
+        use Syntax::Highlight::Engine::Kate;
+        my $hl = new Syntax::Highlight::Engine::Kate(
+                language      => $lang,
+                substitutions => {
+                        "<" => "&lt;",
+                        ">" => "&gt;",
+                        "&" => "&amp;",
+
+                },
+                format_table => {
+                                 Alert        => ["<font color=\"#0000ff\">",       "</font>"],
+                                 BaseN        => ["<font color=\"#007f00\">",       "</font>"],
+                                 BString      => ["<font color=\"#c9a7ff\">",       "</font>"],
+                                 Char         => ["<font color=\"#ff00ff\">",       "</font>"],
+                                 Comment      => ["<font color=\"#7f7f7f\"><i>",    "</i></font>"],
+                                 DataType     => ["<font color=\"#0000ff\">",       "</font>"],
+                                 DecVal       => ["<font color=\"#00007f\">",       "</font>"],
+                                 Error        => ["<font color=\"#ff0000\"><b><i>", "</i></b></font>"],
+                                 Float        => ["<font color=\"#00007f\">",       "</font>"],
+                                 Function     => ["<font color=\"#007f00\">",       "</font>"],
+                                 IString      => ["<font color=\"#ff0000\">",       ""],
+                                 Keyword      => ["<b>",                            "</b>"],
+                                 Normal       => ["",                               ""],
+                                 Operator     => ["<font color=\"#ffa500\">",       "</font>"],
+                                 Others       => ["<font color=\"#b03060\">",       "</font>"],
+                                 RegionMarker => ["<font color=\"#96b9ff\"><i>",    "</i></font>"],
+                                 Reserved     => ["<font color=\"#9b30ff\"><b>",    "</b></font>"],
+                                 String       => ["<font color=\"#ff0000\">",       "</font>"],
+                                 Variable     => ["<font color=\"#0000ff\"><b>",    "</b></font>"],
+                                 Warning      => ["<font color=\"#0000ff\"><b><i>", "</b></i></font>"],
+                },
+        );
+        my $rplc = $hl->highlightText($string);
+        $currentstring++;
+        $formatString[$currentstring] = qq(<div  style="width:100%;overlow:scroll;"><pre>$rplc</pre></div>);
+        return "[Formatstring$currentstring/]";
 }
 
 =head1 AUTHOR
@@ -150,4 +256,3 @@ GNU Lesser General Public License for more details.
 =cut
 
 1;
-

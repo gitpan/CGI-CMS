@@ -1,6 +1,11 @@
-Revision history for Perl CGI::CMS 0.29
-
-0.29 
+Revision history for Perl CGI::CMS 0.30
+0.30
+        use Syntax::Highlight::Engine::Kate
+        system style
+        new bbcode tags en de [code=lang]
+        save old .htaccess, bookmarks and navigation.
+        a few fixes and much more.
+0.29
         ./Build install_examples, testdb , gbook,.a few fixes
 
 0.28

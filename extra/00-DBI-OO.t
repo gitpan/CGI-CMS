@@ -1,6 +1,6 @@
 # use strict;
 # use warnings;
-use lib qw(lib);
+# use lib qw(lib);
 use DBI::Library;
 use vars qw($db $user $host $password);
 do('t/config.pl');

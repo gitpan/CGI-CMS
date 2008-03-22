@@ -28,13 +28,13 @@ use Template::Quick;
 @HTML::Editor::EXPORT_OK   = qw(initEditor show );
 %HTML::Editor::EXPORT_TAGS = ('all' => [qw(initEditor show )]);
 
-$HTML::Editor::VERSION = '0.29';
+$HTML::Editor::VERSION = '0.3';
 
 $DefaultClass = 'HTML::Editor' unless defined $HTML::Editor::DefaultClass;
 
 =head1 NAME
 
-HTML::TabWidget - A BBCODE and HTML Editor
+HTML::TabWidget -  BBCODE and HTML Editor
 
 =head3 export_ok
 

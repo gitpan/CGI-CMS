@@ -88,9 +88,11 @@ $VAR1 = {
                   'translate'           => 'Translate',
                   't_regtext'           => 'Register',
                   'gbook_body'          => 'Write your entry',
-                  'news'          => 'News',
-                  'navigation' => 'Navigation',
-		  
+                  'news'                => 'News',
+                  'navigation'          => 'Navigation',
+                  'savefile'            => 'Save',
+                  'floodtext'           => 'To many Posts',
+                  'help'                => 'Hilfe',
          },
          'de' => {
                   'firstname'           => 'Vorname',
@@ -183,9 +185,11 @@ $VAR1 = {
                   'translate'           => '&#220;bersetzen',
                   't_regtext'           => 'Registrieren',
                   'gbook_body'          => 'Text einf&#252;gen',
-                  'news'          => 'Blog',
-                  'navigation' => 'Navigation',
-                  
+                  'news'                => 'Blog',
+                  'navigation'          => 'Navigation',
+                  'savefile'            => 'Speichern',
+                  'floodtext'           => 'Nicht so oft posten',
+                  'help'                => 'Hilfe',
          },
 };
 $lang = $VAR1;

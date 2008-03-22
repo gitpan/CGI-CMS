@@ -6,13 +6,13 @@ use vars qw($actions $DefaultClass @EXPORT  @ISA $defaultconfig);
 @CGI::CMS::Actions::EXPORT = qw(loadActions saveActions $actions);
 use CGI::CMS::Config;
 @CGI::CMS::Actions::ISA     = qw( Exporter CGI::CMS::Config);
-$CGI::CMS::Actions::VERSION = '0.29';
+$CGI::CMS::Actions::VERSION = '0.3';
 $DefaultClass               = 'CGI::CMS::Actions' unless defined $CGI::CMS::Actions::DefaultClass;
 $defaultconfig              = '%CONFIG%';
 
 =head1 NAME
 
-CGI::CMS::Actions
+CGI::CMS::Actions - actions for CGI::LZE
 
 =head1 SYNOPSIS
 

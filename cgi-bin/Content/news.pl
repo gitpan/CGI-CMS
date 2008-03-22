@@ -220,11 +220,11 @@ sub showMessage {
                 $window->set_moveable(1);
                 $window->set_resizeable(1);
                 $ref->{body} =~ s/\[previewende\]//s;
-                BBCODE(\$ref->{body}, $right) if($ref->{format} eq 'bbcode');
+                BBCODE(\$ref->{body}, $ACCEPT_LANGUAGE) if($ref->{format} eq 'bbcode');
                 my $menu       = "";
                 my $answerlink = $settings->{cgi}{mod_rewrite} ? "/replynews-$ref->{id}.html" : "$ENV{SCRIPT_NAME}?action=reply&amp;reply=$ref->{id}&amp;thread=news";
                 my %reply      = (title => translate('reply'), descr => translate('reply'), src => 'reply.png', location => $answerlink, style => $style,);
-                my $thread     = defined param('thread') ? param('thread') : '';
+                my $thread     = defined param('thread') ? param('thread') : 'news';
                 $menu .= action(\%reply) unless ($thread =~ /.*\d$/ && $right < 5);
                 my $editlink = $settings->{cgi}{mod_rewrite} ? "/edit$thread-$ref->{id}.html" : "$ENV{SCRIPT_NAME}?action=edit&amp;edit=$ref->{id}&amp;thread=news&amp;von=$von&amp;bis=$bis;";
                 my %edit = (title => translate('edit'), descr => translate('edit'), src => 'edit.png', location => $editlink, style => $style,);
@@ -292,7 +292,7 @@ sub preview {
         print "<br/>";
         print $win->windowHeader();
         my $html = param('format') eq 'on' ? 1 : 0;
-        BBCODE(\$body, $right) unless ($html);
+        BBCODE(\$body, $ACCEPT_LANGUAGE) unless ($html);
         print qq(<table align="left" border ="0" cellpadding="0" cellspacing="0" summary ="0"  width="500"><tr ><td align='left'>$body</td></tr></table>);
         print $win->windowFooter();
         my %parameter = (
@@ -444,8 +444,13 @@ sub threadBody {
                         my $h1       = qq(<tr id="trw$id"><td valign="top">) . $win->windowHeader();
                         my $readmore = translate('readmore');
                         $reply .= qq(&#160;<a href="$replylink" class="link" >$readmore</a>) if $body =~ /\[previewende\]/;
-                        $body =~ s/([^\[previewende\]]+)\[previewende\](.*)$/$1/s if $th eq 'news';
-                        BBCODE(\$body, $right) if($format eq 'bbcode');
+                        my $permalink = $settings->{cgi}{mod_rewrite} ? "/news$id.html" : "$ENV{SCRIPT_NAME}?action=showthread&amp;thread=$th&amp;reply=$id";
+
+                        if($th eq 'news') {
+                                $reply .= qq(&#160;<a href="$permalink" class="link" >Permalink</a>);
+                                $body =~ s/([^\[previewende\]]+)\[previewende\](.*)$/$1/s;
+                        }
+                        BBCODE(\$body, $ACCEPT_LANGUAGE) if($format eq 'bbcode');
                         $h1 .=
                           qq(<table align="left" border ="0" cellpadding="0" cellspacing="0" summary="threadBody"  width="100%"><tr ><td align="left">$menu</td></tr><tr><td align="left"><table align="left" border ="0" cellpadding="0" cellspacing="0" summary="user_datum"  width="100%"><tr><td align="left">$username</td><td align="right">$datum</td></tr></table></td></tr><tr><td align="left">$body</td></tr>);
                         $h1 .= qq(<tr><td><a href="/downloads/$attach">$attach</a></td></tr>) if(-e "$settings->{uploads}{path}/$attach");

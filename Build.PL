@@ -6,10 +6,12 @@ my $release = 'blib/rhtml/';
 my $dir     = 'htdocs/';
 my $path    = '.';
 use vars qw($settings);
-use lib qw(lib);
-use CGI::CMS::Settings qw(loadSettings saveSettings);
+use lib qw(ilib);
+
+use ISettings qw(saveSettings loadSettings);
+use File::Copy;
 loadSettings("cgi-bin/config/settings.pl");
-*settings = \$CGI::CMS::Settings::settings;
+*settings = \$ISettings::settings;
 
 sub ACTION_build {
         my $self = shift;
@@ -17,52 +19,60 @@ sub ACTION_build {
         $release = 'blib/perl/';
         $dir     = 'cgi-bin/';
         &change($dir);
-        $self->SUPER::ACTION_build;
         &replace('%PATH%', $settings->{cgi}{bin}, 'blib/perl/lze.pl');
-        system(" cp extra/startup.pl blib/perl/config/startup.pl");
-        &replace('%PATH%', $settings->{cgi}{bin}, 'blib/perl/config/startup.pl');
-        &replace('%host%', $settings->{cgi}{serverName}, 'blib/perl/config/startup.pl');
+        copy("extra/startup.pl", "blib/perl/config/startup.pl") or die "Copy failed: $!";
+
+        if(-e "$settings->{cgi}{bin}/config/links.pl") {
+                copy("$settings->{cgi}{bin}/config/links.pl", "blib/perl/config/links.pl") or die "Copy failed: $settings->{cgi}{bin}/config/links.pl $!";
+        }
+        if(-e "$settings->{cgi}{bin}/config/tree.pl") {
+                copy("$settings->{cgi}{bin}/config/tree.pl", "blib/perl/config/tree.pl") or die "Copy failed: $settings->{cgi}{bin}/config/tree.pl $!";
+        }
+        if(-e "$settings->{cgi}{DocumentRoot}/.htaccess") {
+                copy("$settings->{cgi}{DocumentRoot}/.htaccess", "blib/rhtml/.htaccess") or die $!;
+        } elsif ($settings->{cgi}{mod_rewrite}) {
+                copy("extra/.htaccess", "blib/rhtml/.htaccess") or die "Copy failed: $!";
+                &replace('%ALIAS%', $settings->{cgi}{alias}, 'blib/rhtml/.htaccess');
+        }
+        &replace('%PATH%',   $settings->{cgi}{bin},                          'blib/perl/config/startup.pl');
+        &replace('%host%',   $settings->{cgi}{serverName},                   'blib/perl/config/startup.pl');
+        $self->SUPER::ACTION_build;
         &replace('%CONFIG%', $settings->{cgi}{bin} . '/config/config.pl',    'blib/lib/CGI/CMS/Config.pm');
         &replace('%CONFIG%', $settings->{cgi}{bin} . '/config/translate.pl', 'blib/lib/CGI/CMS/Translate.pm');
         &replace('%CONFIG%', $settings->{cgi}{bin} . '/config/settings.pl',  'blib/lib/CGI/CMS/Settings.pm');
         &replace('%CONFIG%', $settings->{cgi}{bin} . '/config/session.pl',   'blib/lib/CGI/CMS/Session.pm');
         &replace('%CONFIG%', $settings->{cgi}{bin} . '/config/actions.pl',   'blib/lib/CGI/CMS/Actions.pm');
         &replace('%CONFIG%', $settings->{cgi}{bin} . '/config/settings.pl',  'blib/lib/CGI/CMS.pm');
-        if($settings->{cgi}{mod_rewrite}) {
-                system(" cp extra/.htaccess  blib/rhtml/");
-                &replace('%ALIAS%', $settings->{cgi}{alias}, 'blib/rhtml/.htaccess');
-        }
+
 }
+
 sub ACTION_realclean {
         my $self = shift;
         $settings->{database}{password} = '';
         saveSettings("cgi-bin/config/settings.pl");
         $self->SUPER::ACTION_realclean;
 }
+
 sub ACTION_install {
         my $self = shift;
-                $self->SUPER::ACTION_install;
-        my %conf = ( name => $self->{'properties'}{dbname}, host => $self->{'properties'}{sqlhost}, user => $self->{'properties'}{dbuser},);
-        $conf{password} = $self->{'properties'}{dbpass} unless $self->{'properties'}{dbpass} =~/^$/;
-        eval 'use DBI::Library ';
-        unless($@){
-        my $database = new DBI::Library();
-        $database->initDB(\%conf);
-        open(IN, "extra/install.sql") or die $!;
-        local $/;
-        my $file = <IN>;
-        foreach my $sql (split /;\n/, $file) {
-                $database->void($sql);
-                print  $/,$sql,$/,$@ if $@;
-        }
-        }else{
+        $self->SUPER::ACTION_install;
+        my %conf = (name => $self->{'properties'}{dbname}, host => $self->{'properties'}{sqlhost}, user => $self->{'properties'}{dbuser},);
+        $conf{password} = $self->{'properties'}{dbpass} unless $self->{'properties'}{dbpass} =~ /^$/;
+        eval 'use lib qw(lib);use DBI::Library ';
+        unless ($@) {
+                my $database = new DBI::Library();
+                $database->initDB(\%conf);
+                open(IN, "extra/install.sql") or die $!;
+                local $/;
+                my $file = <IN>;
+                foreach my $sql (split /;\n/, $file) {
+                        $database->void($sql);
+                        print $/, $sql, $/, $@ if $@;
+                }
+        } else {
                 warn $@;
         }
-
-             if($settings->{cgi}{mod_rewrite}) {
-                &replace('%ALIAS%', $settings->{cgi}{alias}, "$settings->{cgi}{DocumentRoot}/.htaccess");
-        }
-        my $prefix = defined $inctance->{phash}{runtime_params}{disk}{prefix} ? $inctance->{phash}{runtime_params}{disk}{prefix} :'';
+        my $prefix = defined $inctance->{phash}{runtime_params}{disk}{prefix} ? $inctance->{phash}{runtime_params}{disk}{prefix} : '';
         system("chmod $settings->{files}{chmod} -R  $prefix/$settings->{cgi}{DocumentRoot}");
         system("chmod $settings->{files}{chmod} -R  $prefix/$settings->{cgi}{bin}");
         system("chown $settings->{files}{owner}:$settings->{files}{group} -R  $prefix/$settings->{cgi}{DocumentRoot}");
@@ -71,21 +81,21 @@ sub ACTION_install {
 }
 
 sub ACTION_uninstall {
-        my %conf = ( name => $self->{'properties'}{dbname}, host => $self->{'properties'}{sqlhost}, user => $self->{'properties'}{dbuser},);
-        if(defined $self->{'properties'}{dbpass} ){
-        $conf{password} = $self->{'properties'}{dbpass} unless $self->{'properties'}{dbpass} =~/^$/;
+        my %conf = (name => $self->{'properties'}{dbname}, host => $self->{'properties'}{sqlhost}, user => $self->{'properties'}{dbuser},);
+        if(defined $self->{'properties'}{dbpass}) {
+                $conf{password} = $self->{'properties'}{dbpass} unless $self->{'properties'}{dbpass} =~ /^$/;
         }
         eval 'use DBI::Library ';
-        unless($@){
-        my $database = new DBI::Library();
-        $database->initDB(\%conf);
-        open(IN, "extra/uninstall.sql") or die $!;
-        local $/;
+        unless ($@) {
+                my $database = new DBI::Library();
+                $database->initDB(\%conf);
+                open(IN, "extra/uninstall.sql") or die $!;
+                local $/;
                 my $file = <IN>;
-        foreach my $sql (split /;\n/, $file) {
-                $database->void($sql . ";");
-                print $@ if $@;
-        }
+                foreach my $sql (split /;\n/, $file) {
+                        $database->void($sql . ";");
+                        print $@ if $@;
+                }
         }
 }
 
@@ -118,7 +128,7 @@ sub replace {
         open(EDIT, "+<$f") or die "$! $f $/";
         my $file = '';
         while(<EDIT>) {
-                $_ =~s/$replace/$with/g;
+                $_ =~ s/$replace/$with/g;
                 $file .= $_;
         }
         seek(EDIT, 0, 0);
@@ -127,27 +137,30 @@ sub replace {
         close(EDIT);
         chmod 0755, $f if($f =~ /.pl$/);
 }
+
 sub ACTION_testdb {
         my $self = shift;
         eval("use File::Copy;");
-        unless( $@ ){
-        copy("extra/00-DBI-Database.t","t/00-DBI-Database.t") or die "Copy failed: $!";
-        copy("extra/00-DBI-OO.t","t/00-DBI-OO.t") or die "Copy failed: $!";
-        copy("extra/00-DBI-FO.t","t/00-DBI-FO.t") or die "Copy failed: $!";
-        $self->SUPER::ACTION_test;
-        unlink("t/00-DBI-Database.t");
-        unlink("t/00-DBI-OO.t");
-        unlink("t/00-DBI-FO.t") ;
+        unless ($@) {
+                copy("extra/00-DBI-Database.t", "t/00-DBI-Database.t") or die "Copy failed: $!";
+                copy("extra/00-DBI-OO.t",       "t/00-DBI-OO.t")       or die "Copy failed: $!";
+                copy("extra/00-DBI-FO.t",       "t/00-DBI-FO.t")       or die "Copy failed: $!";
+                $self->SUPER::ACTION_test;
+                unlink("t/00-DBI-Database.t");
+                unlink("t/00-DBI-OO.t");
+                unlink("t/00-DBI-FO.t");
         }
 }
+
 sub ACTION_install_examples {
-       my $self = shift;
-       my $prefix = defined $inctance->{phash}{runtime_params}{disk}{prefix} ? $inctance->{phash}{runtime_params}{disk}{prefix} :'';
-       $release= "$prefix/$self->{properties}{cgi}/examples";
-       $dir     = 'examples/';
-       &change($dir);
-       system("chmod 0755 -R  $release");
+        my $self = shift;
+        my $prefix = defined $inctance->{phash}{runtime_params}{disk}{prefix} ? $inctance->{phash}{runtime_params}{disk}{prefix} : '';
+        $release = "$prefix/$self->{properties}{cgi}/examples";
+        $dir     = 'examples/';
+        &change($dir);
+        system("chmod 0755 -R  $release");
 }
+
 END
 
 my $inctance = $class->new(
@@ -163,7 +176,7 @@ my $inctance = $class->new(
                      'DBI'                            => ">=1.50",
                      'CGI'                            => ">=3.29",
                      'HTML::Parser'                   => ">=3.56",
-                     'Syntax::Highlight::Perl'        => ">=1.00",
+                     'Syntax::Highlight::Engine::Kate'=> ">=0.04",
                      'MD5'                            => ">=2.03",
         },
         ($] >= 5.005 ? (AUTHOR => 'Dirk Lindner <lze@cpan.org>') : ()),
@@ -175,12 +188,18 @@ my $inctance = $class->new(
 use Cwd;
 $cwd    = cwd;
 $prefix = $inctance->{phash}{runtime_params}{disk}{prefix} ? $inctance->{phash}{runtime_params}{disk}{prefix} :'';
-use lib qw(lib);
-use CGI::CMS::Settings qw(loadSettings saveSettings);
+eval 'use CGI::CMS::Settings qw(loadSettings saveSettings)';
 unless ($@) {
+        *settings = \$CGI::CMS::Settings::settings;
         loadSettings();
         loadSettings("cgi-bin/config/config.pl") unless -e $settings->{cgi}{bin};
-        *settings = \$CGI::CMS::Settings::settings;
+        }else{
+        use lib qw(ilib);
+        use ISettings qw(loadSettings saveSettings);
+        *settings = \$ISettings::settings;
+        loadSettings("cgi-bin/config/config.pl");
+
+}
         $inctance->{properties}{htd}         = $settings->{cgi}{DocumentRoot}  ? $settings->{cgi}{DocumentRoot}  : '/srv/www//htdocs';
         $inctance->{properties}{cgi}         = $settings->{cgi}{bin}           ? $settings->{cgi}{bin}           : '/srv/www/cgi-bin';
         $inctance->{properties}{server}      = $settings->{cgi}{serverName}    ? $settings->{cgi}{serverName}    : 'localhost';
@@ -194,10 +213,7 @@ unless ($@) {
         $inctance->{properties}{owner}       = $settings->{files}{owner}       ? $settings->{files}{owner}       : $ENV{USER};
         $inctance->{properties}{chmod}       = $settings->{files}{chmod}       ? $settings->{files}{chmod}       : '0755';
 
-} else {
-        eval 'use lib("./lib");';
-        eval 'use CGI::CMS::Settings qw(saveSettings)';
-}
+
 $inctance->{properties}{dbname}      = $inctance->args('dbname')      if $inctance->args('dbname');
 $inctance->{properties}{dbuser}      = $inctance->args('dbuser')      if $inctance->args('dbuser');
 $inctance->{properties}{sqlhost}     = $inctance->args('sqlhost')     if $inctance->args('sqlhost');
@@ -212,6 +228,8 @@ $inctance->{properties}{server}      = $inctance->args('server')      if $inctan
 $inctance->{properties}{mod_rewrite} = $inctance->args('mod_rewrite') if $inctance->args('mod_rewrite');
 $inctance->{properties}{install_path}{perl} = $prefix . $inctance->{properties}{cgi};
 $inctance->{properties}{install_path}{rhtml} = $prefix .$inctance->{properties}{htd};
+#uncomment this to install the lib files inside the cgi-bin directory
+# $inctance->{properties}{install_path}{lib} = $prefix . $inctance->{properties}{cgi}."/lib/";
 
 unless ($skip) {
         my $an = Module::Build->prompt(
@@ -265,8 +283,8 @@ $settings = {
              defaultAction => 'news',
              scriptAlias   => $inctance->{properties}{alias},
              uploads       => {maxlength => 2003153, path => "$inctance->{properties}{htd}/downloads/", chmod => 0644, enabled => 1},
-             tree      => {navigation => "$inctance->{properties}{cgi}config/tree.pl", links => "$inctance->{properties}{cgi}config/links.pl"},
-             version   => '0.29',
+             tree      => {navigation => "$inctance->{properties}{cgi}/config/tree.pl", links => "$inctance->{properties}{cgi}/config/links.pl"},
+             version   => '0.3',
              session   => "$inctance->{properties}{cgi}/config/session.pl",
              actions   => "$inctance->{properties}{cgi}/config/actions.pl",
              translate => "$inctance->{properties}{cgi}/config/translate.pl",
@@ -276,6 +294,8 @@ $settings = {
              size      => 22,
              htmlright => 2,
              files => {group => $inctance->{properties}{group}, owner => $inctance->{properties}{owner}, chmod => $inctance->{properties}{chmod}},
+#              sign => 1,
+             floodtime => 10,
 };
 
 saveSettings("$cwd/cgi-bin/config/settings.pl");

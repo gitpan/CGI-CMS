@@ -7,6 +7,16 @@ text-align:left;
 vertical-align:top;
 font-size:14px;
 }
+a{
+cursor:pointer;
+color:black;
+white-space:nowrap;
+}
+a:hover{
+cursor:pointer;
+color:blue;
+white-space:nowrap;
+}
 a.link{
 cursor:pointer;
 color:black;

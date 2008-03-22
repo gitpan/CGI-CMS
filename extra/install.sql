@@ -8,24 +8,24 @@ CREATE TABLE IF NOT EXISTS actions (
   `id` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (id)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('news', 'news.pl', 'news', 0, 'news;navigation', 'show', 1);
+INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('news', 'news.pl', 'Blog', 0, 'news;navigation', 'show', 1);
 INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('settings', 'quick.pl', 'Settings', 5, 'navigation;', 'main', 2);
 INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('addNews', 'news.pl', 'newMessage', 0, 'news;navigation', 'addNews', 3);
 INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('admin', 'admin.pl', 'adminCenter', 5, 'navigation;', 'main', 4);
-INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('delete', 'news.pl', 'news', 5, 'news;navigation', 'deleteNews', 5);
-INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('edit', 'news.pl', 'news', 5, 'news;navigation', 'editNews', 6);
-INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('saveedit', 'news.pl', 'news', 5, 'news;navigation', 'saveedit', 7);
-INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('reply', 'news.pl', 'news', 0, 'news;navigation', 'reply', 8);
+INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('delete', 'news.pl', 'blog', 5, 'news;navigation', 'deleteNews', 5);
+INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('edit', 'news.pl', 'blog', 5, 'news;navigation', 'editNews', 6);
+INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('saveedit', 'news.pl', 'blog', 5, 'news;navigation', 'saveedit', 7);
+INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('reply', 'news.pl', 'blog', 0, 'news;navigation', 'reply', 8);
 INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('profile', 'profile.pl', 'Profile', 1, 'navigation;', 'main', 9);
 INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('showEntry', 'tables.pl', 'database', 5, 'tables;navigation;', 'showEntry', 10);
 INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('reg', 'reg.pl', 'register', 0, 'navigation;', 'reg', 11);
-INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('addReply', 'news.pl', 'news', 0, 'news;navigation', 'addReply', 12);
-INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('showthread', 'news.pl', 'news', 0, 'news;navigation', 'showMessage', 13);
+INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('addReply', 'news.pl', 'blog', 0, 'news;navigation', 'addReply', 12);
+INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('showthread', 'news.pl', 'blog', 0, 'news;navigation', 'showMessage', 13);
 INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('makeUser', 'reg.pl', 'register', 0, NULL, 'make', 14);
 INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('verify', 'reg.pl', 'verify', 0, NULL, 'navigation;', 15);
 INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('newEntry', 'tables.pl', 'newEntry', 5, 'tables;navigation;', 'newEntry', 16);
 INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('editEntry', 'tables.pl', 'editEntry', 5, 'tables;navigation;', 'editEntry', 17);
-INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('showMessage', 'news.pl', 'LZE', 0, 'news;navigation', 'main', 18);
+INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('showMessage', 'news.pl', 'blog', 0, 'news;navigation', 'main', 18);
 INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('dropTables', 'tables.pl', 'database', 5, 'tables;navigation;', 'dropTables', 20);
 INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('createMenu', 'tables.pl', 'database', 5, 'tables;navigation;', 'createMenu', 21);
 INSERT INTO actions (action, `file`, title, `right`, box, sub, id) VALUES('saveEntry', 'tables.pl', 'database', 5, 'tables;navigation;', 'saveEntry', 23);
@@ -51,8 +51,8 @@ INSERT INTO `actions` (`action`, `file`, `title`, `right`, `box`, `sub`, `id`) V
 INSERT INTO `actions` (`action`, `file`, `title`, `right`, `box`, `sub`, `id`) VALUES ('newFile', 'files.pl', 'newFile', 5, '', 'newFile', 44);
 INSERT INTO `actions` (`action`, `file`, `title`, `right`, `box`, `sub`, `id`) VALUES ('saveFile', 'files.pl', 'saveFile', 5, '', 'saveFile', 45);
 INSERT INTO `actions` (`action`, `file`, `title`, `right`, `box`, `sub`, `id`) VALUES ('sqldump', 'tables.pl', 'mysqldump', 5, 'tables;navigation;', 'sqldump', 46);
-INSERT INTO `actions` (`action`, `file`, `title`, `right`, `box`, `sub`, `id`) VALUES ('translate', 'translate.pl', 'translate;navigation', 5, '', 'main', 47);
-INSERT INTO `actions` (`action`, `file`, `title`, `right`, `box`, `sub`, `id`) VALUES ('addTranslation', 'translate.pl', 'translate', 5, '', 'addTranslation', 48);
+INSERT INTO `actions` (`action`, `file`, `title`, `right`, `box`, `sub`, `id`) VALUES ('translate', 'translate.pl', 'translate', 5, 'navigation', 'main', 47);
+INSERT INTO `actions` (`action`, `file`, `title`, `right`, `box`, `sub`, `id`) VALUES ('addTranslation', 'addtranslate.pl', 'translate', 5, '', 'addTranslation', 48);
 INSERT INTO actions (`action`,`file`,title,`right`,box,sub,id) VALUES ('chmodFile', 'files.pl', 'chmodFile', 4, NULL, 'chmodFile',49);
 INSERT INTO actions (`action`,`file`,title,`right`,box,sub,id) VALUES ('deleteFile', 'files.pl', 'deleteFile', 4, NULL, 'deleteFile',50);
 INSERT INTO actions (`action`,`file`,title,`right`,box,sub,id) VALUES ('impressum', 'impressum.pl', 'Impressum', 0, 'impressum;navigation', 'main',51);
@@ -60,6 +60,8 @@ INSERT INTO actions (`action`,`file`,title,`right`,box,sub,id) VALUES ('makeDir'
 INSERT INTO actions (`action`,`file`,title,`right`,box,sub,id) VALUES ('newGbookEntry', 'gbook.pl', 'gbook', 5, 'navigation', 'newGbookEntry',55);
 INSERT INTO actions (`action`,`file`,title,`right`,box,sub,id) VALUES ('addnewGbookEntry', 'gbook.pl', 'gbook', 0, 'navigation', 'addnewGbookEntry',56);
 INSERT INTO actions (`action`,`file`,title,`right`,box,sub,id) VALUES ('gbook', 'gbook.pl', 'gbook', 0, 'navigation', 'showGbook',57);
+INSERT INTO `actions` (`action`, `file`, `title`, `right`, `box`, `sub`, `id`) VALUES ('showaddTranslation', 'addtranslate.pl', 'translate', 5, 'navigation', 'main', 58);
+INSERT INTO `actions` (`action`, `file`, `title`, `right`, `box`, `sub`, `id`) VALUES ('deleteExploit', 'admin.pl', 'Admin', 5, 'navigation', 'deleteExploit', 59);
 CREATE TABLE IF NOT EXISTS box (
   `file` varchar(100) NOT NULL default '',
   position varchar(8) NOT NULL default 'left',
@@ -74,7 +76,7 @@ INSERT INTO box (`file`, position, `right`, name, id, dynamic) VALUES('verify.pl
 INSERT INTO box (`file`, position, `right`, name, id, dynamic) VALUES('login.pl', 'disabled', 0, 'login', 4, '0');
 INSERT INTO box (`file`, position, `right`, name, id, dynamic) VALUES('tables.pl', 'disabled', 5, 'database', 10, 'right');
 INSERT INTO box (`file`,position,`right`,name,dynamic,id) VALUES ('impressum.pl', 'disabled', 0, 'impressum', 'right',6);
-INSERT INTO box (`file`,position,`right`,name,dynamic,id) VALUES ('news.pl', 'disabled', 0, 'news', 'right',7);
+INSERT INTO box (`file`,position,`right`,name,dynamic,id) VALUES ('news.pl', 'disabled', 0, 'blog', 'right',7);
 CREATE TABLE IF NOT EXISTS cats (
   `name` varchar(100) NOT NULL default '',
   `right` int(11) NOT NULL default '0',
@@ -94,7 +96,7 @@ CREATE TABLE IF NOT EXISTS navigation (
   target int(11) default NULL,
   PRIMARY KEY  (id)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-INSERT INTO navigation (title, action, src, `right`, position, submenu, id, target) VALUES('news', 'news', 'news.png', 0, 'top', '', 1, 0);
+INSERT INTO navigation (title, action, src, `right`, position, submenu, id, target) VALUES('blog', 'news', 'news.png', 0, 'top', '', 1, 0);
 INSERT INTO navigation (title, action, src, `right`, position, submenu, id, target) VALUES('Admin', 'admin', 'admin.png', 5, '8', 'submenuadmin', 2, 0);
 INSERT INTO navigation (title, action, src, `right`, position, submenu, id, target) VALUES('properties', 'profile', 'profile.png', 1, '6', '', 3, 0);
 INSERT INTO navigation (title, action, src, `right`, position, submenu, id, target) VALUES('links', 'links', 'link.png', 0, 'top', '', 5, 0);
