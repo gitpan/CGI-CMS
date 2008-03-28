@@ -20,7 +20,7 @@ use DBI::Library qw(:all $dbh $dsn);
         'independent' => [qw(tableLength tableExists initDB useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute)],
         'lze'         => [qw(addUser hasAcount isMember createMenu catright topicright right getAction checkPass checkSession setSid getName rss readMenu deleteMessage reply editMessage addMessage rewrite checkFlood)],
 );
-$DBI::Library::Database::VERSION = '0.3';
+$DBI::Library::Database::VERSION = '0.31';
 $mod_rewrite                     = 0;
 
 =head1 NAME

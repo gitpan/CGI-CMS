@@ -1,4 +1,7 @@
-Revision history for Perl CGI::CMS 0.30
+Revision history for Perl CGI::CMS 0.31
+0.31
+        fix en de tags, db installer first post antiflood.
+
 0.30
         use Syntax::Highlight::Engine::Kate
         system style

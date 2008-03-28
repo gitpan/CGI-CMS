@@ -1,0 +1,49 @@
+RewriteEngine on
+Options FollowSymLinks
+RewriteRule ^$ /perl/lze.pl?action=news
+RewriteRule ^$ /perl/lze.pl
+RewriteRule ^index.html /perl/lze.pl
+RewriteRule ^about.html(.*)?$ /perl/lze.pl?action=about?$1 [PT]
+RewriteRule ^news.html(.*)?$  /perl/lze.pl?action=news?$1 [PT]
+RewriteRule ^showMessage(.+)\.html$ /perl/lze.pl?action=showThread&reply=$1 [PT]
+RewriteRule  news(\d+)\.html$ /perl/lze.pl?action=showThread&reply=$1 [PT]
+RewriteRule  edit([^-]+)-(.+)\.html$ /perl/lze.pl?action=edit&edit=$2&thread=$1 [PT]
+RewriteRule  reply([^\d]+)-(.+)\.html$ /perl/lze.pl?action=reply&reply=$2&thread=$1 [PT]
+RewriteRule ^makeNews.html /perl/lze.pl?action=makenews
+RewriteRule ^addnews.html /perl/lze.pl?action=addnews
+RewriteRule  (.+)/(.+)/news.html(.+)? /perl/lze.pl?action=news&von=$1&bis=$2$3 [PT]
+RewriteRule  (.+)/(.+)/showthread(\d+)\.html? /perl/lze.pl?action=showthread&von=$1&bis=$2&reply=$3 [PT]
+RewriteRule ^edit.html(.+) /perl/lze.pl?action=edit$1
+RewriteRule ^delete.html(.+) /perl/lze.pl?action=delete$1
+RewriteRule  (.+)/(.+)/fulltext\.html(.+) /perl/lze.pl?action=fulltext&von=$1&bis=$2$3 [PT]
+RewriteRule  (.+)/(.+)/showEntry\.html(.+) /perl/lze.pl?action=showEntry&von=$1&bis=$2$3 [PT]
+RewriteRule ^reallydelete.html(.+) /perl/lze.pl?action=reallydelete$1
+RewriteRule ^neues.html$ /perl/lze.pl?action=news
+RewriteRule ^viewrss.html$  /perl/lze.pl?action=viewrss
+RewriteRule ^showrss(.*)\.html$ /perl/lze.pl?action=viewrss&url=$1 [PT]
+RewriteRule ^impressum.html$ /perl/lze.pl?action=impressum
+RewriteRule ^links.html /perl/lze.pl?action=links
+RewriteRule ^login.html /perl/lze.pl?action=login
+RewriteRule ^logout.html /perl/lze.pl?action=logout
+RewriteRule ^showlogin.html /perl/lze.pl?action=showlogin
+RewriteRule  profile.html /perl/lze.pl?action=profile
+RewriteRule  changepro.html /perl/lze.pl?action=changepro
+RewriteRule ^search.html /perl/lze.pl?action=search
+RewriteRule ^reg.html    /perl/lze.pl?action=reg
+RewriteRule ^news.rss$   /perl/lze.pl?action=rss
+RewriteRule ^admin.html /perl/lze.pl?action=admin
+RewriteRule settings.html  /perl/lze.pl?action=settings
+RewriteRule env.html  /perl/lze.pl?action=env
+RewriteRule errorlog.html  /perl/lze.pl?action=errorlog
+RewriteRule uploadLinks.html  /perl/lze.pl?action=uploadLinks
+RewriteRule ^(.+)editTreeview\.html /perl/lze.pl?action=editTreeview&dump=$1 [PT]
+RewriteRule ^([^/]*)\.html(.*)? /perl/lze.pl?action=$1&$2 [PT]
+RewriteRule ^perldoc.*  http://perldoc.lindnerei.de
+RewriteRule ^/cgi-bin/modinfo.pl.*  http://perldoc.lindnerei.de
+RewriteRule ^/cgi-bin/modinfo.pl.*  http://perldoc.lindnerei.de
+RewriteRule ^perlboard.rss  /cgi-bin/perlboard.pl
+RewriteRule ^perl-community.rss  /cgi-bin/perl-community.pl
+RewriteRule ^development  ftp://lindnerei.de/history
+RewriteRule ^dirk.lindner.html$ /perl/lze.pl?action=impressum
+RewriteRule ^linse.html$ /perl/lze.pl?action=impressum
+

@@ -1,6 +1,6 @@
 ---
 name: CGI-CMS
-version: 0.3
+version: 0.31
 author:
   - 'Dirk Lindner <lze@cpan.org>'
 abstract: Weblog and CMS that runs under mod_perland and as cgi script
@@ -20,34 +20,34 @@ requires:
 provides:
   CGI::CMS:
     file: lib/CGI/CMS.pm
-    version: 0.3
+    version: 0.31
   CGI::CMS::Actions:
     file: lib/CGI/CMS/Actions.pm
-    version: 0.3
+    version: 0.31
   CGI::CMS::Config:
     file: lib/CGI/CMS/Config.pm
-    version: 0.3
+    version: 0.31
   CGI::CMS::GUI:
     file: lib/CGI/CMS/GUI.pm
-    version: 0.3
+    version: 0.31
   CGI::CMS::Main:
     file: lib/CGI/CMS/Main.pm
-    version: 0.3
+    version: 0.31
   CGI::CMS::Session:
     file: lib/CGI/CMS/Session.pm
-    version: 0.3
+    version: 0.31
   CGI::CMS::Settings:
     file: lib/CGI/CMS/Settings.pm
-    version: 0.3
+    version: 0.31
   CGI::CMS::Translate:
     file: lib/CGI/CMS/Translate.pm
-    version: 0.3
+    version: 0.31
   DBI::Library:
     file: lib/DBI/Library.pm
-    version: 0.3
+    version: 0.31
   DBI::Library::Database:
     file: lib/DBI/Library/Database.pm
-    version: 0.3
+    version: 0.31
   DBI::Library::Database::db:
     file: lib/DBI/Library/Database.pm
   DBI::Library::Database::st:
@@ -58,25 +58,25 @@ provides:
     file: lib/DBI/Library.pm
   HTML::Editor:
     file: lib/HTML/Editor.pm
-    version: 0.3
+    version: 0.31
   HTML::Editor::BBCODE:
     file: lib/HTML/Editor/BBCODE.pm
-    version: 0.3
+    version: 0.31
   HTML::Menu::Pages:
     file: lib/HTML/Menu/Pages.pm
-    version: 0.3
+    version: 0.31
   HTML::TabWidget:
     file: lib/HTML/TabWidget.pm
-    version: 0.3
+    version: 0.31
   HTML::Window:
     file: lib/HTML/Window.pm
-    version: 0.3
+    version: 0.31
   Template::Quick:
     file: lib/Template/Quick.pm
-    version: 0.3
+    version: 0.31
   Template::Quick::Main:
     file: lib/Template/Quick/Main.pm
-    version: 0.3
+    version: 0.31
 generated_by: Module::Build version 0.2808
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

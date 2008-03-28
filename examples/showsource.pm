@@ -5,42 +5,42 @@ require Exporter;
 use vars qw($color_Keys $formatter $perldoc_Keys @EXPORT @ISA );
 @ISA                = qw(Exporter);
 @showsource::EXPORT = qw(showSource);
-use lib qw(../lib);
-use Syntax::Highlight::Perl ':FULL';    # or ':FULL'
+use Syntax::Highlight::Engine::Kate;
 
 sub showSource {
 
-$color_Keys = {
-'Variable_Scalar'   => 'red',
-'Variable_Array'    => '#a44848',
-'Variable_Hash'     => '#a44848',
-'Variable_Typeglob' => '#a44848',
-'Subroutine'        => '#000000',
-'Quote'             => '#ff9090',
-'String'            => '#000000',
-'Comment_Normal'    => 'red',
-'Comment_POD'       => 'gray',
-'Bareword'          => 'blue',
-'Package'           => 'black',
-'Number'            => 'blue',
-'Operator'          => '#178b17',
-'Symbol'            => 'red',
-'Character'         => 'black',
-'Directive'         => '#178b17',
-'Label'             => '#178b17',
-'Line'              => '#178b17',
-};
-$formatter = new Syntax::Highlight::Perl;
-$formatter->define_substitution('<' => '&lt;', '>' => '&gt;', '&' => '&amp;',);    # HTML escapes.
+my $hl = new Syntax::Highlight::Engine::Kate(
+language      => "Perl",
+substitutions => {
+"<" => "&lt;",
+">" => "&gt;",
+"&" => "&amp;",
 
-while(my ($type, $style) = each %{$color_Keys}) {
-$formatter->set_format($type, [qq|<span style="color:$style;">|, '</span>']);
-}
-$perldoc_Keys = {'Builtin_Operator' => 'blue', 'Builtin_Function' => 'blue', 'Keyword' => 'blue',};
-while(my ($type, $style) = each %{$perldoc_Keys}) {
-$formatter->set_format($type, [qq|<a onclick="window.open('http://perldoc.perl.org/search.html?q='+this.innerHTML)" style="color:$style">|, "</a>"]);
-}
-# local $/;
+},
+format_table => {
+Alert        => ["<font color=\"#0000ff\">",       "</font>"],
+BaseN        => ["<font color=\"#007f00\">",       "</font>"],
+BString      => ["<font color=\"#c9a7ff\">",       "</font>"],
+Char         => ["<font color=\"#ff00ff\">",       "</font>"],
+Comment      => ["<font color=\"#7f7f7f\"><i>",    "</i></font>"],
+DataType     => ["<font color=\"#0000ff\">",       "</font>"],
+DecVal       => ["<font color=\"#00007f\">",       "</font>"],
+Error        => ["<font color=\"#ff0000\"><b><i>", "</i></b></font>"],
+Float        => ["<font color=\"#00007f\">",       "</font>"],
+Function     => ["<font color=\"#007f00\">",       "</font>"],
+IString      => ["<font color=\"#ff0000\">",       ""],
+Keyword      => ["<b>",                            "</b>"],
+Normal       => ["",                               ""],
+Operator     => ["<font color=\"#ffa500\">",       "</font>"],
+Others       => ["<font color=\"#b03060\">",       "</font>"],
+RegionMarker => ["<font color=\"#96b9ff\"><i>",    "</i></font>"],
+Reserved     => ["<font color=\"#9b30ff\"><b>",    "</b></font>"],
+String       => ["<font color=\"#ff0000\">",       "</font>"],
+Variable     => ["<font color=\"#0000ff\"><b>",    "</b></font>"],
+Warning      => ["<font color=\"#0000ff\"><b><i>", "</b></i></font>"],
+},
+);
+
 my ($file, $out) = @_;
 open (IN, "$file") or die "$!: $file";
 my @lines;
@@ -48,9 +48,8 @@ while(<IN>){
 $_=~s|#!/usr/bin/perl ?-?w?||;
 push @lines, $_
 }
-print q(<div  align="center"><div align="left" style="width:600px;overflow:auto;"><pre>) . $formatter->format_string("@lines") . "</pre></div></div>";
+print q(<div  align="center"><div align="left" style="width:600px;overflow:auto;"><pre>) . $hl->highlightText("@lines") . "</pre></div></div>";
 print $@ if $@;
 }
-
 
 1;

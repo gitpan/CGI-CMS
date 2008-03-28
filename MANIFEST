@@ -1,3 +1,4 @@
+.htaccess
 Build.PL
 cgi-bin/config/actions.pl
 cgi-bin/config/links.pl
@@ -7,6 +8,7 @@ cgi-bin/config/translate.pl
 cgi-bin/config/tree.pl
 cgi-bin/Content/addtranslate.pl
 cgi-bin/Content/admin.pl
+cgi-bin/Content/bbcodehelp.pl
 cgi-bin/Content/editTree.pl
 cgi-bin/Content/env.pl
 cgi-bin/Content/exploit.pl
@@ -460,7 +462,6 @@ htdocs/style/system/window/wmnubg.png
 htdocs/style/system/window/wrbg.png
 htdocs/style/system/window/wrobg.png
 htdocs/style/system/window/wrubg.png
-ilib/ISettings.pm
 lib/CGI/CMS.pm
 lib/CGI/CMS/Actions.pm
 lib/CGI/CMS/Config.pm

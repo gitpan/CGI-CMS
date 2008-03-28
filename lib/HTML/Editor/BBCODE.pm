@@ -5,7 +5,7 @@ use vars qw(@EXPORT @ISA $currentstring @formatString);
 require Exporter;
 @HTML::Editor::BBCODE::EXPORT  = qw(BBCODE);
 @ISA                           = qw(Exporter);
-$HTML::Editor::BBCODE::VERSION = '0.3';
+$HTML::Editor::BBCODE::VERSION = '0.31';
 use HTML::Entities;
 
 =head1 NAME
@@ -189,11 +189,11 @@ sub BBCODE {
         $$string =~ s/\[Formatstring(\d+)\/\]/$formatString[$1]/egs;
 
         if($ACCEPT_LANGUAGE eq 'de') {
-                $$string =~ s/\[(en)\](.*?)\[\/en\]//gs;
-                $$string =~ s/\[(de)\](.*?)\[\/de\]/$1/gs;
+                $$string =~ s/\[en\](.*?)\[\/en\]//gs;
+                $$string =~ s/\[de\](.*?)\[\/de\]/$1/gs;
         } else {
-                $$string =~ s/\[(en)\](.*?)\[\/en\]/$1/gs;
-                $$string =~ s/\[(de)\](.*?)\[\/de\]//gs;
+                $$string =~ s/\[en\](.*?)\[\/en\]/$1/gs;
+                $$string =~ s/\[de\](.*?)\[\/de\]//gs;
         }
 }
 

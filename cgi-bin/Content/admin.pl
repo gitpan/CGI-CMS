@@ -14,8 +14,7 @@ print $window->windowFooter();
 sub deleteExploit {
         my $id = param('id');
         $database->void("DELETE FROM exploit where id  = ?", $id);
-        &showExploits(
-          );
+        &showExploits();
 }
 
 sub showExploits {

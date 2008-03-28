@@ -5,27 +5,25 @@ my $class = Module::Build->subclass(class => "Module::Build::Custom", code => <<
 my $release = 'blib/rhtml/';
 my $dir     = 'htdocs/';
 my $path    = '.';
-use vars qw($settings);
-use lib qw(ilib);
-
-use ISettings qw(saveSettings loadSettings);
+use vars qw($settings $cwd);
 use File::Copy;
 loadSettings("cgi-bin/config/settings.pl");
-*settings = \$ISettings::settings;
-
 sub ACTION_build {
         my $self = shift;
         &change($dir);
         $release = 'blib/perl/';
         $dir     = 'cgi-bin/';
         &change($dir);
+                $self->SUPER::ACTION_build;
         &replace('%PATH%', $settings->{cgi}{bin}, 'blib/perl/lze.pl');
         copy("extra/startup.pl", "blib/perl/config/startup.pl") or die "Copy failed: $!";
 
         if(-e "$settings->{cgi}{bin}/config/links.pl") {
+                chmod 0755,"blib/perl/config/links.pl";
                 copy("$settings->{cgi}{bin}/config/links.pl", "blib/perl/config/links.pl") or die "Copy failed: $settings->{cgi}{bin}/config/links.pl $!";
         }
         if(-e "$settings->{cgi}{bin}/config/tree.pl") {
+                chmod 0755,"blib/perl/config/tree.pl";
                 copy("$settings->{cgi}{bin}/config/tree.pl", "blib/perl/config/tree.pl") or die "Copy failed: $settings->{cgi}{bin}/config/tree.pl $!";
         }
         if(-e "$settings->{cgi}{DocumentRoot}/.htaccess") {
@@ -36,7 +34,6 @@ sub ACTION_build {
         }
         &replace('%PATH%',   $settings->{cgi}{bin},                          'blib/perl/config/startup.pl');
         &replace('%host%',   $settings->{cgi}{serverName},                   'blib/perl/config/startup.pl');
-        $self->SUPER::ACTION_build;
         &replace('%CONFIG%', $settings->{cgi}{bin} . '/config/config.pl',    'blib/lib/CGI/CMS/Config.pm');
         &replace('%CONFIG%', $settings->{cgi}{bin} . '/config/translate.pl', 'blib/lib/CGI/CMS/Translate.pm');
         &replace('%CONFIG%', $settings->{cgi}{bin} . '/config/settings.pl',  'blib/lib/CGI/CMS/Settings.pm');
@@ -85,7 +82,7 @@ sub ACTION_uninstall {
         if(defined $self->{'properties'}{dbpass}) {
                 $conf{password} = $self->{'properties'}{dbpass} unless $self->{'properties'}{dbpass} =~ /^$/;
         }
-        eval 'use DBI::Library ';
+        eval 'use lib qw(lib);use DBI::Library ';
         unless ($@) {
                 my $database = new DBI::Library();
                 $database->initDB(\%conf);
@@ -161,6 +158,36 @@ sub ACTION_install_examples {
         system("chmod 0755 -R  $release");
 }
 
+sub loadSettings {
+        my $do = shift;
+        if(-e $do) {
+                do $do;
+        }
+}
+
+sub saveSettings {
+        my $saveAs = shift;
+        use Data::Dumper;
+        my $content = Dumper($settings);
+        $content .= "\$settings =\$VAR1;";
+        use Fcntl qw(:flock);
+        use Symbol;
+        my $fh = gensym();
+        my $rsas = $saveAs =~ /^(\S+)$/ ? $1 : 0;
+
+        if($rsas) {
+                open $fh, ">$rsas.bak" or warn "$/saveSettings$/ $! $/ File: $rsas $/Caller: " . caller() . $/;
+                flock $fh, 2;
+                seek $fh, 0, 0;
+                truncate $fh, 0;
+                print $fh $content;
+                close $fh;
+        }
+        if(-e "$rsas.bak") {
+                rename "$rsas.bak", $rsas or warn "$/saveSettings$/ $! $/ File: $rsas $/Caller: " . caller() . $/;
+                do $rsas;
+        }
+}
 END
 
 my $inctance = $class->new(
@@ -194,11 +221,7 @@ unless ($@) {
         loadSettings();
         loadSettings("cgi-bin/config/config.pl") unless -e $settings->{cgi}{bin};
         }else{
-        use lib qw(ilib);
-        use ISettings qw(loadSettings saveSettings);
-        *settings = \$ISettings::settings;
-        loadSettings("cgi-bin/config/config.pl");
-
+                do "cgi-bin/config/config.pl";
 }
         $inctance->{properties}{htd}         = $settings->{cgi}{DocumentRoot}  ? $settings->{cgi}{DocumentRoot}  : '/srv/www//htdocs';
         $inctance->{properties}{cgi}         = $settings->{cgi}{bin}           ? $settings->{cgi}{bin}           : '/srv/www/cgi-bin';
@@ -284,7 +307,7 @@ $settings = {
              scriptAlias   => $inctance->{properties}{alias},
              uploads       => {maxlength => 2003153, path => "$inctance->{properties}{htd}/downloads/", chmod => 0644, enabled => 1},
              tree      => {navigation => "$inctance->{properties}{cgi}/config/tree.pl", links => "$inctance->{properties}{cgi}/config/links.pl"},
-             version   => '0.3',
+             version   => '0.31',
              session   => "$inctance->{properties}{cgi}/config/session.pl",
              actions   => "$inctance->{properties}{cgi}/config/actions.pl",
              translate => "$inctance->{properties}{cgi}/config/translate.pl",
@@ -300,4 +323,26 @@ $settings = {
 
 saveSettings("$cwd/cgi-bin/config/settings.pl");
 $inctance->create_build_script;
+sub saveSettings {
+        my $saveAs = shift;
+        use Data::Dumper;
+        my $content = Dumper($settings);
+        $content .= "\$settings =\$VAR1;";
+        use Fcntl qw(:flock);
+        use Symbol;
+        my $fh = gensym();
+        my $rsas = $saveAs =~ /^(\S+)$/ ? $1 : 0;
 
+        if($rsas) {
+                open $fh, ">$rsas.bak" or warn "$/saveSettings$/ $! $/ File: $rsas $/Caller: " . caller() . $/;
+                flock $fh, 2;
+                seek $fh, 0, 0;
+                truncate $fh, 0;
+                print $fh $content;
+                close $fh;
+        }
+        if(-e "$rsas.bak") {
+                rename "$rsas.bak", $rsas or warn "$/saveSettings$/ $! $/ File: $rsas $/Caller: " . caller() . $/;
+                do $rsas;
+        }
+}
