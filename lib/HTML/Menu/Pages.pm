@@ -20,13 +20,13 @@ use vars qw(
 @HTML::Menu::Pages::EXPORT = qw(makePages);
 @ISA                       = qw(Exporter);
 
-$HTML::Menu::Pages::VERSION = '0.31';
+$HTML::Menu::Pages::VERSION = '0.32';
 
 $DefaultClass = 'HTML::Menu::Pages' unless defined $HTML::Menu::Pages::DefaultClass;
 
 =head1 NAME
 
-HTML::Menu::Pages
+HTML::Menu::Pages - Create html anchors
 
 =head1 SYNOPSIS
 

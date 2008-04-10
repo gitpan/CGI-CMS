@@ -11,7 +11,7 @@ our $server;
 @CGI::CMS::Main::EXPORT_OK   = qw(all initMain Header Footer);
 %CGI::CMS::Main::EXPORT_TAGS = ('all' => [qw(initMain Header Footer)]);
 @CGI::CMS::Main::ISA         = qw( Exporter Template::Quick);
-$CGI::CMS::Main::VERSION     = '0.31';
+$CGI::CMS::Main::VERSION     = '0.32';
 $DefaultClass                = 'CGI::CMS::Main' unless defined $CGI::CMS::Main::DefaultClass;
 
 =head1 NAME

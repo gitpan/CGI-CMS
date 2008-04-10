@@ -9,7 +9,7 @@ $DefaultClass = 'DBI::Library' unless defined $DBI::Library::DefaultClass;
                               'dynamic'     => [qw( useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute selectTable)],
                               'independent' => [qw(tableLength tableExists initDB useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute selectTable)],
 );
-$DBI::Library::VERSION = '0.31';
+$DBI::Library::VERSION = '0.32';
 $tbl                   = 'querys';
 require Exporter;
 use DBI;

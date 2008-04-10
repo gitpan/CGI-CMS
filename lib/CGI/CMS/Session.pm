@@ -6,7 +6,7 @@ use vars qw( $session $DefaultClass @EXPORT  @ISA $defaultconfig);
 @CGI::CMS::Session::EXPORT = qw(loadSession saveSession $session);
 use CGI::CMS::Config;
 @CGI::CMS::Session::ISA     = qw(Exporter CGI::CMS::Config);
-$CGI::CMS::Session::VERSION = '0.31';
+$CGI::CMS::Session::VERSION = '0.32';
 $DefaultClass               = 'CGI::CMS::Session' unless defined $CGI::CMS::Session::DefaultClass;
 $defaultconfig              = '%CONFIG%';
 

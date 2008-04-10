@@ -329,7 +329,8 @@ sub showThread {
         $replyId   = $needed->{replyId};
         $replylink = defined $replyId ? $replyId : '';
 
-        $length = $database->tableLength($thread, $right) unless ($thread eq 'replies');
+        my @rp = $database->fetch_array("select count(*) from news where `right` <= $right");
+        $length = $rp[0] =~ /(\d+)/ ? $rp[0] : 0 unless ($thread eq 'replies');
         if(defined $needed->{replyId}) {
                 my @rps = $database->fetch_array("select count(*) from replies where refererId = $needed->{replyId};");
                 if($rps[0] > 0) {

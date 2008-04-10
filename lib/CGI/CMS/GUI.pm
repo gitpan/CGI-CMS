@@ -49,7 +49,7 @@ use vars qw(
 @CGI::CMS::GUI::EXPORT = qw(action Body maxlength openFile );
 @ISA                   = qw(Exporter CGI::CMS);
 
-$CGI::CMS::GUI::VERSION = '0.31';
+$CGI::CMS::GUI::VERSION = '0.32';
 $mod_perl = ($ENV{MOD_PERL}) ? 1 : 0;
 
 local $^W = 0;

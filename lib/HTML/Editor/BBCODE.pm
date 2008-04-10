@@ -5,7 +5,7 @@ use vars qw(@EXPORT @ISA $currentstring @formatString);
 require Exporter;
 @HTML::Editor::BBCODE::EXPORT  = qw(BBCODE);
 @ISA                           = qw(Exporter);
-$HTML::Editor::BBCODE::VERSION = '0.31';
+$HTML::Editor::BBCODE::VERSION = '0.32';
 use HTML::Entities;
 
 =head1 NAME

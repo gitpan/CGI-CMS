@@ -6,7 +6,7 @@ use vars qw($DefaultClass @ISA  $mod_perl);
 our $style;
 use Template::Quick;
 @HTML::TabWidget::ISA         = qw( Exporter Template::Quick);
-$HTML::TabWidget::VERSION     = '0.31';
+$HTML::TabWidget::VERSION     = '0.32';
 $DefaultClass                 = 'HTML::TabWidget' unless defined $HTML::TabWidget::DefaultClass;
 @HTML::TabWidget::EXPORT_OK   = qw(initTabWidget Menu tabwidgetHeader tabwidgetFooter);
 %HTML::TabWidget::EXPORT_TAGS = ('all' => [qw(initTabWidget tabwidgetHeader Menu tabwidgetFooter)]);
