@@ -5,7 +5,7 @@ use vars qw(@EXPORT @ISA $currentstring @formatString);
 require Exporter;
 @HTML::Editor::BBCODE::EXPORT  = qw(BBCODE);
 @ISA                           = qw(Exporter);
-$HTML::Editor::BBCODE::VERSION = '0.32';
+$HTML::Editor::BBCODE::VERSION = '0.33';
 use HTML::Entities;
 
 =head1 NAME
@@ -233,7 +233,7 @@ sub formatString {
         );
         my $rplc = $hl->highlightText($string);
         $currentstring++;
-        $formatString[$currentstring] = qq(<div  style="width:100%;overlow:scroll;"><pre>$rplc</pre></div>);
+        $formatString[$currentstring] = qq(<div  style="overflow:scroll;width:700px;"><pre>$rplc</pre></div>);
         return "[Formatstring$currentstring/]";
 }
 

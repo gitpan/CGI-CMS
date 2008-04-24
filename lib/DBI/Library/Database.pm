@@ -20,7 +20,7 @@ use DBI::Library qw(:all $dbh $dsn);
         'independent' => [qw(tableLength tableExists initDB useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute)],
         'lze'         => [qw(addUser hasAcount isMember createMenu catright topicright right getAction checkPass checkSession setSid getName rss readMenu deleteMessage reply editMessage addMessage rewrite checkFlood)],
 );
-$DBI::Library::Database::VERSION = '0.32';
+$DBI::Library::Database::VERSION = '0.33';
 $mod_rewrite                     = 0;
 
 =head1 NAME
@@ -685,12 +685,14 @@ sub checkFlood {
                 my $sth = $dbh->prepare($sql) or warn $dbh->errstr;
                 $sth->execute($ip);
                 my $ltime = $sth->fetchrow_array();
+                $sth->finish();
                 unless (defined $ltime) {
                         $self->void("insert into flood (remote_addr, ti) VALUES(?,?) ", $ip, time());
                         $return = 1;
                         $ltime  = time();
+                        return 1;
                 }
-                $sth->finish();
+
                 $return = (time()- $ltime > $min_secs) ? 1 : 0;
         }
         $self->void("update flood set ti =?  where remote_addr = ?; ", time(), $ip);

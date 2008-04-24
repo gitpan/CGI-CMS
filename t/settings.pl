@@ -10,7 +10,7 @@ $VAR1 = {
          'scriptAlias'   => 'perl',
          'admin'         => {'firstname' => 'Firstname', 'email' => 'your@email.org', 'street' => 'example 33', 'name' => 'Name', 'town' => 'Berlin'},
          'language'      => 'en',
-         'version'       => '0.32',
+         'version'       => '0.33',
          'cgi'           => {'bin' => 'cgi-bin/', 'style' => 'Crystal', 'serverName' => 'http://localhost', 'cookiePath' => '/', 'title' => 'Lindnerei', 'mod_rewrite' => '1', 'alias' => 'perl', 'DocumentRoot' => 'htdocs/', 'expires' => '+1y'},
          'database'  => {'password' => '', 'user'  => 'root', 'name' => 'LZE', 'host' => 'localhost'},
          'sidebar'   => {'left'     => 1,  'right' => 1},

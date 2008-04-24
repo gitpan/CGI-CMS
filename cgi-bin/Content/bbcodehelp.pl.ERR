@@ -1,0 +1,71 @@
+4:	
+Partial match to quote modifier [cgimosx] at word: 'center'
+Please put a space between quote modifiers and trailing keywords.
+7:	
+Partial match to quote modifier [cgimosx] at word: 'strong'
+Please put a space between quote modifiers and trailing keywords.
+
+12: [u] underline [
+        ^          
+found bareword where operator expected
+14:	
+Partial match to quote modifier [cgimosx] at word: 'sub'
+Please put a space between quote modifiers and trailing keywords.
+17:	
+Partial match to quote modifier [cgimosx] at word: 'strong'
+Please put a space between quote modifiers and trailing keywords.
+
+17: </strong > <br> < b > bold </b> < br > <i> italic </i> < br > <s ...
+                                           --- ^                        
+found bareword where operator expected (previous token underlined)
+
+17: ... > < br > <i> italic </i> < br > <s> strike </s> < br > <u> under ...
+                                        --- ^                               
+found bareword where operator expected (previous token underlined)
+
+17: ... > < br > <s> strike </s> < br > <u> underline </u> < br > <sub>  ...
+                                        --- ^                               
+found bareword where operator expected (previous token underlined)
+
+17: ... r > <u> underline </u> < br > <sub> sub </sub> < br > <sup> sup  ...
+                                      ----- ^                               
+found sub where operator expected (previous token underlined)
+
+17: ...  br > <sub> sub </sub> < br > <sup> sup </sup> < br >
+                                      ----- ^                
+found bareword where operator expected (previous token underlined)
+
+There is no previous '?' to match a ':' on line 19
+19: <strong> [img] http: // url [
+                       ^
+27:	
+Partial match to quote modifier [cgimosx] at word: 'google'
+Please put a space between quote modifiers and trailing keywords.
+
+There is no previous '?' to match a ':' on line 28
+28: ] <br> [blog = http: // referer] text [
+                       ^
+30:	
+Partial match to quote modifier [cgimosx] at word: 'strong'
+Please put a space between quote modifiers and trailing keywords.
+
+There is no previous '?' to match a ':' on line 33
+33: : lindnerei . de </a> < br > <table border="0" cellpadding="0" c ...
+    ^
+42:	
+Partial match to quote modifier [cgimosx] at word: 'strong'
+Please put a space between quote modifiers and trailing keywords.
+62:	
+Partial match to quote modifier [cgimosx] at word: 'strong'
+Please put a space between quote modifiers and trailing keywords.
+64:	
+Partial match to quote modifier [cgimosx] at word: 'ol'
+Please put a space between quote modifiers and trailing keywords.
+72:	
+Partial match to quote modifier [cgimosx] at word: 'strong'
+Please put a space between quote modifiers and trailing keywords.
+
+There is no previous '?' to match a ':' on line 73
+73: < /pre></ div > lang tags: Bash, C++, CSS, HTML, Java, JavaScrip ...
+                             ^
+No further warnings will be given

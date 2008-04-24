@@ -11,7 +11,7 @@ our $server;
 @Template::Quick::Main::EXPORT_OK   = qw(all initMain Header Footer);
 %Template::Quick::Main::EXPORT_TAGS = ('all' => [qw(initMain Header Footer)]);
 @Template::Quick::Main::ISA         = qw( Exporter Template::Quick);
-$Template::Quick::Main::VERSION     = '0.32';
+$Template::Quick::Main::VERSION     = '0.33';
 $DefaultClass                       = 'Template::Quick::Main' unless defined $Template::Quick::Main::DefaultClass;
 
 =head1 NAME

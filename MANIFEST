@@ -9,6 +9,7 @@ cgi-bin/config/tree.pl
 cgi-bin/Content/addtranslate.pl
 cgi-bin/Content/admin.pl
 cgi-bin/Content/bbcodehelp.pl
+cgi-bin/Content/bbcodehelp.pl.ERR
 cgi-bin/Content/editTree.pl
 cgi-bin/Content/env.pl
 cgi-bin/Content/exploit.pl
