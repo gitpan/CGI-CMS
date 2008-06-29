@@ -55,13 +55,15 @@ INSERT INTO `actions` (`action`, `file`, `title`, `right`, `box`, `sub`, `id`) V
 INSERT INTO `actions` (`action`, `file`, `title`, `right`, `box`, `sub`, `id`) VALUES ('addTranslation', 'addtranslate.pl', 'translate', 5, '', 'addTranslation', 48);
 INSERT INTO actions (`action`,`file`,title,`right`,box,sub,id) VALUES ('chmodFile', 'files.pl', 'chmodFile', 4, NULL, 'chmodFile',49);
 INSERT INTO actions (`action`,`file`,title,`right`,box,sub,id) VALUES ('deleteFile', 'files.pl', 'deleteFile', 4, NULL, 'deleteFile',50);
-INSERT INTO actions (`action`,`file`,title,`right`,box,sub,id) VALUES ('impressum', 'impressum.pl', 'Impressum', 0, 'impressum;navigation', 'main',51);
+INSERT INTO actions (`action`,`file`,title,`right`,box,sub,id) VALUES ('impressum', 'impressum.pl', 'Impressum', 0, 'impressum;navigation;verify', 'main',51);
 INSERT INTO actions (`action`,`file`,title,`right`,box,sub,id) VALUES ('makeDir', 'files.pl', 'Files', 0, NULL, 'makeDir',52);
 INSERT INTO actions (`action`,`file`,title,`right`,box,sub,id) VALUES ('newGbookEntry', 'gbook.pl', 'gbook', 5, 'navigation', 'newGbookEntry',55);
 INSERT INTO actions (`action`,`file`,title,`right`,box,sub,id) VALUES ('addnewGbookEntry', 'gbook.pl', 'gbook', 0, 'navigation', 'addnewGbookEntry',56);
 INSERT INTO actions (`action`,`file`,title,`right`,box,sub,id) VALUES ('gbook', 'gbook.pl', 'gbook', 0, 'navigation', 'showGbook',57);
 INSERT INTO `actions` (`action`, `file`, `title`, `right`, `box`, `sub`, `id`) VALUES ('showaddTranslation', 'addtranslate.pl', 'translate', 5, 'navigation', 'main', 58);
 INSERT INTO `actions` (`action`, `file`, `title`, `right`, `box`, `sub`, `id`) VALUES ('deleteExploit', 'admin.pl', 'Admin', 5, 'navigation', 'deleteExploit', 59);
+INSERT INTO `actions` (`action`, `file`, `title`, `right`, `box`, `sub`, `id`) VALUES ('help', 'help.pl', 'help', 0, 'help;navigation', 'main', 60);
+INSERT INTO `actions` (`action`, `file`, `title`, `right`, `box`, `sub`, `id`) VALUES ('showEditor', 'news.pl', 'NewPost', 0, 'navigation', 'showEditor', 61);
 CREATE TABLE IF NOT EXISTS box (
   `file` varchar(100) NOT NULL default '',
   position varchar(8) NOT NULL default 'left',
@@ -77,6 +79,7 @@ INSERT INTO box (`file`, position, `right`, name, id, dynamic) VALUES('login.pl'
 INSERT INTO box (`file`, position, `right`, name, id, dynamic) VALUES('tables.pl', 'disabled', 5, 'database', 10, 'right');
 INSERT INTO box (`file`,position,`right`,name,dynamic,id) VALUES ('impressum.pl', 'disabled', 0, 'impressum', 'right',6);
 INSERT INTO box (`file`,position,`right`,name,dynamic,id) VALUES ('news.pl', 'disabled', 0, 'blog', 'right',7);
+INSERT INTO box (`file`,position,`right`,name,dynamic,id) VALUES ('help.pl', 'disabled', 0, 'help', 'right',8);
 CREATE TABLE IF NOT EXISTS cats (
   `name` varchar(100) NOT NULL default '',
   `right` int(11) NOT NULL default '0',
@@ -97,11 +100,12 @@ CREATE TABLE IF NOT EXISTS navigation (
   PRIMARY KEY  (id)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 INSERT INTO navigation (title, action, src, `right`, position, submenu, id, target) VALUES('blog', 'news', 'news.png', 0, 'top', '', 1, 0);
-INSERT INTO navigation (title, action, src, `right`, position, submenu, id, target) VALUES('Admin', 'admin', 'admin.png', 5, '8', 'submenuadmin', 2, 0);
+INSERT INTO navigation (title, action, src, `right`, position, submenu, id, target) VALUES('Admin', 'admin', 'admin.png', 5, '5', 'submenuadmin', 2, 0);
 INSERT INTO navigation (title, action, src, `right`, position, submenu, id, target) VALUES('properties', 'profile', 'profile.png', 1, '6', '', 3, 0);
 INSERT INTO navigation (title, action, src, `right`, position, submenu, id, target) VALUES('links', 'links', 'link.png', 0, 'top', '', 5, 0);
 INSERT INTO navigation (title,`action`,src,`right`,position,submenu,id,target) VALUES ('impressum', 'impressum', 'about.png', 0, '7', '',6,0);
 INSERT INTO navigation (title,`action`,src,`right`,position,submenu,id,target) VALUES ('gbook', 'gbook', 'link.png', 0, '8', '',7,0);
+INSERT INTO navigation (title,`action`,src,`right`,position,submenu,id,target) VALUES ('help', 'help', 'link.png', 0, '9', '',8,0);
 CREATE TABLE IF NOT EXISTS news (
   title varchar(100) NOT NULL default '',
   body text NOT NULL,

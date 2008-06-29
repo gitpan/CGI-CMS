@@ -13,7 +13,7 @@ use Template::Quick;
 @HTML::Window::ISA         = qw(Template::Quick);
 @HTML::Window::EXPORT_OK   = qw( set_title set_class set_style set_closeable set_resizeable set_collapse set_moveable initWindow windowHeader windowFooter);
 %HTML::Window::EXPORT_TAGS = ('all' => [qw(set_title set_class set_style set_closeable set_resizeable set_collapse set_moveable initWindow windowHeader windowFooter)]);
-$HTML::Window::VERSION     = '0.33';
+$HTML::Window::VERSION     = '0.34';
 
 $DefaultClass = 'HTML::Window' unless defined $HTML::Window::DefaultClass;
 
@@ -292,7 +292,7 @@ sub getSelf {
 
 =head2 see Also
 
-L<CGI::CMS::GUI> L<CGI> L<CGI::CMS> L<Template::Quick> 
+L<CGI::CMS::GUI> L<CGI> L<CGI::CMS> L<Template::Quick>
 
 
 =head1 AUTHOR
@@ -305,7 +305,7 @@ Copyright (C) 2006-2008 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License
-as published by the Free Software Foundation; 
+as published by the Free Software Foundation;
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the

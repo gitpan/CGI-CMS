@@ -6,7 +6,7 @@ use vars qw($DefaultClass @ISA  $mod_perl);
 our $style;
 use Template::Quick;
 @HTML::TabWidget::ISA         = qw( Exporter Template::Quick);
-$HTML::TabWidget::VERSION     = '0.33';
+$HTML::TabWidget::VERSION     = '0.34';
 $DefaultClass                 = 'HTML::TabWidget' unless defined $HTML::TabWidget::DefaultClass;
 @HTML::TabWidget::EXPORT_OK   = qw(initTabWidget Menu tabwidgetHeader tabwidgetFooter);
 %HTML::TabWidget::EXPORT_TAGS = ('all' => [qw(initTabWidget tabwidgetHeader Menu tabwidgetFooter)]);
@@ -46,7 +46,7 @@ HTML::TabWidget - simple Html TabWidget
 
                                 {
 
-                                text => 'Next', 
+                                text => 'Next',
 
                                 class => 'link',
 
@@ -76,7 +76,7 @@ HTML::TabWidget - simple Html TabWidget
 
       print $tabwidget->tabwidgetFooter();
 
-You also need some js and css file. 
+You also need some js and css file.
 
 Example:
 
@@ -101,7 +101,7 @@ print start_html(
         );
 
 
-=head3 function sets 
+=head3 function sets
 
 Here is a list of the function sets you can import:
 

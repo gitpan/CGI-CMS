@@ -11,7 +11,7 @@ our $server;
 @Template::Quick::Main::EXPORT_OK   = qw(all initMain Header Footer);
 %Template::Quick::Main::EXPORT_TAGS = ('all' => [qw(initMain Header Footer)]);
 @Template::Quick::Main::ISA         = qw( Exporter Template::Quick);
-$Template::Quick::Main::VERSION     = '0.33';
+$Template::Quick::Main::VERSION     = '0.34';
 $DefaultClass                       = 'Template::Quick::Main' unless defined $Template::Quick::Main::DefaultClass;
 
 =head1 NAME
@@ -127,7 +127,7 @@ Copyright (C) 2008 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License
-as published by the Free Software Foundation; 
+as published by the Free Software Foundation;
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the

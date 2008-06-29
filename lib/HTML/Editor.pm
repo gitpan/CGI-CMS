@@ -28,7 +28,7 @@ use Template::Quick;
 @HTML::Editor::EXPORT_OK   = qw(initEditor show );
 %HTML::Editor::EXPORT_TAGS = ('all' => [qw(initEditor show )]);
 
-$HTML::Editor::VERSION = '0.33';
+$HTML::Editor::VERSION = '0.34';
 
 $DefaultClass = 'HTML::Editor' unless defined $HTML::Editor::DefaultClass;
 
@@ -40,7 +40,7 @@ HTML::TabWidget -  BBCODE and HTML Editor
 
 initEditor show
 
-=head3 function sets 
+=head3 function sets
 
 Here is a list of the function sets you can import:
 
@@ -173,7 +173,7 @@ Copyright (C) 2006 - 2008 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License
-as published by the Free Software Foundation; 
+as published by the Free Software Foundation;
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the

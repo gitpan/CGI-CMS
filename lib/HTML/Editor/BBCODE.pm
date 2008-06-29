@@ -5,7 +5,7 @@ use vars qw(@EXPORT @ISA $currentstring @formatString);
 require Exporter;
 @HTML::Editor::BBCODE::EXPORT  = qw(BBCODE);
 @ISA                           = qw(Exporter);
-$HTML::Editor::BBCODE::VERSION = '0.33';
+$HTML::Editor::BBCODE::VERSION = '0.34';
 use HTML::Entities;
 
 =head1 NAME
@@ -54,7 +54,7 @@ Supported BBCODE
 
      [u]underline[/u]
 
-     [sub]sub[/sub] 
+     [sub]sub[/sub]
 
      [sup]sup[/sup]
 
@@ -129,6 +129,8 @@ lang tags:
         Ruby
 
         XML
+
+ en de tags
 
 
 =head2 EXPORT
@@ -209,31 +211,31 @@ sub formatString {
 
                 },
                 format_table => {
-                                 Alert        => ["<font color=\"#0000ff\">",       "</font>"],
-                                 BaseN        => ["<font color=\"#007f00\">",       "</font>"],
-                                 BString      => ["<font color=\"#c9a7ff\">",       "</font>"],
-                                 Char         => ["<font color=\"#ff00ff\">",       "</font>"],
-                                 Comment      => ["<font color=\"#7f7f7f\"><i>",    "</i></font>"],
-                                 DataType     => ["<font color=\"#0000ff\">",       "</font>"],
-                                 DecVal       => ["<font color=\"#00007f\">",       "</font>"],
-                                 Error        => ["<font color=\"#ff0000\"><b><i>", "</i></b></font>"],
-                                 Float        => ["<font color=\"#00007f\">",       "</font>"],
-                                 Function     => ["<font color=\"#007f00\">",       "</font>"],
-                                 IString      => ["<font color=\"#ff0000\">",       ""],
+                                 Alert        => ["<span style=\"color:#0000ff\">",       "</span>"],
+                                 BaseN        => ["<span style=\"color:#007f00\">",       "</span>"],
+                                 BString      => ["<span style=\"color:#c9a7ff\">",       "</span>"],
+                                 Char         => ["<span style=\"color:#ff00ff\">",       "</span>"],
+                                 Comment      => ["<span style=\"color:#7f7f7f\"><i>",    "</i></span>"],
+                                 DataType     => ["<span style=\"color:#0000ff\">",       "</span>"],
+                                 DecVal       => ["<span style=\"color:#00007f\">",       "</span>"],
+                                 Error        => ["<span style=\"color:#ff0000\"><b><i>", "</i></b></span>"],
+                                 Float        => ["<span style=\"color:#00007f\">",       "</span>"],
+                                 Function     => ["<span style=\"color:#007f00\">",       "</span>"],
+                                 IString      => ["<span style=\"color:#ff0000\">",       ""],
                                  Keyword      => ["<b>",                            "</b>"],
                                  Normal       => ["",                               ""],
-                                 Operator     => ["<font color=\"#ffa500\">",       "</font>"],
-                                 Others       => ["<font color=\"#b03060\">",       "</font>"],
-                                 RegionMarker => ["<font color=\"#96b9ff\"><i>",    "</i></font>"],
-                                 Reserved     => ["<font color=\"#9b30ff\"><b>",    "</b></font>"],
-                                 String       => ["<font color=\"#ff0000\">",       "</font>"],
-                                 Variable     => ["<font color=\"#0000ff\"><b>",    "</b></font>"],
-                                 Warning      => ["<font color=\"#0000ff\"><b><i>", "</b></i></font>"],
+                                 Operator     => ["<span style=\"color:#ffa500\">",       "</span>"],
+                                 Others       => ["<span style=\"color:#b03060\">",       "</span>"],
+                                 RegionMarker => ["<span style=\"color:#96b9ff\"><i>",    "</i></span>"],
+                                 Reserved     => ["<span style=\"color:#9b30ff\"><b>",    "</b></span>"],
+                                 String       => ["<span style=\"color:#ff0000\">",       "</span>"],
+                                 Variable     => ["<span style=\"color:#0000ff\"><b>",    "</b></span>"],
+                                 Warning      => ["<span style=\"color:#0000ff\"><b><i>", "</b></i></span>"],
                 },
         );
         my $rplc = $hl->highlightText($string);
         $currentstring++;
-        $formatString[$currentstring] = qq(<div  style="overflow:scroll;width:700px;"><pre>$rplc</pre></div>);
+        $formatString[$currentstring] = qq(<div style="100%;overflow:auto"><pre>$rplc</pre></div>);
         return "[Formatstring$currentstring/]";
 }
 
@@ -243,11 +245,11 @@ Dirk Lindner <lze@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2006 by Hr. Dirk Lindner
+Copyright (C) 2008 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License
-as published by the Free Software Foundation; 
+as published by the Free Software Foundation;
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the

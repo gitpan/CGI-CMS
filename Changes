@@ -1,4 +1,15 @@
-Revision history for Perl CGI::CMS 0.31
+Revision history for Perl CGI::CMS 0.34
+0.34
+       A few Security fixes !!!!
+       extended editor
+       align profiles
+       Help Action
+       antiflood settings
+       news-right
+       upload right
+       Bilder im Fileeditor anzeigen.
+       menü length durch ... ersetzen
+
 0.31
         fix en de tags, db installer first post antiflood.
 
@@ -27,5 +38,5 @@ Revision history for Perl CGI::CMS 0.31
      -refactoring.
 
 0.01  Sun Jan 22 01:37:35 2006
-	- original version; created by h2xs 1.23 with options
-		-XAn  CGI::CMS
+        - original version; created by h2xs 1.23 with options
+                -XAn  CGI::CMS

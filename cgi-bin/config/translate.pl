@@ -80,7 +80,7 @@ $VAR1 = {
                   'insertpass'          => 'Insert Password',
                   'insertname'          => 'Insert Your Name',
                   'admincenter'         => 'Admin Center',
-                  'env'                 => 'Envoirement Variables',
+                  'env'                 => 'Env',
                   'properties'          => 'Properties',
                   'impressum'           => 'Impressum',
                   'gbook'               => 'Gbook',
@@ -93,6 +93,7 @@ $VAR1 = {
                   'savefile'            => 'Save',
                   'floodtext'           => 'To many Posts',
                   'help'                => 'Hilfe',
+                  'NewPost'             => 'New Message',
          },
          'de' => {
                   'firstname'           => 'Vorname',
@@ -190,6 +191,7 @@ $VAR1 = {
                   'savefile'            => 'Speichern',
                   'floodtext'           => 'Nicht so oft posten',
                   'help'                => 'Hilfe',
+                  'NewPost'             => 'Neue Nachricht',
          },
 };
 $lang = $VAR1;

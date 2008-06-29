@@ -1,5 +1,5 @@
 document.write('<form action="javascript:pressEnter()" name="searchWorld" onsubmit="return false;">');
-document.write('<input align="top" type="text"  onkeydown="checkInput()" maxlength="100" size="16" style="vertical-align:top;width:100px;height:22px;" title="Bitte Suchbegriff eingeben" name="keyword" id="keyword" value=""/>');
+document.write('<input align="top" type="text"  onkeydown="checkInput()" maxlength="100" size="16" style="vertical-align:top;width:140px;height:18px;" title="Bitte Suchbegriff eingeben" name="keyword" id="keyword" value=""/>');
 document.write('<select  style="vertical-align:top;width:140px;height:22px;" onchange="setEngine(this.options[this.options.selectedIndex].value)" id="chooseSite" name="chooseSite">');
 document.write('<option value="get:/fulltext.html&query=%KEYWORD%">Suchen</option>');
 document.write('<option value="get:http://www.google.com/custom?q=%KEYWORD%&sa=Google+Search&domains=www.lindnerei.de&sitesearch=www.lindnerei.de">Google Lindnerei</option>');
@@ -108,4 +108,19 @@ return;
 }
 document.getElementById(SubInput).value = gesucht;
 document.forms[frm].submit();
+}
+function param(name){
+     var lo = location.href;
+     var i = 0;
+     var suche = name+"="
+     while (i< lo.length){
+          if (lo.substring(i, i+suche.length)==suche){
+               var ende = lo.indexOf(";", i+suche.length);
+               ende = (ende>-1) ? ende : lo.length;
+               var cook = lo.substring(i+suche.length, ende);
+               return unescape(cook);
+          }
+          i++;
+     }
+     return 0;
 }

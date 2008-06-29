@@ -7,14 +7,14 @@ sub show {
         my $newMessage = translate('newMessage');
         print
           qq(<table align ="center" border ="0" cellpadding ="0" cellspacing="0" summary="layoutMenuItem"><tr><td><img onclick="location.href='#winedit'" src="/style/$style/buttons/new.png" width="20" height="20" border="0" alt="" title="$newMessage" style='cursor:pointer;font-size:14px;vertical-align:bottom;'/></td><td><a class="link" href="#winedit"  style='font-size:14px;vertical-align:bottom;'>$newMessage</a></td></tr></table>)
-          if($right >= 1);
+          if($right >= $settings->{news}{right});
         print showThread(\%needed);
         my $catlist = readcats('news');
         my %parameter = (
                          action    => 'addNews',
                          body      => translate('body'),
                          class     => 'max',
-                         attach    => $settings->{uploads}{enabled},
+                         attach    => $right >= $settings->{upload}{right} ? $settings->{uploads}{enabled}: 0,
                          maxlength => $settings->{news}{maxlength},
                          path      => "$settings->{cgi}{bin}/templates",
                          reply     => 'none',
@@ -31,9 +31,35 @@ sub show {
         use HTML::Editor;
         my $editor = new HTML::Editor(\%parameter);
         print '<div align="center">';
-        print $editor->show() if($right >= 2);
+        print $editor->show() if($right >= $settings->{news}{right});
         print '</div>';
 }
+sub showEditor {
+        my %parameter = (
+                         action    => 'addNews',
+                         body      => translate('body'),
+                         class     => 'max',
+                         attach    => $right >= $settings->{upload}{right} ? $settings->{uploads}{enabled}: 0,
+                         maxlength => $settings->{news}{maxlength},
+                         path      => "$settings->{cgi}{bin}/templates",
+                         reply     => 'none',
+                         server    => $settings->{cgi}{serverName},
+                         style     => $style,
+                         thread    => 'news',
+                         headline  => translate('headline'),
+                         title     => translate('newMessage'),
+                         catlist   => $catlist,
+                         right     => $right,
+                         html      => 0,
+                         template  => "enlargedEditor.htm",
+        );
+        use HTML::Editor;
+        my $editor = new HTML::Editor(\%parameter);
+        print '<div align="center">';
+        print $editor->show() if($right >= $settings->{news}{right});
+        print '</div>';
+}
+
 
 sub addNews {
         my $sbm = param('submit') ? param('submit') : 'save';
@@ -47,7 +73,7 @@ sub addNews {
                         my $thread = param('thread');
                         $thread = ($thread =~ /^(\w+)$/) ? $1 : 'trash';
                         my $cat = param('catlist');
-                        &saveUpload();
+                        &saveUpload() if $right >= $settings->{upload}{right};
                         my $attach = (defined param('file')) ? (split(/[\\\/]/, param('file')))[-1] : 0;
                         my $cit = (defined $attach) ? $attach =~ /^(\S+)\.[^\.]+$/ ? $1 : 0 : 0;
                         my $type = (defined $attach) ? ($attach =~ /\.([^\.]+)$/) ? $1 : 0 : 0;
@@ -55,7 +81,7 @@ sub addNews {
                         my $sra = ($cit && $type) ? "$cit.$type" : undef;
                         my $format = param('format') eq 'on' ? 'html' : 'bbcode';
 
-                        if(defined $headline && defined $message && defined $thread && $right >= 2) {
+                        if(defined $headline && defined $message && defined $thread && $right >= $settings->{news}{right}) {
                                 my %message = (title => $headline, body => $message, thread => $thread, user => $user, cat => $cat, attach => $sra, format => $format, ip => remote_addr());
                                 $database->addMessage(\%message);
                                 print '<div align="center">Nachricht wurde erstellt.<br/></div>';
@@ -77,7 +103,7 @@ sub saveedit {
                 $headline = ($headline =~ /^(.{3,50})$/) ? $1 : 0;
                 my $body = param('message');
                 $body = ($body =~ /^(.{3,$max})$/s) ? $1 : 'Invalid body';
-                &saveUpload();
+                &saveUpload() if $right >= $settings->{upload}{right};
                 my $attach = (defined param('file')) ? (split(/[\\\/]/, param('file')))[-1] : 0;
                 my $cit = (defined $attach) ? $attach =~ /^(\S+)\.[^\.]+$/ ? $1 : 0 : 0;
                 my $type = (defined $attach) ? ($attach =~ /\.([^\.]+)$/) ? $1 : 0 : 0;
@@ -100,6 +126,7 @@ sub saveedit {
 }
 
 sub editNews {
+if(not defined param('submit') or (param('submit') ne translate('preview'))) {
         my $id = param('edit');
         $id = ($id =~ /^(\d+)$/) ? $1 : 0;
         my $th = param('thread');
@@ -111,7 +138,7 @@ sub editNews {
                          action    => 'saveedit',
                          body      => $data[1],
                          class     => 'max',
-                         attach    => $settings->{uploads}{enabled},
+                         attach    => $right >= $settings->{upload}{right} ? $settings->{uploads}{enabled}: 0,
                          maxlength => $settings->{news}{maxlength},
                          path      => "$settings->{cgi}{bin}/templates",
                          reply     => $id,
@@ -130,6 +157,9 @@ sub editNews {
         print '<div align="center"><br/>';
         print $editor->show();
         print '</div>';
+       } else {
+                &preview();
+       }
 }
 
 sub reply {
@@ -141,7 +171,7 @@ sub reply {
                          action    => 'addreply',
                          body      => translate('insertText'),
                          class     => 'max',
-                         attach    => $settings->{uploads}{enabled},
+                         attach    => $right >= $settings->{upload}{right} ? $settings->{uploads}{enabled}: 0,
                          maxlength => $settings->{news}{maxlength},
                          path      => "$settings->{cgi}{bin}/templates",
                          reply     => $id,
@@ -160,6 +190,7 @@ sub reply {
         print '<div align="center"><br/>';
         print $editor->show();
         print '</div>';
+        &saveUpload() if $right >= $settings->{upload}{right};
         &showMessage($id);
 }
 
@@ -181,7 +212,7 @@ sub addReply {
                         my %reply = (title => $headline, body => $body, id => $reply, user => $user, format => $format, ip => remote_addr());
                         $database->reply(\%reply);
                 }
-                &saveUpload();
+                &saveUpload() if $right >= $settings->{upload}{right};
         } else {
                 &preview();
         }
@@ -229,7 +260,8 @@ sub showMessage {
                 my $editlink = $settings->{cgi}{mod_rewrite} ? "/edit$thread-$ref->{id}.html" : "$ENV{SCRIPT_NAME}?action=edit&amp;edit=$ref->{id}&amp;thread=news&amp;von=$von&amp;bis=$bis;";
                 my %edit = (title => translate('edit'), descr => translate('edit'), src => 'edit.png', location => $editlink, style => $style,);
                 $menu .= action(\%edit) if($right >= 5);
-                my $deletelink = $settings->{cgi}{mod_rewrite} ? "/delete.html&amp;delete=$ref->{id}&amp;thread=news&amp;von=$von&amp;bis=$bis;" : "$ENV{SCRIPT_NAME}?action=delete&amp;delete=$ref->{id}&amp;thread=news&amp;von=$von&amp;bis=$bis;";
+                my $trdelete = translate('delete');
+                my $deletelink = $settings->{cgi}{mod_rewrite} ? "javascript:if(confirm('$trdelete ?')) location.href='/delete.html&amp;delete=$ref->{id}&amp;thread=news&amp;von=$von&amp;bis=$bis;'" : "javascript:if(confirm('$trdelete ?')) location.href='$ENV{SCRIPT_NAME}?action=delete&amp;delete=$ref->{id}&amp;thread=news&amp;von=$von&amp;bis=$bis;'";
                 my %delete = (title => translate('delete'), descr => translate('delete'), src => 'delete.png', location => $deletelink, style => $style,);
                 $menu .= action(\%delete) if($right >= 5);
                 print br(), $window->windowHeader(), qq(
@@ -299,7 +331,7 @@ sub preview {
                          action    => $action,
                          body      => param('message'),
                          class     => 'max',
-                         attach    => $settings->{uploads}{enabled},
+                         attach    => $right >= $settings->{upload}{right} ? $settings->{uploads}{enabled}: 0,
                          maxlength => $settings->{news}{maxlength},
                          path      => "$settings->{cgi}{bin}/templates",
                          reply     => $id,
@@ -311,6 +343,7 @@ sub preview {
                          right     => $right,
                          catlist   => ($thread eq 'news') ? $catlist : '&#160;',
                          html      => $html,
+                         template  => 'enlargedEditor.htm',
                          atemp     => qq(<input  name="von" value="$von" style="display:none;"/><input  name="bis" value="$bis" style="display:none;"/>),
         );
         use HTML::Editor;
@@ -400,18 +433,16 @@ sub threadBody {
         my $th = shift;
         my @output;
         my ($db_clause, $table) = (" FROM $1", $2) if $th =~ /(.*)\.(.*)/;
-        $dbh->quote(\$table);
-        $db_clause = defined $db_clause ? $db_clause : ' ';
 
-        if(($dbh->selectrow_array("SHOW TABLES $db_clause LIKE '$th'"))) {
-                push @output, '<table  border="0" cellpadding="0" cellspacing="10" summary="contentLayout"   width="100%">';
-                my $answers  = defined $replyId ? " && refererId ='$replyId'" : '';
-                my $sql_read = qq/select title,body,date,id,user,attach,format from  `$th`  where `right` <= $right $answers order by date desc LIMIT $start,10 /;
+        $db_clause = defined $db_clause ? $db_clause : ' ';
+        if(($database->tableExists($th))) {
+                push @output, '<table border="0" cellpadding="0" cellspacing="10" summary="contentLayout" width="100%">';
+                my $answers  = defined $replyId ? " && refererId =$replyId" : '';
+                my $sql_read = qq/select title,body,date,id,user,attach,format from $th where `right` <= $right $answers order by date desc LIMIT $start,10 /;
                 my $sth      = $dbh->prepare($sql_read);
                 $sth->execute();
                 while(my @data = $sth->fetchrow_array()) {
                         my $headline = $data[0];
-                        $headline =~ s/ /&#160;/g;
                         my $body      = $data[1];
                         my $datum     = $data[2];
                         my $id        = $data[3];
@@ -432,7 +463,8 @@ sub threadBody {
                         my $editlink = $settings->{cgi}{mod_rewrite} ? "/edit$th-$id.html" : "$ENV{SCRIPT_NAME}?action=edit&amp;edit=$id&amp;thread=$th&amp;von=$von&amp;bis=$bis;";
                         my %edit = (title => translate('edit'), descr => translate('edit'), src => 'edit.png', location => $editlink, style => $style,);
                         $menu .= action(\%edit) if($right > 1);
-                        my $deletelink = $settings->{cgi}{mod_rewrite} ? "/delete.html&amp;delete=$id&amp;thread=$th&amp;von=$von&amp;bis=$bis" : "$ENV{SCRIPT_NAME}?action=delete&amp;delete=$id&amp;thread=$th&amp;von=$von&amp;bis=$bis";
+                        my $trdelete = translate('delete');
+                        my $deletelink = $settings->{cgi}{mod_rewrite} ? "javascript:if(confirm('$trdelete ?')) location.href='/delete.html&amp;delete=$id&amp;thread=$th&amp;von=$von&amp;bis=$bis'" : "javascript:if(confirm('$trdelete ?')) location.href='$ENV{SCRIPT_NAME}?action=delete&amp;delete=$id&amp;thread=$th&amp;von=$von&amp;bis=$bis'";
                         my %delete = (title => translate('delete'), descr => translate('delete'), src => 'delete.png', location => $deletelink, style => $style,);
                         $menu .= action(\%delete) if($right >= 5);
                         my %parameter = (path => "$settings->{cgi}{bin}/templates", style => $style, title => qq(<div style="white-space:nowrap;">$headline</div>), server => $settings->{cgi}{serverName}, id => $id, class => 'min',);
@@ -444,7 +476,7 @@ sub threadBody {
                         $win->set_resizeable(1);
                         my $h1       = qq(<tr id="trw$id"><td valign="top">) . $win->windowHeader();
                         my $readmore = translate('readmore');
-                        $reply .= qq(&#160;<a href="$replylink" class="link" >$readmore</a>) if $body =~ /\[previewende\]/;
+                        $reply .= qq(&#160;<a href="$replylink" class="link" >$readmore</a>) if $body =~ /\[previewende\]/ && $thread eq "news";
                         my $permalink = $settings->{cgi}{mod_rewrite} ? "/news$id.html" : "$ENV{SCRIPT_NAME}?action=showthread&amp;thread=$th&amp;reply=$id";
 
                         if($th eq 'news') {
@@ -466,6 +498,7 @@ sub threadBody {
 
 sub saveUpload {
         my $ufi = param('file');
+        if($right >= $settings->{upload}{right}){
         if($ufi) {
                 my $attach = (split(/[\\\/]/, param('file')))[-1];
                 my $cit = $attach =~ /^(\S+)\.[^\.]+$/ ? $1 : 0;
@@ -487,5 +520,6 @@ sub saveUpload {
                 rename "$settings->{uploads}{path}/$sra.bak", "$settings->{uploads}{path}/$cit.$type" or warn "news.pl::saveUpload: $!";
                 chmod("$settings->{'uploads'}{'chmod'}", "$settings->{uploads}{path}/$sra") if(-e "$settings->{uploads}{path}/$sra");
         }
+       }
 }
 1;

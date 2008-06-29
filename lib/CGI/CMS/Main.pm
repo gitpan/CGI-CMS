@@ -11,7 +11,7 @@ our $server;
 @CGI::CMS::Main::EXPORT_OK   = qw(all initMain Header Footer);
 %CGI::CMS::Main::EXPORT_TAGS = ('all' => [qw(initMain Header Footer)]);
 @CGI::CMS::Main::ISA         = qw( Exporter Template::Quick);
-$CGI::CMS::Main::VERSION     = '0.33';
+$CGI::CMS::Main::VERSION     = '0.34';
 $DefaultClass                = 'CGI::CMS::Main' unless defined $CGI::CMS::Main::DefaultClass;
 
 =head1 NAME
@@ -127,7 +127,7 @@ Copyright (C) 2008 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License
-as published by the Free Software Foundation; 
+as published by the Free Software Foundation;
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the

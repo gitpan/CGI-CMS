@@ -33,7 +33,7 @@ $CGI::DefaultClass      = 'CGI';
 $DefaultClass           = 'CGI::CMS' unless defined $CGI::CMS::DefaultClass;
 $defaultconfig          = '%CONFIG%';
 $CGI::AutoloadClass     = 'CGI';
-$CGI::CMS::VERSION = '0.33';
+$CGI::CMS::VERSION = '0.34';
 $mod_perl               = ($ENV{MOD_PERL}) ? 1 : 0;
 our $hold = 120;    #session ist 120 sekunden gültig.
 @ISA = qw(Exporter CGI );
@@ -119,7 +119,7 @@ Take a look in example directory.
 
 export_ok:
 
-$ACCEPT_LANGUAGE translate init session createSession $params clearSession $qy include sessionValidity includeAction 
+$ACCEPT_LANGUAGE translate init session createSession $params clearSession $qy include sessionValidity includeAction
 
 
 export tags:
@@ -331,7 +331,7 @@ sub sessionValidity {
         translate(key);
 
 see L<CGI::CMS::Translate>
- 
+
 =cut
 
 sub translate {
@@ -398,7 +398,7 @@ Copyright (C) 2008 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License
-as published by the Free Software Foundation; 
+as published by the Free Software Foundation;
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the

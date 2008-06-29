@@ -1,4 +1,3 @@
-.htaccess
 Build.PL
 cgi-bin/config/actions.pl
 cgi-bin/config/links.pl
@@ -8,13 +7,12 @@ cgi-bin/config/translate.pl
 cgi-bin/config/tree.pl
 cgi-bin/Content/addtranslate.pl
 cgi-bin/Content/admin.pl
-cgi-bin/Content/bbcodehelp.pl
-cgi-bin/Content/bbcodehelp.pl.ERR
 cgi-bin/Content/editTree.pl
 cgi-bin/Content/env.pl
 cgi-bin/Content/exploit.pl
 cgi-bin/Content/files.pl
 cgi-bin/Content/gbook.pl
+cgi-bin/Content/help.pl
 cgi-bin/Content/impressum.pl
 cgi-bin/Content/links.pl
 cgi-bin/Content/login.pl
@@ -26,6 +24,7 @@ cgi-bin/Content/search.pl
 cgi-bin/Content/tables.pl
 cgi-bin/Content/translate.pl
 cgi-bin/lze.pl
+cgi-bin/Sidebar/help.pl
 cgi-bin/Sidebar/impressum.pl
 cgi-bin/Sidebar/login.pl
 cgi-bin/Sidebar/navigation.pl
@@ -35,6 +34,7 @@ cgi-bin/Sidebar/tables.pl
 cgi-bin/Sidebar/verify.pl
 cgi-bin/templates/Crystal/blog.htm
 cgi-bin/templates/Crystal/editor.htm
+cgi-bin/templates/Crystal/enlargedEditor.htm
 cgi-bin/templates/Crystal/index.htm
 cgi-bin/templates/Crystal/lzetabwidget.htm
 cgi-bin/templates/Crystal/pages.htm
@@ -42,6 +42,7 @@ cgi-bin/templates/Crystal/tabwidget.htm
 cgi-bin/templates/Crystal/window.htm
 cgi-bin/templates/system/blog.htm
 cgi-bin/templates/system/editor.htm
+cgi-bin/templates/system/enlargedEditor.htm
 cgi-bin/templates/system/index.htm
 cgi-bin/templates/system/lzetabwidget.htm
 cgi-bin/templates/system/pages.htm
@@ -82,6 +83,7 @@ htdocs/images/mail.png
 htdocs/images/minus.png
 htdocs/images/plus.png
 htdocs/images/smiley.gif
+htdocs/images/Thumbs.db
 htdocs/javascript/content.js
 htdocs/javascript/editor.js
 htdocs/javascript/search.js
@@ -463,6 +465,7 @@ htdocs/style/system/window/wmnubg.png
 htdocs/style/system/window/wrbg.png
 htdocs/style/system/window/wrobg.png
 htdocs/style/system/window/wrubg.png
+htdocs/Thumbs.db
 lib/CGI/CMS.pm
 lib/CGI/CMS/Actions.pm
 lib/CGI/CMS/Config.pm

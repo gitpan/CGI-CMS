@@ -9,7 +9,7 @@ $DefaultClass = 'DBI::Library' unless defined $DBI::Library::DefaultClass;
                               'dynamic'     => [qw( useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute selectTable)],
                               'independent' => [qw(tableLength tableExists initDB useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute selectTable)],
 );
-$DBI::Library::VERSION = '0.33';
+$DBI::Library::VERSION = '0.34';
 $tbl                   = 'querys';
 require Exporter;
 use DBI;
@@ -481,7 +481,7 @@ sub getSelf {
 
 =head2 AUTOLOAD()
 
-statements add by addexecute can called like 
+statements add by addexecute can called like
 
 $database->showTables()
 
@@ -555,7 +555,7 @@ Copyright (C) 2006-2008 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License
-as published by the Free Software Foundation; 
+as published by the Free Software Foundation;
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the

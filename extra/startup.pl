@@ -7,7 +7,7 @@ use CGI::CMS qw(:all);
 use CGI::CMS::Settings;
 use DBI::Library qw(:all);
 use HTML::Menu::TreeView qw(:all);
-loadSettings("%PATH%/config/config.pl");
+loadSettings("%PATH%/config/settings.pl");
 use Template::Quick;
 use HTML::Window qw(:all);
 my %parameter = (path => "%PATH%/templates/", style => "Crystal", server => "%host%",);
@@ -24,7 +24,7 @@ use CGI::CMS::GUI;
 ### 3party
 use HTML::Entities;
 use CGI::QuickForm;
-use Syntax::Highlight::Perl;
+Syntax::Highlight::Engine::Kate;
 
 # Apache2 mod perl stuff
 # enable if the mod_perl 1.0 compatibility is needed

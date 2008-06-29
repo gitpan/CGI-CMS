@@ -49,7 +49,7 @@ use vars qw(
 @CGI::CMS::GUI::EXPORT = qw(action Body maxlength openFile );
 @ISA                   = qw(Exporter CGI::CMS);
 
-$CGI::CMS::GUI::VERSION = '0.33';
+$CGI::CMS::GUI::VERSION = '0.34';
 $mod_perl = ($ENV{MOD_PERL}) ? 1 : 0;
 
 local $^W = 0;
@@ -97,6 +97,7 @@ sub Body {
         size($size);
         my $cook = cookie(-name => 'size', -value => "$size", -expires => '+1y', -path => "$cookiepath");
         push @cookies, $cook;
+	undef $sid;
 
         if($action eq 'rss') {
                 print $database->rss("news", 0);
@@ -106,7 +107,7 @@ sub Body {
                         push @cookies, $cookie;
                         print header(-cookie => [@cookies]);
                         $user = 'guest';
-                        $sid  = undef;
+                        $sid = '123'
                 } elsif ($action eq 'login') {
                         my $ip = remote_addr();
                         my $u  = param('user');
@@ -119,7 +120,7 @@ sub Body {
                                 my $cyrptpass = $md5->hexdigest();
                                 if($database->checkPass($u, $cyrptpass)) {
                                         $sid = $database->setSid($u, $p, $ip);
-                                        my $cookie = cookie(-name => 'sid', -value => "$sid", -path => "$cookiepath", -expires => $settings->{cgi}{expires});
+                                        my $cookie = cookie(-name => 'sid', -value => "$sid", -path => "$cookiepath", -expires =>'+1y');
                                         push @cookies, $cookie;
                                         print header(-cookie => [@cookies]);
                                 } else {
@@ -130,11 +131,10 @@ sub Body {
                                 print header(-cookie => [@cookies]);
                         }
                 } else {
+			$sid = cookie(-name => 'sid') ? cookie(-name => 'sid') : '123';
                         print header(-cookie => [@cookies]);
-                        $sid = cookie(-name => 'sid') ? cookie(-name => 'sid') : '123';
                 }
                 $style = $settings->{cgi}{style};
-                $sid   = '123' unless defined $sid;
                 $user  = defined $database->getName($sid) ? $database->getName($sid) : "guest";
                 $von   = param('von') ? param('von') : 0;
                 $von   = ($von =~ /^(\d+)$/) ? $1 : 0;
@@ -201,10 +201,8 @@ sub Body {
                         my @lboxes = $database->fetch_AoH("select * from box where `position` = 'left' && `right` <= '$right'");
                         print '<table  border="0" cellpadding="0" cellspacing="10" summary="contentLayout" width="100%"><tr><td></td></tr>';
                         foreach (my $i = 0 ; $i <= $#lboxes ; $i++) {
-                                print '<br/>';
                                 do("$settings->{cgi}{bin}/Sidebar/$lboxes[$i]->{file}");
                                 warn "Error : $@ " if($@);
-                                print '<br/>';
                         }
                         if(defined $act->{box}) {
                                 my @boxes = split /;/, $act->{box};
@@ -287,7 +285,6 @@ sub Body {
                         foreach (my $i = 0 ; $i <= $#rboxes ; $i++) {
                                 do("$settings->{cgi}{bin}/Sidebar/$rboxes[$i]->{file}");
                                 warn "Error : $@ " if($@);
-                                print "<br/>";
                         }
                         if(defined $act->{box}) {
                                 my @boxes = split /;/, $act->{box};
@@ -382,7 +379,7 @@ sub action {
         my $location = $hash->{location} if(defined $hash->{location});
         my $style    = (defined $hash->{style}) ? $hash->{style} : $style;
         return
-          qq(<table align ="left" border ="0" cellpadding ="0" cellspacing="0" summary="layoutMenuItem"><tr><td valign ="middle"><img onclick="location.href='$location'" src="/style/$style/buttons/$src" width="20" height="20" border="0" alt="" title="$title" style="cursor:pointer;font-size:14px;vertical-align:bottom;"/></td><td><a class="link" href="$location"  style='font-size:14px;vertical-align:bottom;'>$title</a></td></tr></table>);
+          qq(<table align ="left" border ="0" cellpadding ="0" cellspacing="0" summary="layoutMenuItem"><tr><td valign ="middle"><img src="/style/$style/buttons/$src" width="20" height="20" border="0" alt="" title="$title" style="cursor:pointer;font-size:14px;vertical-align:bottom;"/></td><td><a class="link" href="$location"  style='font-size:14px;vertical-align:bottom;'>$title</a></td></tr></table>);
 }
 
 =head1 SEE ALSO
@@ -403,7 +400,7 @@ Copyright (C) 2005-2008 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License
-as published by the Free Software Foundation; 
+as published by the Free Software Foundation;
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the

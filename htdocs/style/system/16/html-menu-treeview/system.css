@@ -113,25 +113,7 @@ font-size:14px;
 height:22px;
 vertical-align:top;
 }
-td.foldersystem16 {
-background-image:url('/style/system/16/html-menu-treeview/foldersystem.gif');
-background-repeat:no-repeat;
-color:#000;
-cursor:pointer;
-font-size:14px;
-height:22px;
-vertical-align:top;
-}
-td.foldersystemClosed16 {
-background-image:url('/style/system/16/html-menu-treeview/foldersystemClosed.gif');
-background-repeat:no-repeat;
-color:#000;
-cursor:pointer;
-font-size:14px;
-height:22px;
-vertical-align:top;
-}
-td.folderFavorite16 {
+td.folderFavorite16 { */
 background-image:url('/style/system/16/html-menu-treeview/folderFavorite.gif');
 background-repeat:no-repeat;
 color:#000;

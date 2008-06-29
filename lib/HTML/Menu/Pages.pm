@@ -20,7 +20,7 @@ use vars qw(
 @HTML::Menu::Pages::EXPORT = qw(makePages);
 @ISA                       = qw(Exporter);
 
-$HTML::Menu::Pages::VERSION = '0.33';
+$HTML::Menu::Pages::VERSION = '0.34';
 
 $DefaultClass = 'HTML::Menu::Pages' unless defined $HTML::Menu::Pages::DefaultClass;
 
@@ -189,7 +189,7 @@ Copyright (C) 2006 - 2008 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License
-as published by the Free Software Foundation; 
+as published by the Free Software Foundation;
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the

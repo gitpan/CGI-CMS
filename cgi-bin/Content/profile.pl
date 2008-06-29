@@ -29,9 +29,8 @@ show_form(
                 },
         ],
         -BUTTONS => [{-name => translate('save'),},],
-        -FOOTER  => "</div><br/>",
+        -FOOTER  => '<br/></div>',
 );
-
 sub on_valid_form {
         my $firstname = param(translate('firstname'));
         my $name      = param(translate('name'));
@@ -69,7 +68,7 @@ sub on_valid_form {
           . translate('postcode') . '</td><td>' . $postcode . '</td></tr><tr><td align="left">' . translate('phone') . '</td><td>' . $phone . '</td></tr>
 <tr><td align="left">'
           . translate('email') . '</td><td>' . $email . '</td></tr>';
-        print '<tr><td align="left">' . translate('newpass') . '</td><td>' . $pass . '</td></tr>' if($newpass eq $retry);
+        print '<tr><td align="left">' . translate('newpass') . '</td><td>' . $pass . '</td></tr>' if(defined $newpass && defined $retry && $newpass eq $retry );
         print '</table>';
 }
 

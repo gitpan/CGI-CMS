@@ -3,7 +3,7 @@ sub lostpass {
         my $mail = param('mail') ? param('mail') : 'mail';
 
         print
-          qq(<br/><br/><table align="center" border="0" cellpadding="0" cellspacing="0" summary="lostpassHeader"><tr><td valign="middle"><form  action=""  target="_parent" method="post"  name="lostpass">&#160;Name:&#160;<input style="width:60px;" type="text" id="username" name="user" value="$name" maxlength="100" align="left"/>&#160;Email:&#160;<input type="hidden" name="action" value="getpass"/><input style="width:150px;" type="text" id="email" name="mail" value ="$mail" size="10"  alt="password" align="left"/>&#160;<input type="submit"  name="submit" value="submit" alt="submit" align="left" /></form></td></tr></table>);
+          qq(<br/><br/><table align="center" border="0" cellpadding="0" cellspacing="0" summary="lostpassHeader"><tr><td valign="middle"><form  action=""  target="_parent" method="post"  name="lostpass">&#160;Name:&#160;<input style="width:60px;" type="text" id="username" name="user" value="$name" maxlength="100" align="left"/>&#160;Email:&#160;<input type="hidden" name="action" value="getpass"/><input style="width:150px;" type="text" id="email" name="mail" value ="$mail" size="10"  alt="password" align="left"/>&#160;<input type="submit"  name="submit" value="Get It" alt="submit" align="left" /></form></td></tr></table><br/>);
 }
 
 sub getpass {
@@ -21,7 +21,7 @@ sub getpass {
                 use Mail::Sendmail;
                 my %mail = (To => $mail, From => $settings->{'admin'}{'email'}, subject => translate('lostpass'), Message => translate('username') . ": $name " . translate('password') . ":$pass");
                 sendmail(%mail) or warn $Mail::Sendmail::error;
-                print "<br/>", translate('mailsendet');
+                print br(), translate('mailsendet');
         } else {
                 &lostpass();
         }

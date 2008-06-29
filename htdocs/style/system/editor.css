@@ -1,5 +1,4 @@
 table.blog{
-background-color:#e6dede;
 color:#000000;
 }
 span.Variable_Array{color:#840808}
@@ -60,10 +59,10 @@ border-bottom: gray;
 border-bottom-style:dashed;
 border-bottom-width:1px;
 }
-pre { color: #000000; 
+pre { color: #000000;
       background: #FFFFFF;
       font-family: courier;
-} 
+}
 .c  { color: gray;} /* comment */
 .cm { color: #000000;} /* comma */
 .co { color: #000000;} /* colon */

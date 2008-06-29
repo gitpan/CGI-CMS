@@ -6,7 +6,7 @@ use vars qw($ACCEPT_LANGUAGE $lang $DefaultClass @EXPORT  @ISA $defaultconfig);
 @CGI::CMS::Translate::EXPORT = qw(loadTranslate saveTranslate $lang);
 use CGI::CMS::Config;
 @ISA                          = qw(Exporter CGI::CMS::Config);
-$CGI::CMS::Translate::VERSION = '0.33';
+$CGI::CMS::Translate::VERSION = '0.34';
 $DefaultClass                 = 'CGI::CMS::Translate' unless defined $CGI::CMS::Translate::DefaultClass;
 $defaultconfig                = '%CONFIG%';
 
@@ -94,7 +94,7 @@ Copyright (C) 2008 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License
-as published by the Free Software Foundation; 
+as published by the Free Software Foundation;
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the

@@ -102,6 +102,11 @@ sub openFile {
                         &showEditor("Edit File: $f<br/>", getFile($f), 'saveFile', $f);
                         last SWITCH;
                 }
+                if( $f =~/png|jpg|jpeg|gif$/ && $f =~m~/srv/www/htdocs/(.*)$~ ) {
+                            print br(),qq(<div align="center"><img alt="showImage" src="/$1" align="center"/>),br(),a({-href=>"javascript:history.back()"}, translate('back')),"</div>";
+                            last SWITCH;
+                }
+                print "Unsopported File Type",br();
         }
 }
 

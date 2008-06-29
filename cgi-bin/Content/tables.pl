@@ -9,7 +9,7 @@ sub newSql {
       <td>$exec</td>
     </tr>
     <tr>
-      <td><textarea cols="150" rows="50" name="sql" style="width:100%;height:250px;" >select * from test</textarea></td>
+      <td><textarea cols="150" rows="50" name="sql" style="width:400px;height:250px;" >select * from test</textarea></td>
     </tr>
     <tr>
       <td align="right"><input type="submit" value="Exec"/>
@@ -209,7 +209,7 @@ sub sqldump {
 }
 
 # sub change_col_typ{
-#         #ALTER TABLE table1 MODIFY ? VARCHAR(10) NOT NULL;
+#          ALTER TABLE table1 MODIFY ? VARCHAR(10) NOT NULL;
 #         my $tbl      = param('table') ? param('table') : shift;
 #         my @caption  = $database->fetch_AoH("show columns from `$tbl`");
 #         my $newentry = translate('editTable');

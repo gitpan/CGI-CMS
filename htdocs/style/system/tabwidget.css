@@ -11,7 +11,6 @@ height:24px;
 td.underline{
 background-image:url('/style/system/tabwidget/mul.png');
 background-repeat:repeat-x;
-background-color:#e6dede;
 }
 td.underR{
 background-image:url('/style/system/tabwidget/mrU.png');
@@ -37,8 +36,8 @@ td.line{
 background-image:url('/style/system/tabwidget/mul.png');
 }
 td.tabwidgetBody{
-background-color:#e6dede;
+background-color:#fff;
 }
 td.menuHeader{
-background-color:#e6dede;
+background-color:#fff;
 }

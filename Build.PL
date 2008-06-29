@@ -205,6 +205,7 @@ my $inctance = $class->new(
                      'HTML::Parser'                   => ">=3.56",
                      'Syntax::Highlight::Engine::Kate'=> ">=0.04",
                      'MD5'                            => ">=2.03",
+                     'Mail::Sendmail'                 => ">=0.79",
         },
         ($] >= 5.005 ? (AUTHOR => 'Dirk Lindner <lze@cpan.org>') : ()),
         dist_abstract      => "Weblog and CMS that runs under mod_perland and as cgi script",
@@ -282,7 +283,7 @@ unless ($skip) {
         $inctance->{properties}{dbname} = Module::Build->prompt("Enter your Mysql Database Name", $inctance->{properties}{dbname});
         $inctance->{properties}{owner} = $inctance->{properties}{owner} ? $inctance->{properties}{owner} : $ENV{USER};
         $inctance->{properties}{owner} = Module::Build->prompt("Enter your File Owner", $inctance->{properties}{owner});
-        $inctance->{properties}{group} = $inctance->{properties}{group} ? $inctance->{properties}{group} : 'wwwrun';
+        $inctance->{properties}{group} = $inctance->{properties}{group} ? $inctance->{properties}{group} : 'users';
         $inctance->{properties}{group} = Module::Build->prompt("Enter your File Owner Group", $inctance->{properties}{group});
         $inctance->{properties}{chmod} = $inctance->{properties}{chmod} ? $inctance->{properties}{chmod} : '0755';
         $inctance->{properties}{chmod} = Module::Build->prompt("Enter your Chmod!", $inctance->{properties}{chmod});
@@ -297,7 +298,7 @@ $settings = {
                      serverName   => $inctance->{properties}{server},
                      DocumentRoot => $inctance->{properties}{htd},
                      bin          => $inctance->{properties}{cgi},
-                     title        => 'Lindnerei',
+                     title        => 'CGI::CMS',
                      style        => 'Crystal',
                      mod_rewrite  => $inctance->{properties}{mod_rewrite},
                      alias        => $inctance->{properties}{alias},
@@ -305,20 +306,19 @@ $settings = {
              language      => 'en',
              defaultAction => 'news',
              scriptAlias   => $inctance->{properties}{alias},
-             uploads       => {maxlength => 2003153, path => "$inctance->{properties}{htd}/downloads/", chmod => 0644, enabled => 1},
+             uploads       => {maxlength => 2003153, path => "$inctance->{properties}{htd}/downloads/", chmod => 0644, enabled => 1,right => 4},
              tree      => {navigation => "$inctance->{properties}{cgi}/config/tree.pl", links => "$inctance->{properties}{cgi}/config/links.pl"},
-             version   => '0.33',
+             version   => '0.34',
              session   => "$inctance->{properties}{cgi}/config/session.pl",
              actions   => "$inctance->{properties}{cgi}/config/actions.pl",
              translate => "$inctance->{properties}{cgi}/config/translate.pl",
              database  => {name      => $inctance->{properties}{dbname}, host     =>  $inctance->{properties}{sqlhost}, user => $inctance->{properties}{dbuser}, password => $inctance->{properties}{dbpass},},
              sidebar   => {left      => 1,                               right    => 1},
-             news      => {maxlength => 5000,                            messages => 10},
+             news      => {maxlength => 5000,                            messages => 10, right => 4},
              size      => 22,
              htmlright => 2,
              files => {group => $inctance->{properties}{group}, owner => $inctance->{properties}{owner}, chmod => $inctance->{properties}{chmod}},
-#              sign => 1,
-             floodtime => 10,
+             floodtime => 5,
 };
 
 saveSettings("$cwd/cgi-bin/config/settings.pl");

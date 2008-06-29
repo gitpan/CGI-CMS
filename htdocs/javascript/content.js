@@ -94,13 +94,19 @@ JString.prototype.toString = function(){
 var html = 0;
 
 function enableHtml(){
-     if(html ==  false){
-          html = true;
-          document.getElementById('htmlButton').checked = true;
-     }else{
-          html = false;
-          document.getElementById('htmlButton').checked = false;
-     }
+       if(html ==  false){
+              html = true;
+              document.getElementById('htmlButton').checked = true;
+              if(document.getElementById('enlarged')){
+                     document.getElementById('enlarged').style.display ='none';
+              }
+       }else{
+              html = false;
+              document.getElementById('htmlButton').checked = false;
+              if(document.getElementById('enlarged')){
+                     document.getElementById('enlarged').style.display ='';
+              }
+       }
 }
 
 function put(t){
@@ -336,6 +342,17 @@ function printButtons(){
      }
      document.write("</tr></table>");
 }
+
+function printenlarged(){
+       if(bbcode == true){
+              print ("<form id=\"enlarged\" accept=\"text/html\" onsubmit=\"return false;\"><input type=\"button\" name=\"en\" value=\"En\" onclick=\"insertT('en')\"/><input type=\"button\" name=\"de\" value=\"De\" onclick=\"insertT('de')\"/><input type=\"button\" name=\"google\" value=\"google\" onclick=\"insertT('google')\"/><input type=\"button\" name=\"perl\" value=\"Perl\" onclick=\"insertT('code')\"/><input type=\"button\" name=\"Cpp\" value=\"C++\" onclick=\"insertT('coden=Cpp','code')\"/><input type=\"button\" name=\"Bash\" value=\"Bash\" onclick=\"insertT('coden=Bash','code')\"/><input type=\"button\" name=\"HTML\" value=\"HTML\" onclick=\"insertT('coden=HTML','code')\"/><input type=\"button\" name=\"Java\" value=\"Java\" onclick=\"insertT('coden=Java','code')\"/><input type=\"button\" name=\"Java\" value=\"Python\" onclick=\"insertT('coden=Python','code')\"/><input type=\"button\" name=\"CSS\" value=\"CSS\" onclick=\"insertT('coden=CSS','code')\"/><input type=\"button\" name=\"JavaScript\" value=\"JS\" onclick=\"insertT('coden=JavaScript','code')\"/><input type=\"button\" name=\"PHP\" value=\"PHP\" onclick=\"insertT('coden=PHP','code')\"/><input type=\"button\" name=\"Ruby\" value=\"Ruby\" onclick=\"insertT('coden=Ruby','code')\"/><input type=\"button\" name=\"XML\" value=\"XML\" onclick=\"insertT('coden=XML','code')\"/><input type=\"button\" type=\"h1\" name=\"h1\" value=\"h1\" onclick=\"insertT('h1')\"/><input type=\"button\" type=\"h2\" name=\"h2\" value=\"h2\" onclick=\"insertT('h2')\"/><input type=\"button\" type=\"h3\" name=\"h3\" value=\"h3\" onclick=\"insertT('h3')\"/><input type=\"button\" type=\"h4\" name=\"h4\" value=\"h4\" onclick=\"insertT('h4')\"/><input type=\"button\" type=\"ol\" name=\"ol\" value=\"ol\" onclick=\"insertT('ol')\"/><input type=\"button\" type=\"ul\" name=\"ul\" value=\"ul\" onclick=\"insertT('ul')\"/><input type=\"button\" type=\"li\" name=\"li\" value=\"li\" onclick=\"insertT('li')\"/></form>");
+       }
+}
+
+function print(stext){
+       document.write(stext);
+}
+
 
 function getValue(id){
      return document.getElementById(id).value;
@@ -574,7 +591,7 @@ function displayWindows(){
 function windowStatus(){
         var date = new Date();
         date = new Date(date.getTime() +1000*60*60*24*1);
-        document.cookie = 'windowStatus='+windows.join(":")+'; expires='+date.toGMTString()+';'; 
+        document.cookie = 'windowStatus='+windows.join(":")+'; expires='+date.toGMTString()+';';
 }
 function restoreStatus(){
         if(document.cookie){

@@ -7,7 +7,7 @@ use vars qw($tmp $DefaultClass @EXPORT_OK @ISA $style $mod_perl);
 @ISA                         = qw(Exporter);
 @Template::Quick::EXPORT     = qw(initTemplate appendHash Template initArray);
 %LZE::TabWidget::EXPORT_TAGS = ('all' => [qw(initTemplate appendHash Template initArray  )]);
-$Template::Quick::VERSION    = '0.33';
+$Template::Quick::VERSION    = '0.34';
 $DefaultClass                = 'Template::Quick' unless defined $Template::Quick::DefaultClass;
 our %tmplate;
 $style = 'Crystal';
@@ -64,7 +64,7 @@ sub new {
         return $self;
 }
 
-=head2 initTemplate 
+=head2 initTemplate
 
        %template = (
 
@@ -181,7 +181,7 @@ Copyright (C) 2008 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License
-as published by the Free Software Foundation; 
+as published by the Free Software Foundation;
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the

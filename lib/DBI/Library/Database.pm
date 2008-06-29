@@ -20,7 +20,7 @@ use DBI::Library qw(:all $dbh $dsn);
         'independent' => [qw(tableLength tableExists initDB useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute)],
         'lze'         => [qw(addUser hasAcount isMember createMenu catright topicright right getAction checkPass checkSession setSid getName rss readMenu deleteMessage reply editMessage addMessage rewrite checkFlood)],
 );
-$DBI::Library::Database::VERSION = '0.33';
+$DBI::Library::Database::VERSION = '0.34';
 $mod_rewrite                     = 0;
 
 =head1 NAME
@@ -77,10 +77,11 @@ sub new {
 
 sub addMessage {
         my ($self, @p) = getSelf(@_);
-        if($self->checkFlood($p[0]->{ip})) {
+# if($self->checkFlood($p[0]->{ip})) {
 
                 my $thread = defined $p[0]->{thread} ? $p[0]->{thread} : 'trash';
                 $thread = ($thread =~ /^(\w{3,50})$/) ? $1 : 'trash';
+                $thread = $dbh->quote_identifier($thread);
                 my $headline = defined $p[0]->{title} ? $p[0]->{title} : 'headline';
                 $headline = ($headline =~ /^(.{3,100})$/) ? $1 : 'Invalid headline';
                 my $user = defined $p[0]->{user} ? $p[0]->{user} : 'guest';
@@ -95,7 +96,7 @@ sub addMessage {
                 my $sth    = $dbh->prepare($sql);
                 $sth->execute($headline, $body, $attach, $cat, $rght, $user, $action, $format) or warn $dbh->errstr;
                 $sth->finish();
-        }
+#}
 }
 
 =head2 editMessage()
@@ -132,9 +133,10 @@ sub addMessage {
 
 sub editMessage {
         my ($self, @p) = getSelf(@_);
-        if($self->checkFlood($p[0]->{ip})) {
+# if($self->checkFlood($p[0]->{ip})) {
                 my $thread = defined $p[0]->{thread} ? $p[0]->{thread} : 'trash';
                 $thread = ($thread =~ /^(\w{3,50})$/) ? $1 : 'trash';
+                $thread = $dbh->quote_identifier($thread);
                 my $refid    = defined $p[0]->{id}    ? $p[0]->{id}    : 1;
                 my $headline = defined $p[0]->{title} ? $p[0]->{title} : 'headline';
                 $headline = ($headline =~ /^(.{3,100})$/) ? $1 : 'Invalid headline';
@@ -155,7 +157,7 @@ sub editMessage {
                         $sth->execute($headline, $body, $format, $user, $cat, $self->catright($cat), $refid) or warn $dbh->errstr;
                         $sth->finish();
                 }
-        }
+# }
 }
 
 =head2 reply
@@ -249,7 +251,7 @@ sub readMenu {
         while(my @data = $sth->fetchrow_array()) {
                 my $headline = $data[0];
                 my $id       = $data[1];
-                $headline =~ s/(.{20}).+/$1/;
+                $headline =~ s/(.{15}).+/$1.../;
                 my $nl = ($rewrite) ? "/$von/$bis/$thread.html#$id" : "$ENV{SCRIPT_NAME}?action=$thread&amp;von=$von&amp;bis=$bis#$id";
                 push @output, {text => $headline, href => $nl,};
         }
@@ -304,6 +306,8 @@ sub getName {
                 my $name = $sth->fetchrow_array();
                 $sth->finish();
                 return $name;
+        }else{
+                return "guest";
         }
 }
 
@@ -348,7 +352,7 @@ sub checkSession {
         my $return = 0;
 
         if(length($user) > 3 && length($ssid) > 3) {
-                my $sql = "select sid from  users where ( DAYOFMONTH(now()) =  DAYOFMONTH(date) ) && user = ?";
+                my $sql = "select sid from  users where  user = ?";
                 my $sth = $dbh->prepare($sql);
                 $sth->execute($user) or warn $dbh->errstr;
                 my $session = $sth->fetchrow_array();
@@ -512,7 +516,7 @@ sub isMember {
 
       hasAcount($email)
 
-checkt ob es die  email Adresse bereits gibt. 
+checkt ob es die  email Adresse bereits gibt.
 
 =cut
 
@@ -666,8 +670,8 @@ sub fulltext {
 
 =head2 checkFlood
 
-checked wann die letzte aktion der ip adresse war und 
-erlaubt sie nur wenn midestens time zeit zur letzen aktion vergangen ist. 
+checked wann die letzte aktion der ip adresse war und
+erlaubt sie nur wenn midestens time zeit zur letzen aktion vergangen ist.
 
 checkFlood(ip,optionaler abstand in sekunden )
 
@@ -685,14 +689,12 @@ sub checkFlood {
                 my $sth = $dbh->prepare($sql) or warn $dbh->errstr;
                 $sth->execute($ip);
                 my $ltime = $sth->fetchrow_array();
-                $sth->finish();
                 unless (defined $ltime) {
                         $self->void("insert into flood (remote_addr, ti) VALUES(?,?) ", $ip, time());
                         $return = 1;
                         $ltime  = time();
-                        return 1;
                 }
-
+                $sth->finish();
                 $return = (time()- $ltime > $min_secs) ? 1 : 0;
         }
         $self->void("update flood set ti =?  where remote_addr = ?; ", time(), $ip);
@@ -747,7 +749,7 @@ Copyright (C) 2006-2008 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License
-as published by the Free Software Foundation; 
+as published by the Free Software Foundation;
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
