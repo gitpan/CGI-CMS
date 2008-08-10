@@ -46,8 +46,21 @@ my $template = qq(
 open OUT, ">./test.html" or die " $!\n";
 print OUT $template;
 close OUT;
-my %template = (path => "./", style => "", template => "test.html",);
-my @data = ({name => 'menuHeader',}, {name => 'links', style => "Crystal", text => "Link", title => "Link"}, {name => 'menuFooter'},);
+my %template = (
+    path     => "./",
+    style    => "",
+    template => "test.html",
+);
+my @data = (
+    {name => 'menuHeader',},
+    {
+        name  => 'links',
+        style => "Crystal",
+        text  => "Link",
+        title => "Link"
+    },
+    {name => 'menuFooter'},
+);
 use Template::Quick;
 my $temp = new Template::Quick();
 $temp->initTemplate(\%template);

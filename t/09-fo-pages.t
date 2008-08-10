@@ -6,18 +6,18 @@ my $cwd  = cwd();
 my $test = new HTML::Menu::Pages;
 
 my %needed = (
-        path  => "$cwd/cgi-bin",
-        start => '20',
+    path  => "$cwd/cgi-bin",
+    start => '20',
 
-        length => '345',
+    length => '345',
 
-        style => 'Crystal',
+    style => 'Crystal',
 
-        mod_rewrite => 1,
+    mod_rewrite => 1,
 
-        action => 'dbs',
+    action => 'dbs',
 
-        linkspropage => 3,
+    linkspropage => 3,
 
 );
 

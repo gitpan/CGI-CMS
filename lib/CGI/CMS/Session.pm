@@ -6,7 +6,7 @@ use vars qw( $session $DefaultClass @EXPORT  @ISA $defaultconfig);
 @CGI::CMS::Session::EXPORT = qw(loadSession saveSession $session);
 use CGI::CMS::Config;
 @CGI::CMS::Session::ISA     = qw(Exporter CGI::CMS::Config);
-$CGI::CMS::Session::VERSION = '0.34';
+$CGI::CMS::Session::VERSION = '0.35';
 $DefaultClass               = 'CGI::CMS::Session' unless defined $CGI::CMS::Session::DefaultClass;
 $defaultconfig              = '%CONFIG%';
 
@@ -33,10 +33,10 @@ loadConfig() saveSession() $session
 =cut
 
 sub new {
-        my ($class, @initializer) = @_;
-        my $self = {};
-        bless $self, ref $class || $class || $DefaultClass;
-        return $self;
+    my ($class, @initializer) = @_;
+    my $self = {};
+    bless $self, ref $class || $class || $DefaultClass;
+    return $self;
 }
 
 =head2 loadConfig
@@ -44,11 +44,11 @@ sub new {
 =cut
 
 sub loadSession {
-        my ($self, @p) = getSelf(@_);
-        my $do = (defined $p[0]) ? $p[0] : $defaultconfig;
-        if(-e $do) {
-                do $do;
-        }
+    my ($self, @p) = getSelf(@_);
+    my $do = (defined $p[0]) ? $p[0] : $defaultconfig;
+    if(-e $do) {
+        do $do;
+    }
 }
 
 =head2 saveSession
@@ -56,9 +56,9 @@ sub loadSession {
 =cut
 
 sub saveSession {
-        my ($self, @p) = getSelf(@_);
-        my $l = defined $p[0] ? $p[0] : $defaultconfig;
-        $self->SUPER::saveConfig($l, $session, 'session');
+    my ($self, @p) = getSelf(@_);
+    my $l = defined $p[0] ? $p[0] : $defaultconfig;
+    $self->SUPER::saveConfig($l, $session, 'session');
 }
 
 =head1 Private
@@ -68,8 +68,8 @@ sub saveSession {
 =cut
 
 sub getSelf {
-        return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'CGI::CMS::Session');
-        return (defined($_[0]) && (ref($_[0]) eq 'CGI::CMS::Session' || UNIVERSAL::isa($_[0], 'CGI::CMS::Session'))) ? @_ : ($CGI::CMS::Session::DefaultClass->new, @_);
+    return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'CGI::CMS::Session');
+    return (defined($_[0]) && (ref($_[0]) eq 'CGI::CMS::Session' || UNIVERSAL::isa($_[0], 'CGI::CMS::Session'))) ? @_ : ($CGI::CMS::Session::DefaultClass->new, @_);
 }
 
 1;

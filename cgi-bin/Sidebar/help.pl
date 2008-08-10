@@ -1,4 +1,11 @@
-my %parameter = (path => $settings->{cgi}{bin} . '/templates', style => $style, title => translate('help'), server => $settings->{cgi}{serverName}, id => 'nlogin', class => 'sidebar',);
+my %parameter = (
+    path   => $settings->{cgi}{bin} . '/templates',
+    style  => $style,
+    title  => translate('help'),
+    server => $settings->{cgi}{serverName},
+    id     => 'nlogin',
+    class  => 'sidebar',
+);
 my $window = new HTML::Window(\%parameter);
 $window->set_closeable(1);
 $window->set_moveable(1);

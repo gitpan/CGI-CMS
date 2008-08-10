@@ -1,5 +1,12 @@
 
-my %parameter = (path => $settings->{cgi}{bin} . '/templates', style => $style, title => 'Impressum', server => $settings->{serverName}, id => 'umpres', class => 'min',);
+my %parameter = (
+    path   => $settings->{cgi}{bin} . '/templates',
+    style  => $style,
+    title  => 'Impressum',
+    server => $settings->{serverName},
+    id     => 'umpres',
+    class  => 'min',
+);
 my $window = new HTML::Window(\%parameter);
 $window->set_closeable(0);
 $window->set_moveable(0);

@@ -2,14 +2,14 @@ package DBI::Library;
 use strict;
 use warnings;
 use vars qw( $dbh $dsn $DefaultClass $settings  @EXPORT_OK @ISA %functions $style $right $tbl);
-$DefaultClass = 'DBI::Library' unless defined $DBI::Library::DefaultClass;
-@DBI::Library::EXPORT_OK = qw( useexecute quote void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute tableLength tableExists initDB $dsn $dbh selectTable);
+$DefaultClass              = 'DBI::Library' unless defined $DBI::Library::DefaultClass;
+@DBI::Library::EXPORT_OK   = qw( useexecute quote void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute tableLength tableExists initDB $dsn $dbh selectTable);
 %DBI::Library::EXPORT_TAGS = (
-                              'all'         => [qw( useexecute quote void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute tableLength tableExists initDB selectTable)],
-                              'dynamic'     => [qw( useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute selectTable)],
-                              'independent' => [qw(tableLength tableExists initDB useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute selectTable)],
+    'all'         => [qw( useexecute quote void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute tableLength tableExists initDB selectTable)],
+    'dynamic'     => [qw( useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute selectTable)],
+    'independent' => [qw(tableLength tableExists initDB useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute selectTable)],
 );
-$DBI::Library::VERSION = '0.34';
+$DBI::Library::VERSION = '0.35';
 $tbl                   = 'querys';
 require Exporter;
 use DBI;
@@ -30,13 +30,11 @@ use DBI::Library qw(:all);
 
 my $dbh = initDB({name => 'LZE',host => 'localhost',user => 'root',password =>'',style=> 'Crystal'});
 
-
-
 OO Syntax
 
 use DBI::Library;
 
-        my $database = new DBI::Library(
+        my ($database,$dbh) = new DBI::Library(
 
                 {
 
@@ -73,7 +71,7 @@ use DBI::Library;
 =head2 Export Tags
 
 :all
-    execute useexecute quote void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute       addexecute tableLength tableExists initDB
+    execute useexecute quote void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute  addexecute tableLength tableExists initDB
 
 :dynamic execute useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute
 
@@ -89,7 +87,7 @@ DBI::Library is a DBI subclass providing a dynamic SQL Libary.
 
         my $database = new DBI::Library();
 
-        if y
+
         my ($database,$dbh) = new DBI::Library(
 
                                         {
@@ -109,13 +107,13 @@ DBI::Library is a DBI subclass providing a dynamic SQL Libary.
 =cut
 
 sub new {
-        my ($class, @initializer) = @_;
-        my $self = {};
-        my $dbh;
-        bless $self, ref $class || $class || $DefaultClass;
-        $dbh = $self->initDB(@initializer) if(@initializer);
-        return ($self, $dbh) if $dbh;
-        return $self;
+    my ($class, @initializer) = @_;
+    my $self = {};
+    my $dbh;
+    bless $self, ref $class || $class || $DefaultClass;
+    $dbh = $self->initDB(@initializer) if(@initializer);
+    return ($self, $dbh) if $dbh;
+    return $self;
 }
 
 =head2 initDB()
@@ -138,22 +136,29 @@ sub new {
 =cut
 
 sub initDB {
-        my ($self, @p) = getSelf(@_);
-        my $hash     = $p[0];
-        my $database = defined $hash->{name} ? $hash->{name} : 'LZE';
-        my $host     = defined $hash->{host} ? $hash->{host} : 'localhost';
-        my $user     = defined $hash->{user} ? $hash->{user} : 'root';
-        my $pass     = defined $hash->{password} ? $hash->{password} : '';
-        my $install  = defined $hash->{install} ? $hash->{install} : 0;
-        $style = defined $hash->{style} ? $hash->{style} : 'Crystal';
-        $dsn   = "DBI:mysql:database=$database;host=$host";
-        $dbh   = DBI::Library->connect($dsn, $user, $pass, {RaiseError => 1, PrintError => 0, AutoCommit => 1,}) or warn "DBI::Library::errs";
-
-        unless ($install) {
-                my @q = $self->fetch_array("select title from querys");
-                $functions{$_} = $_ foreach (@q);
+    my ($self, @p) = getSelf(@_);
+    my $hash     = $p[0];
+    my $database = defined $hash->{name} ? $hash->{name} : 'LZE';
+    my $host     = defined $hash->{host} ? $hash->{host} : 'localhost';
+    my $user     = defined $hash->{user} ? $hash->{user} : 'root';
+    my $pass     = defined $hash->{password} ? $hash->{password} : '';
+    my $install  = defined $hash->{install} ? $hash->{install} : 0;
+    $style = defined $hash->{style} ? $hash->{style} : 'Crystal';
+    $dsn   = "DBI:mysql:database=$database;host=$host";
+    $dbh   = DBI::Library->connect(
+        $dsn, $user, $pass,
+        {
+            RaiseError => 1,
+            PrintError => 0,
+            AutoCommit => 1,
         }
-        return $dbh;
+    ) or warn "DBI::Library::errs";
+
+    unless ($install) {
+        my @q = $self->fetch_array("select title from querys");
+        $functions{$_} = $_ foreach (@q);
+    }
+    return $dbh;
 }
 
 =head1 independent functions
@@ -165,11 +170,11 @@ $bool =  $database->tableExists($table);
 =cut
 
 sub tableExists {
-        my ($self, @p) = getSelf(@_);
-        my $table     = $dbh->quote($p[0]);
-        my $db_clause = "";
-        ($db_clause, $table) = (" FROM $1", $2) if $table =~ /(.*)\.(.*)/;
-        return ($dbh->selectrow_array("SHOW TABLES $db_clause LIKE $table"));
+    my ($self, @p) = getSelf(@_);
+    my $table     = $dbh->quote($p[0]);
+    my $db_clause = "";
+    ($db_clause, $table) = (" FROM $1", $2) if $table =~ /(.*)\.(.*)/;
+    return ($dbh->selectrow_array("SHOW TABLES $db_clause LIKE $table"));
 }
 
 =head2 tableLength
@@ -179,18 +184,18 @@ $length  = $database->tableLength($table);
 =cut
 
 sub tableLength {
-        my ($self, @p) = getSelf(@_);
-        my $table = $dbh->quote_identifier($p[0]);
-        my $sql   = "select count(*) from $table";
-        if($self->tableExists($p[0])) {
-                my $sth = $dbh->prepare($sql) or warn $dbh->errstr;
-                $sth->execute() or warn $dbh->errstr;
-                my $length = $sth->fetchrow_array;
-                $sth->finish();
-                return $length;
-        } else {
-                return 0;
-        }
+    my ($self, @p) = getSelf(@_);
+    my $table = $dbh->quote_identifier($p[0]);
+    my $sql   = "select count(*) from $table";
+    if($self->tableExists($p[0])) {
+        my $sth = $dbh->prepare($sql) or warn $dbh->errstr;
+        $sth->execute() or warn $dbh->errstr;
+        my $length = $sth->fetchrow_array;
+        $sth->finish();
+        return $length;
+    } else {
+        return 0;
+    }
 }
 
 =head1 dynamic statements
@@ -222,21 +227,21 @@ Fo Syntax:
 =cut
 
 sub addexecute {
-        my ($self, @p) = getSelf(@_);
-        my $hash        = $p[0];
-        my $title       = ((defined $hash->{title})) ? $hash->{title} : 0;
-        my $sql         = $hash->{sql} if((defined $hash->{sql}));
-        my $description = $hash->{description} if(defined $hash->{description});
-        my $return      = $hash->{'return'} if(defined $hash->{'return'});
-        unless ($functions{$title}) {
-                my $sql_addexecute = qq/INSERT INTO querys(`title`,`sql`,`description`,`return`) VALUES(?,?,?,?);/;
-                my $sth            = $dbh->prepare($sql_addexecute);
-                $sth->execute($title, $sql, $description, $return) or warn $dbh->errstr;
-                $sth->finish();
-                $self->updateModules();
-        } else {
-                return 0;
-        }
+    my ($self, @p) = getSelf(@_);
+    my $hash        = $p[0];
+    my $title       = ((defined $hash->{title})) ? $hash->{title} : 0;
+    my $sql         = $hash->{sql} if((defined $hash->{sql}));
+    my $description = $hash->{description} if(defined $hash->{description});
+    my $return      = $hash->{'return'} if(defined $hash->{'return'});
+    unless ($functions{$title}) {
+        my $sql_addexecute = qq/INSERT INTO querys(`title`,`sql`,`description`,`return`) VALUES(?,?,?,?);/;
+        my $sth            = $dbh->prepare($sql_addexecute);
+        $sth->execute($title, $sql, $description, $return) or warn $dbh->errstr;
+        $sth->finish();
+        $self->updateModules();
+    } else {
+        return 0;
+    }
 }
 
 =head2 editexecute
@@ -260,23 +265,23 @@ sub addexecute {
 =cut
 
 sub editexecute {
-        my ($self, @p) = getSelf(@_);
-        my $hash        = $p[0];
-        my $title       = ((defined $hash->{title})) ? $hash->{title} : 0;
-        my $newTitle    = ((defined $hash->{newTitle})) ? $hash->{newTitle} : $title;
-        my $sql         = $hash->{sql} if((defined $hash->{sql}));
-        my $description = $hash->{description} if(defined $hash->{description});
-        my $return      = (defined $hash->{'return'}) ? $hash->{'return'} : 'array';
+    my ($self, @p) = getSelf(@_);
+    my $hash        = $p[0];
+    my $title       = ((defined $hash->{title})) ? $hash->{title} : 0;
+    my $newTitle    = ((defined $hash->{newTitle})) ? $hash->{newTitle} : $title;
+    my $sql         = $hash->{sql} if((defined $hash->{sql}));
+    my $description = $hash->{description} if(defined $hash->{description});
+    my $return      = (defined $hash->{'return'}) ? $hash->{'return'} : 'array';
 
-        if($functions{$title}) {
-                my $sql_edit = qq(update querys set title = ?, sql=? ,description=?,return=? where title = ? );
-                my $sth      = $dbh->prepare($sql_edit);
-                $sth->execute($newTitle, $sql, $description, $return, $title) or warn $dbh->errstr;
-                $sth->finish();
+    if($functions{$title}) {
+        my $sql_edit = qq(update querys set title = ?, sql=? ,description=?,return=? where title = ? );
+        my $sth      = $dbh->prepare($sql_edit);
+        $sth->execute($newTitle, $sql, $description, $return, $title) or warn $dbh->errstr;
+        $sth->finish();
 
-        } else {
-                return 0;
-        }
+    } else {
+        return 0;
+    }
 }
 
 =head2 useexecute()
@@ -304,21 +309,21 @@ example:
 =cut
 
 sub useexecute {
-        my ($self, @p) = getSelf(@_);
-        my $title = shift(@p);
-        my $sql = "select `sql`,`return` from querys where `title` = ?";
-        my $sth = $dbh->prepare($sql);
-        $sth->execute($title) or warn $dbh->errstr;
-        my ($sqlexec, $return) = $sth->fetchrow_array();
-        $sqlexec =~ s/<TABLE>/$tbl/g;
-        if(ref  $p[0]  eq 'HASH') {
-                my $ref = shift(@p);
-                foreach my $key (keys %{$ref->{identifier}}) {
-                        $sqlexec =~ s/table_$key/$dbh->quote_identifier($ref->{identifier}{$key})/ge;
-                }
+    my ($self, @p) = getSelf(@_);
+    my $title = shift(@p);
+    my $sql   = "select `sql`,`return` from querys where `title` = ?";
+    my $sth   = $dbh->prepare($sql);
+    $sth->execute($title) or warn $dbh->errstr;
+    my ($sqlexec, $return) = $sth->fetchrow_array();
+    $sqlexec =~ s/<TABLE>/$tbl/g;
+    if(ref $p[0] eq 'HASH') {
+        my $ref = shift(@p);
+        foreach my $key (keys %{$ref->{identifier}}) {
+            $sqlexec =~ s/table_$key/$dbh->quote_identifier($ref->{identifier}{$key})/ge;
         }
-        $sth->finish();
-        return eval(" \$self->$return(\$sqlexec,\@p)");
+    }
+    $sth->finish();
+    return eval(" \$self->$return(\$sqlexec,\@p)");
 }
 
 =head2 deleteexecute()
@@ -328,12 +333,12 @@ sub useexecute {
 =cut
 
 sub deleteexecute {
-        my ($self, @p) = getSelf(@_);
-        my $id         = $p[0];
-        my $sql_delete = "DELETE FROM querys Where title  = ?";
-        my $sth        = $dbh->prepare($sql_delete);
-        $sth->execute($id) or warn $dbh->errstr;
-        $sth->finish();
+    my ($self, @p) = getSelf(@_);
+    my $id         = $p[0];
+    my $sql_delete = "DELETE FROM querys Where title  = ?";
+    my $sth        = $dbh->prepare($sql_delete);
+    $sth->execute($id) or warn $dbh->errstr;
+    $sth->finish();
 }
 
 =head2 fetch_array()
@@ -343,10 +348,10 @@ sub deleteexecute {
 =cut
 
 sub fetch_array {
-        my ($self, @p) = getSelf(@_);
-        my $sql = shift @p;
-        my @r;
-        eval('
+    my ($self, @p) = getSelf(@_);
+    my $sql = shift @p;
+    my @r;
+    eval('
 my $sth = $dbh->prepare($sql);
 if(defined $p[0]) {
 $sth->execute(@p) or warn $dbh->errstr;
@@ -357,8 +362,8 @@ while(my @comms = $sth->fetchrow_array()) {
 push(@r, @comms);
 }
 $sth->finish();');
-        @r = $@ if $@;
-        return @r;
+    @r = $@ if $@;
+    return @r;
 }
 
 =head2 fetch_AoH()
@@ -368,10 +373,10 @@ $sth->finish();');
 =cut
 
 sub fetch_AoH {
-        my ($self, @p) = getSelf(@_);
-        my $sql = shift @p;
-        my @r;
-        eval('
+    my ($self, @p) = getSelf(@_);
+    my $sql = shift @p;
+    my @r;
+    eval('
 my $sth = $dbh->prepare($sql);
 if(defined $p[0]) {
 $sth->execute(@p) or warn $dbh->errstr;
@@ -382,8 +387,8 @@ while(my $h = $sth->fetchrow_hashref) {
 push(@r, $h);
 }
 $sth->finish();');
-        @r = $@ if $@;
-        return @r;
+    @r = $@ if $@;
+    return @r;
 }
 
 =head2 fetch_hashref()
@@ -393,10 +398,10 @@ $hashref = $database->fetch_hashref($sql)
 =cut
 
 sub fetch_hashref {
-        my ($self, @p) = getSelf(@_);
-        my $sql = shift @p;
-        my $h;
-        eval('
+    my ($self, @p) = getSelf(@_);
+    my $sql = shift @p;
+    my $h;
+    eval('
 my $sth = $dbh->prepare($sql);
 if(defined $p[0]) {
 $sth->execute(@p) or warn $dbh->errstr;
@@ -407,8 +412,8 @@ my @r;
 $h = $sth->fetchrow_hashref();
 $sth->finish();
 ');
-        $h = "$@" if $@;
-        return $h;
+    $h = "$@" if $@;
+    return $h;
 }
 
 =head2 void()
@@ -418,17 +423,17 @@ void(sql)
 =cut
 
 sub void {
-        my ($self, @p) = getSelf(@_);
-        my $sql = shift @p;
-        my $sth = $dbh->prepare($sql);
-        eval('
+    my ($self, @p) = getSelf(@_);
+    my $sql = shift @p;
+    my $sth = $dbh->prepare($sql);
+    eval('
 if(defined $p[0]) {
 $sth->execute(@p) or warn $dbh->errstr;
 } else {
 $sth->execute() or warn $dbh->errstr;
 }');
-        $sth->finish();
-        return "$@" if $@;
+    $sth->finish();
+    return "$@" if $@;
 }
 
 =head2 quote()
@@ -438,9 +443,9 @@ $sth->execute() or warn $dbh->errstr;
 =cut
 
 sub quote {
-        my ($self, @p) = getSelf(@_);
-        my $sql = $p[0];
-        return $dbh->quote($sql);
+    my ($self, @p) = getSelf(@_);
+    my $sql = $p[0];
+    return $dbh->quote($sql);
 }
 
 =head2 selectTable
@@ -454,8 +459,8 @@ default : querys;
 =cut
 
 sub selectTable {
-        my ($self, @p) = getSelf(@_);
-        $tbl = $dbh->quote_identifier($p[0]);
+    my ($self, @p) = getSelf(@_);
+    $tbl = $dbh->quote_identifier($p[0]);
 }
 
 =head1 Privat
@@ -465,9 +470,9 @@ sub selectTable {
 =cut
 
 sub updateModules {
-        my ($self, @p) = getSelf(@_);
-        my @q = $self->fetch_array("select title from querys");
-        $functions{$_} = $_ foreach (@q);
+    my ($self, @p) = getSelf(@_);
+    my @q = $self->fetch_array("select title from querys");
+    $functions{$_} = $_ foreach (@q);
 }
 
 =head2 getSelf()
@@ -475,8 +480,8 @@ sub updateModules {
 =cut
 
 sub getSelf {
-        return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'DBI::Library');
-        return (defined($_[0]) && (ref($_[0]) eq 'DBI::Library' || UNIVERSAL::isa($_[0], 'DBI::Library'))) ? @_ : ($DBI::Library::DefaultClass->new, @_);
+    return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'DBI::Library');
+    return (defined($_[0]) && (ref($_[0]) eq 'DBI::Library' || UNIVERSAL::isa($_[0], 'DBI::Library'))) ? @_ : ($DBI::Library::DefaultClass->new, @_);
 }
 
 =head2 AUTOLOAD()
@@ -488,18 +493,18 @@ $database->showTables()
 =cut
 
 sub AUTOLOAD {
-        my ($self, @p) = getSelf(@_);
-        our $AUTOLOAD;
-        if($AUTOLOAD =~ /.*::(\w+)$/ and grep $1 eq $_, %functions) {
-                my $attr = $1;
-                {
-                        no strict 'refs';
-                        *{$AUTOLOAD} = sub {
-                                $self->useexecute($attr, @p);
-                        };
-                }
-                goto &{$AUTOLOAD};
+    my ($self, @p) = getSelf(@_);
+    our $AUTOLOAD;
+    if($AUTOLOAD =~ /.*::(\w+)$/ and grep $1 eq $_, %functions) {
+        my $attr = $1;
+        {
+            no strict 'refs';
+            *{$AUTOLOAD} = sub {
+                $self->useexecute($attr, @p);
+            };
         }
+        goto &{$AUTOLOAD};
+    }
 }
 
 package DBI::Library::db;
@@ -512,9 +517,9 @@ use vars qw(@ISA);
 =cut
 
 sub prepare {
-        my ($dbh, @args) = @_;
-        my $sth = $dbh->SUPER::prepare(@args) or return;
-        return $sth;
+    my ($dbh, @args) = @_;
+    my $sth = $dbh->SUPER::prepare(@args) or return;
+    return $sth;
 }
 
 package DBI::Library::st;
@@ -527,11 +532,11 @@ use vars qw(@ISA);
 =cut
 
 sub execute {
-        my ($sth, @args) = @_;
-        my $rv;
-        eval('$rv = $sth->SUPER::execute(@args)');
-        return "$@" if $@;
-        return $rv;
+    my ($sth, @args) = @_;
+    my $rv;
+    eval('$rv = $sth->SUPER::execute(@args)');
+    return "$@" if $@;
+    return $rv;
 }
 
 =head2 fetch()
@@ -540,16 +545,16 @@ sub execute {
 =cut
 
 sub fetch {
-        my ($sth, @args) = @_;
-        my $row = $sth->SUPER::fetch(@args) or return;
-        return $row;
+    my ($sth, @args) = @_;
+    my $row = $sth->SUPER::fetch(@args) or return;
+    return $row;
 }
 
 =head1 AUTHOR
 
 Dirk Lindner <lze@cpan.org>
 
-=head1 COPYRIGHT AND LICENSE
+=head1 LICENSE
 
 Copyright (C) 2006-2008 by Hr. Dirk Lindner
 

@@ -1,6 +1,13 @@
 my $serverdir = $settings->{cgi}{serverName};
-my %parameter = (path => $settings->{cgi}{bin} . '/templates', style => $style, title => '&#160;Admin Center', server => $settings->{cgi}{serverName}, id => 'aboutWindow', class => 'max',);
-my $window    = new HTML::Window(\%parameter);
+my %parameter = (
+    path   => $settings->{cgi}{bin} . '/templates',
+    style  => $style,
+    title  => '&#160;Admin Center',
+    server => $settings->{cgi}{serverName},
+    id     => 'aboutWindow',
+    class  => 'max',
+);
+my $window = new HTML::Window(\%parameter);
 $window->set_closeable(0);
 $window->set_moveable(0);
 $window->set_resizeable(0);
@@ -12,21 +19,21 @@ print
 print $window->windowFooter();
 
 sub deleteExploit {
-        my $id = param('id');
-        $database->void("DELETE FROM exploit where id  = ?", $id);
-        &showExploits();
+    my $id = param('id');
+    $database->void("DELETE FROM exploit where id  = ?", $id);
+    &showExploits();
 }
 
 sub showExploits {
-        my @exploit = $database->fetch_AoH("select * from exploit");
+    my @exploit = $database->fetch_AoH("select * from exploit");
 
-        print q(<div align="center" style="width:95%;overflow:auto;"><h3>Exploits</h3>);
-        for(my $i = 0 ; $i <= $#exploit ; $i++) {
-                print "<hr/>";
-                foreach my $key (keys %{$exploit[$i]}) {
-                        print "<b>$key:</b> ", $exploit[$i]->{$key}, br();
-                }
-                print qq(<a href="$ENV{SCRIPT_NAME}?action=deleteExploit&amp;id=$exploit[$i]->{id}">Delete</a>);
+    print q(<div align="center" style="width:95%;overflow:auto;"><h3>Exploits</h3>);
+    for(my $i = 0 ; $i <= $#exploit ; $i++) {
+        print "<hr/>";
+        foreach my $key (keys %{$exploit[$i]}) {
+            print "<b>$key:</b> ", $exploit[$i]->{$key}, br();
         }
-       print q(</div>);
+        print qq(<a href="$ENV{SCRIPT_NAME}?action=deleteExploit&amp;id=$exploit[$i]->{id}">Delete</a>);
+    }
+    print q(</div>);
 }

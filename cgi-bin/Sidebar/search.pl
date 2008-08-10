@@ -1,4 +1,11 @@
-my %parameter = (path => $settings->{cgi}{bin} . '/templates', style => $style, title => "&#160;Suchen", server => $settings->{cgi}{serverName}, id => "search1", class => "sidbar",);
+my %parameter = (
+    path   => $settings->{cgi}{bin} . '/templates',
+    style  => $style,
+    title  => "&#160;Suchen",
+    server => $settings->{cgi}{serverName},
+    id     => "search1",
+    class  => "sidbar",
+);
 my $window = new HTML::Window(\%parameter);
 $window->set_closeable(0);
 $window->set_moveable(1);

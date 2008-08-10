@@ -2,11 +2,27 @@ use lib qw(lib/);
 use HTML::TabWidget qw(:all);
 use Test::More tests => 3;
 use Cwd;
-my $cwd = cwd();
+my $cwd       = cwd();
 my %parameter = (
-                 style   => 'Crystal',
-                 path    => "$cwd/cgi-bin/templates",
-                 anchors => [{text => 'HTML::TabWidget ', href => "href", class => 'currentLink', src => 'link.png'}, {text => 'Next', class => 'links',}, {text => 'Dynamic Tab', href => 'javascript:displayhidden()', class => 'javaScriptLink',}],
+    style   => 'Crystal',
+    path    => "$cwd/cgi-bin/templates",
+    anchors => [
+        {
+            text  => 'HTML::TabWidget ',
+            href  => "href",
+            class => 'currentLink',
+            src   => 'link.png'
+        },
+        {
+            text  => 'Next',
+            class => 'links',
+        },
+        {
+            text  => 'Dynamic Tab',
+            href  => 'javascript:displayhidden()',
+            class => 'javaScriptLink',
+        }
+    ],
 );
 initTabWidget(\%parameter);
 my $m   = Menu(\%parameter);

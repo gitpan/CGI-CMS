@@ -11,9 +11,17 @@ ok(translate('username')  eq 'User');
 ok($lang->{de}{firstname} eq 'Vorname');
 ok($lang->{en}{username}  eq 'User');
 init("t/settings.pl");
-my %vars = (user => 'guest', action => 'main', file => "t/content.pl", sub => 'main');
+my %vars = (
+    user   => 'guest',
+    action => 'main',
+    file   => "t/content.pl",
+    sub    => 'main'
+);
 my $qstring = createSession(\%vars);
-param(-name => 'include', -value => $qstring);
+param(
+    -name  => 'include',
+    -value => $qstring
+);
 include($qstring);
 ok($params->{test} eq "OK");
 clearSession();

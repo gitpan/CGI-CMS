@@ -30,14 +30,14 @@ $VAR1 = {
                        'town' => 'Berlin'
                      },
           'language' => 'en',
-          'version' => '0.34',
+          'version' => '0.35',
           'cgi' => {
                      'bin' => '/srv/www/cgi-bin',
                      'style' => 'Crystal',
                      'serverName' => 'localhost',
                      'cookiePath' => '/',
                      'title' => 'CGI::CMS',
-                     'mod_rewrite' => 0,
+                     'mod_rewrite' => '1',
                      'alias' => 'cgi-bin',
                      'DocumentRoot' => '/srv/www//htdocs',
                      'expires' => '+1y'

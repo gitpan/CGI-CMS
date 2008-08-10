@@ -10,12 +10,29 @@ use HTML::Menu::TreeView qw(:all);
 loadSettings("%PATH%/config/settings.pl");
 use Template::Quick;
 use HTML::Window qw(:all);
-my %parameter = (path => "%PATH%/templates/", style => "Crystal", server => "%host%",);
+my %parameter = (
+    path   => "%PATH%/templates/",
+    style  => "Crystal",
+    server => "%host%",
+);
 use CGI::CMS::Main qw(:all);
-initMain({template => 'blog.htm', path => "%PATH%/templates/", style => "Crystal", template => 'blog.htm'});
+initMain(
+    {
+        template => 'blog.htm',
+        path     => "%PATH%/templates/",
+        style    => "Crystal",
+        template => 'blog.htm'
+    }
+);
 initWindow(\%parameter);
 use HTML::TabWidget qw(:all);
-initTabWidget({template => 'lzetabwidget.htm', path => "%PATH%/templates/", style => "Crystal",});
+initTabWidget(
+    {
+        template => 'lzetabwidget.htm',
+        path     => "%PATH%/templates/",
+        style    => "Crystal",
+    }
+);
 use HTML::Menu::Pages;
 use HTML::Editor;
 use HTML::Editor::BBCODE;

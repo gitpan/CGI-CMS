@@ -4,8 +4,20 @@ use lib qw( lib/);
 use DBI::Library qw(:independent );
 use vars qw($db $user $host $password);
 do('t/config.pl');
-my $dbh = initDB({name => $db, host => $host, user => $user, password => $password,});
-my %execute4 = (title => 'select', description => 'Fo-test', sql => "select *from <TABLE> where `title` = ?", return => "fetch_hashref");
+my $dbh = initDB(
+    {
+        name     => $db,
+        host     => $host,
+        user     => $user,
+        password => $password,
+    }
+);
+my %execute4 = (
+    title       => 'select',
+    description => 'Fo-test',
+    sql         => "select *from <TABLE> where `title` = ?",
+    return      => "fetch_hashref"
+);
 void('truncate querys');
 addexecute(\%execute4);
 my $showTables = useexecute('select', 'select');

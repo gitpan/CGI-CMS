@@ -6,7 +6,7 @@ use vars qw($DefaultClass @ISA  $mod_perl);
 our $style;
 use Template::Quick;
 @HTML::TabWidget::ISA         = qw( Exporter Template::Quick);
-$HTML::TabWidget::VERSION     = '0.34';
+$HTML::TabWidget::VERSION     = '0.35';
 $DefaultClass                 = 'HTML::TabWidget' unless defined $HTML::TabWidget::DefaultClass;
 @HTML::TabWidget::EXPORT_OK   = qw(initTabWidget Menu tabwidgetHeader tabwidgetFooter);
 %HTML::TabWidget::EXPORT_TAGS = ('all' => [qw(initTabWidget tabwidgetHeader Menu tabwidgetFooter)]);
@@ -115,11 +115,11 @@ Here is a list of the function sets you can import:
 =cut
 
 sub new {
-        my ($class, @initializer) = @_;
-        my $self = {};
-        bless $self, ref $class || $class || $DefaultClass;
-        $self->initTabWidget(@initializer) if(@initializer && !$mod_perl);
-        return $self;
+    my ($class, @initializer) = @_;
+    my $self = {};
+    bless $self, ref $class || $class || $DefaultClass;
+    $self->initTabWidget(@initializer) if(@initializer && !$mod_perl);
+    return $self;
 }
 
 =head2 initTabWidget
@@ -129,13 +129,17 @@ sub new {
 =cut
 
 sub initTabWidget {
-        my ($self, @p) = getSelf(@_);
-        $style = $p[0]->{style};
-        my $tmplt = defined $p[0]->{template} ? $p[0]->{template} : "tabwidget.htm";
+    my ($self, @p) = getSelf(@_);
+    $style = $p[0]->{style};
+    my $tmplt = defined $p[0]->{template} ? $p[0]->{template} : "tabwidget.htm";
 
-        # default style
-        my %template = (path => $p[0]->{path}, style => $style, template => $tmplt,);
-        $self->SUPER::initTemplate(\%template);
+    # default style
+    my %template = (
+        path     => $p[0]->{path},
+        style    => $style,
+        template => $tmplt,
+    );
+    $self->SUPER::initTemplate(\%template);
 }
 
 =head2 Menu()
@@ -145,21 +149,32 @@ sub initTabWidget {
 =cut
 
 sub Menu {
-        my ($self, @p) = getSelf(@_);
-        my $hash = $p[0];
-        $self->initTabWidget($hash) unless $mod_perl;
-        my %header = (name => 'menuHeader');
-        my $m = $self->SUPER::appendHash(\%header);
-        for(my $i = 0 ; $i < @{$hash->{anchors}} ; $i++) {
-                my $src   = (defined $hash->{anchors}[$i]->{src})   ? $hash->{anchors}[$i]->{src}   : 'link.png';
-                my $title = (defined $hash->{anchors}[$i]->{title}) ? $hash->{anchors}[$i]->{title} : $hash->{anchors}[$i]->{text};
-                my %action = (title => $title, text => $hash->{anchors}[$i]->{text}, href => $hash->{anchors}[$i]->{href}, src => $src);
-                my %LINK = (name => $hash->{anchors}[$i]->{class}, style => $style, text => $self->action(\%action), title => $hash->{anchors}[$i]->{title}, $src);
-                $m .= $self->SUPER::appendHash(\%LINK);
-        }
-        my %footer = (name => 'menuFooter');
-        $m .= $self->SUPER::appendHash(\%footer);
-        return $m;
+    my ($self, @p) = getSelf(@_);
+    my $hash = $p[0];
+    $self->initTabWidget($hash) unless $mod_perl;
+    my %header = (name => 'menuHeader');
+    my $m = $self->SUPER::appendHash(\%header);
+    for(my $i = 0 ; $i < @{$hash->{anchors}} ; $i++) {
+        my $src   = (defined $hash->{anchors}[$i]->{src})   ? $hash->{anchors}[$i]->{src}   : 'link.png';
+        my $title = (defined $hash->{anchors}[$i]->{title}) ? $hash->{anchors}[$i]->{title} : $hash->{anchors}[$i]->{text};
+        my %action = (
+            title => $title,
+            text  => $hash->{anchors}[$i]->{text},
+            href  => $hash->{anchors}[$i]->{href},
+            src   => $src
+        );
+        my %LINK = (
+            name  => $hash->{anchors}[$i]->{class},
+            style => $style,
+            text  => $self->action(\%action),
+            title => $hash->{anchors}[$i]->{title},
+            $src
+        );
+        $m .= $self->SUPER::appendHash(\%LINK);
+    }
+    my %footer = (name => 'menuFooter');
+    $m .= $self->SUPER::appendHash(\%footer);
+    return $m;
 }
 
 =head2 tabwidgetHeader()
@@ -169,9 +184,12 @@ sub Menu {
 =cut
 
 sub tabwidgetHeader {
-        my ($self, @p) = getSelf(@_);
-        my %header = (name => 'bheader', style => $style,);
-        $self->SUPER::appendHash(\%header);
+    my ($self, @p) = getSelf(@_);
+    my %header = (
+        name  => 'bheader',
+        style => $style,
+    );
+    $self->SUPER::appendHash(\%header);
 }
 
 =head2 tabwidgetFooter()
@@ -181,9 +199,12 @@ sub tabwidgetHeader {
 =cut
 
 sub tabwidgetFooter {
-        my ($self, @p) = getSelf(@_);
-        my %footer = (name => 'bfooter', style => $style,);
-        $self->SUPER::appendHash(\%footer);
+    my ($self, @p) = getSelf(@_);
+    my %footer = (
+        name  => 'bfooter',
+        style => $style,
+    );
+    $self->SUPER::appendHash(\%footer);
 }
 
 =head1 private
@@ -207,13 +228,19 @@ sub tabwidgetFooter {
 =cut
 
 sub action {
-        my ($self, @p) = getSelf(@_);
-        my $hash     = $p[0];
-        my $title    = $hash->{text} if(defined $hash->{text});
-        my $src      = $hash->{src} if(defined $hash->{src});
-        my $location = $hash->{href} if(defined $hash->{href});
-        my %action   = (name => 'action', text => $hash->{text}, title => $title, href => $location, src => $src);
-        return $self->SUPER::appendHash(\%action);
+    my ($self, @p) = getSelf(@_);
+    my $hash     = $p[0];
+    my $title    = $hash->{text} if(defined $hash->{text});
+    my $src      = $hash->{src} if(defined $hash->{src});
+    my $location = $hash->{href} if(defined $hash->{href});
+    my %action   = (
+        name  => 'action',
+        text  => $hash->{text},
+        title => $title,
+        href  => $location,
+        src   => $src
+    );
+    return $self->SUPER::appendHash(\%action);
 }
 
 =head2 getSelf
@@ -221,8 +248,8 @@ sub action {
 =cut
 
 sub getSelf {
-        return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'HTML::TabWidget');
-        return (defined($_[0]) && (ref($_[0]) eq 'HTML::TabWidget' || UNIVERSAL::isa($_[0], 'HTML::TabWidget'))) ? @_ : ($HTML::TabWidget::DefaultClass->new, @_);
+    return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'HTML::TabWidget');
+    return (defined($_[0]) && (ref($_[0]) eq 'HTML::TabWidget' || UNIVERSAL::isa($_[0], 'HTML::TabWidget'))) ? @_ : ($HTML::TabWidget::DefaultClass->new, @_);
 }
 
 =head1 SEE ALSO
@@ -239,7 +266,7 @@ http://lindnerei.sourceforge.net/cgi-bin/tabwidget.pl
 
 Dirk Lindner <lze@cpan.org>
 
-=head1 COPYRIGHT AND LICENSE
+=head1 LICENSE
 
 Copyright (C) 2006- 2008 by Hr. Dirk Lindner
 

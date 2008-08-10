@@ -6,7 +6,7 @@ use vars qw($actions $DefaultClass @EXPORT  @ISA $defaultconfig);
 @CGI::CMS::Actions::EXPORT = qw(loadActions saveActions $actions);
 use CGI::CMS::Config;
 @CGI::CMS::Actions::ISA     = qw( Exporter CGI::CMS::Config);
-$CGI::CMS::Actions::VERSION = '0.34';
+$CGI::CMS::Actions::VERSION = '0.35';
 $DefaultClass               = 'CGI::CMS::Actions' unless defined $CGI::CMS::Actions::DefaultClass;
 $defaultconfig              = '%CONFIG%';
 
@@ -53,10 +53,10 @@ loadActions() saveActions() $actions
 =cut
 
 sub new {
-        my ($class, @initializer) = @_;
-        my $self = {};
-        bless $self, ref $class || $class || $DefaultClass;
-        return $self;
+    my ($class, @initializer) = @_;
+    my $self = {};
+    bless $self, ref $class || $class || $DefaultClass;
+    return $self;
 }
 
 =head2 loadActions
@@ -64,11 +64,11 @@ sub new {
 =cut
 
 sub loadActions {
-        my ($self, @p) = getSelf(@_);
-        my $do = (defined $p[0]) ? $p[0] : $defaultconfig;
-        if(-e $do) {
-                do $do;
-        }
+    my ($self, @p) = getSelf(@_);
+    my $do = (defined $p[0]) ? $p[0] : $defaultconfig;
+    if(-e $do) {
+        do $do;
+    }
 }
 
 =head2 saveActions
@@ -76,8 +76,8 @@ sub loadActions {
 =cut
 
 sub saveActions {
-        my ($self, @p) = getSelf(@_);
-        $self->SUPER::saveConfig(@p, $actions, 'actions');
+    my ($self, @p) = getSelf(@_);
+    $self->SUPER::saveConfig(@p, $actions, 'actions');
 }
 
 =head1 Private
@@ -87,8 +87,8 @@ sub saveActions {
 =cut
 
 sub getSelf {
-        return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'CGI::CMS::Actions');
-        return (defined($_[0]) && (ref($_[0]) eq 'CGI::CMS::Actions' || UNIVERSAL::isa($_[0], 'CGI::CMS::Actions'))) ? @_ : ($CGI::CMS::Actions::DefaultClass->new, @_);
+    return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'CGI::CMS::Actions');
+    return (defined($_[0]) && (ref($_[0]) eq 'CGI::CMS::Actions' || UNIVERSAL::isa($_[0], 'CGI::CMS::Actions'))) ? @_ : ($CGI::CMS::Actions::DefaultClass->new, @_);
 }
 
 =head2 see Also
@@ -99,7 +99,7 @@ L<CGI> L<CGI::CMS::Actions> L<CGI::CMS::Translate> L<CGI::CMS::Settings> L<CGI::
 
 Dirk Lindner <lze@cpan.org>
 
-=head1 COPYRIGHT AND LICENSE
+=head1 LICENSE
 
 Copyright (C) 2005-2008 by Hr. Dirk Lindner
 

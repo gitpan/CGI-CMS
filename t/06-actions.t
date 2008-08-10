@@ -2,7 +2,10 @@ use CGI::CMS::Actions;
 use strict;
 use vars qw($actions);
 *actions = \$CGI::CMS::Actions::actions;
-$actions = {actions => "???actions.pl", Actions => "./actions.pl"};
+$actions = {
+    actions => "???actions.pl",
+    Actions => "./actions.pl"
+};
 saveActions("./actions.pl");
 loadActions("./actions.pl");
 my $t1 = $actions->{actions};

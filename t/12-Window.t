@@ -2,7 +2,10 @@ use strict;
 use warnings;
 use lib("../lib");
 use HTML::Window;
-my %parameter = (path => "cgi-bin/templates", server => "http://localhost",);
+my %parameter = (
+    path   => "cgi-bin/templates",
+    server => "http://localhost",
+);
 my $window = new HTML::Window();
 $window->set_closeable(1);
 $window->set_moveable(1);

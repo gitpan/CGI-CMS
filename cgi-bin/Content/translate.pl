@@ -9,39 +9,56 @@ my @translate;
 my $lg = param('lang') ? param('lang') : "de";
 
 foreach my $key (sort keys %{$lng->{$lg}}) {
-        push @translate, {-LABEL => $key, -TYPE => '', '-values' => $lng->{$lg}{$key},};
+    push @translate,
+      {
+        -LABEL    => $key,
+        -TYPE     => '',
+        '-values' => $lng->{$lg}{$key},
+      };
 }
 my @l;
 foreach my $key (sort keys %{$lng}) {
-        push @l, $key;
-        print a({href => "$ENV{SCRIPT_NAME}?action=translate&lang=$key"}, "$key"), "&#160;";
+    push @l, $key;
+    print a({href => "$ENV{SCRIPT_NAME}?action=translate&lang=$key"}, "$key"), "&#160;";
 }
 
 print br(), a({href => "$ENV{SCRIPT_NAME}?action=showaddTranslation"}, translate('addTranslation')), "&#160;";
 
 show_form(
-          -HEADER   => qq(<br/><h2>Edit Translations</h2>),
-          -ACCEPT   => \&on_valid_form,
-          -CHECK    => (param('checkForm') ? 1 : 0),
-          -LANGUAGE => $ACCEPT_LANGUAGE,
-          -FIELDS   => [{-LABEL => 'action', -default => 'translate', -TYPE => 'hidden',}, {-LABEL => 'checkForm', -default => 'true', -TYPE => 'hidden',}, @translate,],
-          -BUTTONS => [{-name => translate('save')},],
-          -FOOTER  => '<br/>',
+    -HEADER   => qq(<br/><h2>Edit Translations</h2>),
+    -ACCEPT   => \&on_valid_form,
+    -CHECK    => (param('checkForm') ? 1 : 0),
+    -LANGUAGE => $ACCEPT_LANGUAGE,
+    -FIELDS   => [
+        {
+            -LABEL   => 'action',
+            -default => 'translate',
+            -TYPE    => 'hidden',
+        },
+        {
+            -LABEL   => 'checkForm',
+            -default => 'true',
+            -TYPE    => 'hidden',
+        },
+        @translate,
+    ],
+    -BUTTONS => [{-name => translate('save')},],
+    -FOOTER  => '<br/>',
 );
 
 sub on_valid_form {
 
-        foreach my $key (keys %{$lng->{$lg}}) {
-                $lng->{$lg}{$key} = param($key);
-        }
-        saveTranslate("$settings->{cgi}{bin}/config/translate.pl");
-        print '<div align="center"><b>Done</b><br/>';
-        my @entrys = param();
-        for(my $i = 0 ; $i <= $#entrys ; $i++) {
-                print "$entrys[$i]: ", param($entrys[$i]), '<br/>';
-        }
-        my $rs = ($settings->{cgi}{mod_rewrite}) ? '/translate.html' : "$ENV{SCRIPT_NAME}?action=translate";
-        print qq(<a href="$rs">) . translate('next') . '</a></div>';
+    foreach my $key (keys %{$lng->{$lg}}) {
+        $lng->{$lg}{$key} = param($key);
+    }
+    saveTranslate("$settings->{cgi}{bin}/config/translate.pl");
+    print '<div align="center"><b>Done</b><br/>';
+    my @entrys = param();
+    for(my $i = 0 ; $i <= $#entrys ; $i++) {
+        print "$entrys[$i]: ", param($entrys[$i]), '<br/>';
+    }
+    my $rs = ($settings->{cgi}{mod_rewrite}) ? '/translate.html' : "$ENV{SCRIPT_NAME}?action=translate";
+    print qq(<a href="$rs">) . translate('next') . '</a></div>';
 
 }
 

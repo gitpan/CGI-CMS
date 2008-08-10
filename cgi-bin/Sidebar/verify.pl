@@ -1,4 +1,11 @@
-my %parameter = (path => $settings->{cgi}{bin} . '/templates', style => $style, title => "&#160;Valid&#160;HTML&#160;", server => $settings->{cgi}{serverName}, id => 'validwin', class => 'sidebar',);
+my %parameter = (
+    path   => $settings->{cgi}{bin} . '/templates',
+    style  => $style,
+    title  => "&#160;Valid&#160;HTML&#160;",
+    server => $settings->{cgi}{serverName},
+    id     => 'validwin',
+    class  => 'sidebar',
+);
 
 my $window = new HTML::Window(\%parameter);
 $window->set_closeable(1);

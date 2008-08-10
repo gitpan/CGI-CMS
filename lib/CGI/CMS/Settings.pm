@@ -6,7 +6,7 @@ use vars qw($settings $DefaultClass @EXPORT  @ISA $defaultconfig);
 @CGI::CMS::Settings::EXPORT = qw(loadSettings saveSettings $settings);
 use CGI::CMS::Config;
 @ISA                         = qw(Exporter CGI::CMS::Config);
-$CGI::CMS::Settings::VERSION = '0.34';
+$CGI::CMS::Settings::VERSION = '0.35';
 $DefaultClass                = 'CGI::CMS::Settings' unless defined $CGI::CMS::Settings::DefaultClass;
 $defaultconfig               = '%CONFIG%';
 
@@ -46,10 +46,10 @@ loadSettings() saveSettings() $settings
 =cut
 
 sub new {
-        my ($class, @initializer) = @_;
-        my $self = {};
-        bless $self, ref $class || $class || $DefaultClass;
-        return $self;
+    my ($class, @initializer) = @_;
+    my $self = {};
+    bless $self, ref $class || $class || $DefaultClass;
+    return $self;
 }
 
 =head2 loadSettings()
@@ -57,11 +57,11 @@ sub new {
 =cut
 
 sub loadSettings {
-        my ($self, @p) = getSelf(@_);
-        my $do = (defined $p[0]) ? $p[0] : $defaultconfig;
-        if(-e $do) {
-                do $do;
-        }
+    my ($self, @p) = getSelf(@_);
+    my $do = (defined $p[0]) ? $p[0] : $defaultconfig;
+    if(-e $do) {
+        do $do;
+    }
 }
 
 =head2 saveSettings()
@@ -69,9 +69,9 @@ sub loadSettings {
 =cut
 
 sub saveSettings {
-        my ($self, @p) = getSelf(@_);
-        my $l = defined $p[0] ? $p[0] : $defaultconfig;
-        $self->SUPER::saveConfig($l, $settings, 'settings');
+    my ($self, @p) = getSelf(@_);
+    my $l = defined $p[0] ? $p[0] : $defaultconfig;
+    $self->SUPER::saveConfig($l, $settings, 'settings');
 }
 
 =head1 Private
@@ -81,8 +81,8 @@ sub saveSettings {
 =cut
 
 sub getSelf {
-        return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'CGI::CMS::Settings');
-        return (defined($_[0]) && (ref($_[0]) eq 'CGI::CMS::Settings' || UNIVERSAL::isa($_[0], 'CGI::CMS::Settings'))) ? @_ : ($CGI::CMS::Settings::DefaultClass->new, @_);
+    return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'CGI::CMS::Settings');
+    return (defined($_[0]) && (ref($_[0]) eq 'CGI::CMS::Settings' || UNIVERSAL::isa($_[0], 'CGI::CMS::Settings'))) ? @_ : ($CGI::CMS::Settings::DefaultClass->new, @_);
 }
 
 =head2 see Also
@@ -93,7 +93,7 @@ L<CGI> L<CGI::CMS::Actions> L<CGI::CMS::Translate> L<CGI::CMS::Settings> L<CGI::
 
 Dirk Lindner <lze@cpan.org>
 
-=head1 COPYRIGHT AND LICENSE
+=head1 LICENSE
 
 Copyright (C) 2005-2008 by Hr. Dirk Lindner
 

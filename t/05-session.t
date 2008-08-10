@@ -2,7 +2,10 @@ use strict;
 use CGI::CMS::Session;
 use vars qw($session);
 *session = \$CGI::CMS::Session::session;
-$session = {query => "???Query.pl", Query => "./Query.pl"};
+$session = {
+    query => "???Query.pl",
+    Query => "./Query.pl"
+};
 saveSession("./Query.pl");
 undef $session;
 use Test::More tests => 3;

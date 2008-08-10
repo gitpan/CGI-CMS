@@ -3,28 +3,28 @@ use HTML::Editor;
 $ENV{HTTP_ACCEPT_LANGUAGE} = "de";
 my %parameter = (
 
-        action => 'action',
+    action => 'action',
 
-        body => 'body of the message',
+    body => 'body of the message',
 
-        class => "min",
+    class => "min",
 
-        attach => '1',
+    attach => '1',
 
-        maxlength => '100',
+    maxlength => '100',
 
-        path  => "blib/perl/templates",
-        reply => '',
+    path  => "blib/perl/templates",
+    reply => '',
 
-        server => "http://localhost",
+    server => "http://localhost",
 
-        style => 'Crystal',
+    style => 'Crystal',
 
-        thread => 'news',
+    thread => 'news',
 
-        title => "&New Message",
+    title => "&New Message",
 
-        html => 1,    # html enabled ? 0 for bbcode
+    html => 1,    # html enabled ? 0 for bbcode
 
 );
 

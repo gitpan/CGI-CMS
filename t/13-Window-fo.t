@@ -1,7 +1,10 @@
 use strict;
 use warnings;
 use HTML::Window qw(:all);
-my %parameter = (path => "cgi-bin/templates", server => "http://localhost",);
+my %parameter = (
+    path   => "cgi-bin/templates",
+    server => "http://localhost",
+);
 set_closeable(1);
 set_moveable(1);
 set_resizeable(0);
