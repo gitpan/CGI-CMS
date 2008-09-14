@@ -13,7 +13,7 @@ use Template::Quick;
 @HTML::Window::ISA         = qw(Template::Quick);
 @HTML::Window::EXPORT_OK   = qw( set_title set_class set_style set_closeable set_resizeable set_collapse set_moveable initWindow windowHeader windowFooter);
 %HTML::Window::EXPORT_TAGS = ('all' => [qw(set_title set_class set_style set_closeable set_resizeable set_collapse set_moveable initWindow windowHeader windowFooter)]);
-$HTML::Window::VERSION     = '0.35';
+$HTML::Window::VERSION     = '0.36';
 
 $DefaultClass = 'HTML::Window' unless defined $HTML::Window::DefaultClass;
 

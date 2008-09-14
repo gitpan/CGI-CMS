@@ -7,7 +7,7 @@ use vars qw($tmp $DefaultClass @EXPORT_OK @ISA $style $mod_perl);
 @ISA                         = qw(Exporter);
 @Template::Quick::EXPORT     = qw(initTemplate appendHash Template initArray);
 %LZE::TabWidget::EXPORT_TAGS = ('all' => [qw(initTemplate appendHash Template initArray  )]);
-$Template::Quick::VERSION    = '0.35';
+$Template::Quick::VERSION    = '0.36';
 $DefaultClass                = 'Template::Quick' unless defined $Template::Quick::DefaultClass;
 our %tmplate;
 $style = 'Crystal';

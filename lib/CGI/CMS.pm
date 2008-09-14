@@ -31,9 +31,9 @@ use vars qw(
 
 $CGI::DefaultClass      = 'CGI';
 $DefaultClass           = 'CGI::CMS' unless defined $CGI::CMS::DefaultClass;
-$defaultconfig          = '%CONFIG%';
+$defaultconfig          = '/srv/www/cgi-bin/config/settings.pl';
 $CGI::AutoloadClass     = 'CGI';
-$CGI::CMS::VERSION = '0.35';
+$CGI::CMS::VERSION = '0.36';
 $mod_perl               = ($ENV{MOD_PERL}) ? 1 : 0;
 our $hold = 120;    #session ist 120 sekunden gültig.
 @ISA = qw(Exporter CGI );
@@ -392,7 +392,7 @@ L<CGI> L<CGI::CMS::GUI> L<CGI::CMS::Actions> L<CGI::CMS::Translate> L<CGI::CMS::
 
 Dirk Lindner <lze@cpan.org>
 
-=head1 LICENSE
+=head1 COPYRIGHT AND LICENSE
 
 Copyright (C) 2008 by Hr. Dirk Lindner
 

@@ -309,7 +309,7 @@ $settings = {
              scriptAlias   => $inctance->{properties}{alias},
              uploads       => {maxlength => 2003153, path => "$inctance->{properties}{htd}/downloads/", chmod => 0644, enabled => 1,right => 4},
              tree      => {navigation => "$inctance->{properties}{cgi}/config/tree.pl", links => "$inctance->{properties}{cgi}/config/links.pl"},
-             version   => '0.35',
+             version   => '0.36',
              session   => "$inctance->{properties}{cgi}/config/session.pl",
              actions   => "$inctance->{properties}{cgi}/config/actions.pl",
              translate => "$inctance->{properties}{cgi}/config/translate.pl",
