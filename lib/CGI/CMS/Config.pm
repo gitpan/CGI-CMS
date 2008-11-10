@@ -5,7 +5,7 @@ require Exporter;
 use vars qw($config $DefaultClass @EXPORT  @ISA $defaultconfig);
 @CGI::CMS::Config::EXPORT  = qw(loadConfig saveConfig $config);
 @ISA                       = qw(Exporter);
-$CGI::CMS::Config::VERSION = '0.38';
+$CGI::CMS::Config::VERSION = '0.39';
 $DefaultClass              = 'CGI::CMS::Config'
     unless defined $CGI::CMS::Config::DefaultClass;
 $defaultconfig = '%CONFIG%';

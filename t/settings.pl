@@ -28,7 +28,7 @@ $VAR1 = {
         'town'      => 'Berlin'
     },
     'language' => 'en',
-    'version'  => '0.38',
+    'version'  => '0.39',
     'cgi'      => {
         'bin'          => 'cgi-bin/',
         'style'        => 'Crystal',

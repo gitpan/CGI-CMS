@@ -71,8 +71,8 @@ sub newTreeviewEntry {
 
 sub saveTreeviewEntry {
     &load();
-    &saveEntry( @m_aTree, param('rid') );
-    &updateTree(@m_aTree);
+    &saveEntry(\@m_aTree, param('rid') );
+    &updateTree(\@m_aTree);
     TrOver(1);
     $m_sContent .= br() . $window->windowHeader();
     $m_sContent .= table(
@@ -80,7 +80,7 @@ sub saveTreeviewEntry {
             width => '*'
         },
         Tr( td($jspart) ),
-        Tr( td( Tree(@m_aTree) ) )
+        Tr( td( Tree(\@m_aTree) ) )
     );
     $m_sContent .= $window->windowFooter();
     TrOver(0);
@@ -88,8 +88,8 @@ sub saveTreeviewEntry {
 
 sub addTreeviewEntry {
     &load();
-    &addEntry( @m_aTree, param('rid') );
-    &updateTree(@m_aTree);
+    &addEntry(\@m_aTree, param('rid') );
+    &updateTree(\@m_aTree);
     TrOver(1);
     $m_sContent .= br() . $window->windowHeader();
     $m_sContent .= table(
@@ -97,7 +97,7 @@ sub addTreeviewEntry {
             width => '*'
         },
         Tr( td($jspart) ),
-        Tr( td( Tree(@m_aTree) ) )
+        Tr( td( Tree(\@m_aTree) ) )
     );
     $m_sContent .= $window->windowFooter();
     TrOver(0);
@@ -106,8 +106,8 @@ sub addTreeviewEntry {
 sub editTreeview {
     &load();
     &rid();
-    saveTree( $dump, @m_aTree );
-    &updateTree(@m_aTree);
+    saveTree( $dump, \@m_aTree );
+    &updateTree(\@m_aTree);
     TrOver(1);
     $m_sContent .= br() . $window->windowHeader();
     $m_sContent .= table(
@@ -115,7 +115,7 @@ sub editTreeview {
             width => '*'
         },
         Tr( td($jspart) ),
-        Tr( td( Tree(@m_aTree) ) )
+        Tr( td( Tree(\@m_aTree) ) )
     );
     $m_sContent .= $window->windowFooter();
     TrOver(0);
@@ -123,13 +123,13 @@ sub editTreeview {
 
 sub editTreeviewEntry {
     &load();
-    &editEntry( @m_aTree, param('rid') );
+    &editEntry(\@m_aTree, param('rid') );
 }
 
 sub deleteTreeviewEntry {
     &load();
-    &deleteEntry( @m_aTree, param('rid') );
-    &updateTree(@m_aTree);
+    &deleteEntry(\@m_aTree, param('rid') );
+    &updateTree(\@m_aTree);
     TrOver(1);
     $m_sContent .= br() . $window->windowHeader();
     $m_sContent .= table(
@@ -137,7 +137,7 @@ sub deleteTreeviewEntry {
             width => '*'
         },
         Tr( td($jspart) ),
-        Tr( td( Tree(@m_aTree) ) )
+        Tr( td( Tree(\@m_aTree) ) )
     );
     $m_sContent .= $window->windowFooter();
     TrOver(0);
@@ -145,8 +145,8 @@ sub deleteTreeviewEntry {
 
 sub upEntry {
     &load();
-    &sortUp( @m_aTree, param('rid') );
-    &updateTree(@m_aTree);
+    &sortUp(\@m_aTree, param('rid') );
+    &updateTree(\@m_aTree);
     TrOver(1);
     $m_sContent .= br() . $window->windowHeader();
     $m_sContent .= table(
@@ -154,7 +154,7 @@ sub upEntry {
             width => '*'
         },
         Tr( td($jspart) ),
-        Tr( td( Tree(@m_aTree) ) )
+        Tr( td( Tree(\@m_aTree) ) )
     );
     $m_sContent .= $window->windowFooter();
     TrOver(0);
@@ -162,10 +162,10 @@ sub upEntry {
 
 sub MoveTreeViewEntry {
     &load();
-    &getEntry( @m_aTree, param('from'), param('to') );
+    &getEntry(\@m_aTree, param('from'), param('to') );
     &rid();
-    saveTree( $dump, @m_aTree );
-    &updateTree(@m_aTree);
+    saveTree( $dump, \@m_aTree );
+    &updateTree(\@m_aTree);
     TrOver(1);
     $m_sContent .= br() . $window->windowHeader();
     $m_sContent .= table(
@@ -173,7 +173,7 @@ sub MoveTreeViewEntry {
             width => '*'
         },
         Tr( td($jspart) ),
-        Tr( td( Tree(@m_aTree) ) )
+        Tr( td( Tree(\@m_aTree) ) )
     );
     $m_sContent .= $window->windowFooter();
     TrOver(0);
@@ -205,7 +205,7 @@ sub getEntry {
         if( @$t[$i]->{rid}== $find ) {
             $tN->{$_} = @$t[$i]->{$_} foreach keys %{ @$t[$i] };
             splice @$t, $i, 1;
-            moveEntry( @m_aTree, $goto );
+            moveEntry(\@m_aTree, $goto );
         } elsif ( defined @{ @$t[$i]->{subtree} } ) {
             getEntry( \@{ @$t[$i]->{subtree} }, $find, $goto );
         }
@@ -215,8 +215,8 @@ sub getEntry {
 sub downEntry {
     &load();
     $down = 1;
-    &sortUp( @m_aTree, param('rid') );
-    &updateTree(@m_aTree);
+    &sortUp(\@m_aTree, param('rid') );
+    &updateTree(\@m_aTree);
     TrOver(1);
     $m_sContent .= br() . $window->windowHeader();
     $m_sContent .= table(
@@ -224,7 +224,7 @@ sub downEntry {
             width => '*'
         },
         Tr( td($jspart) ),
-        Tr( td( Tree(@m_aTree) ) )
+        Tr( td( Tree(\@m_aTree) ) )
     );
     $m_sContent .= $window->windowFooter();
     TrOver(0);
@@ -277,7 +277,7 @@ sub addEntry {
             }
             splice @$t, $i, 0, $node;
             &rid();
-            saveTree( $dump, @m_aTree );
+            saveTree( $dump, \@m_aTree );
             return;
         } elsif ( defined @{ @$t[$i]->{subtree} } ) {
             &addEntry( \@{ @$t[$i]->{subtree} }, $find );
@@ -307,7 +307,7 @@ sub saveEntry {
                     if($key eq 'href'
                     && $m_hrParams{$key} =~ /^action:\/\/(.*)$/ );
             }
-            saveTree( $dump, @m_aTree );
+            saveTree( $dump, \@m_aTree );
             return;
         } elsif ( defined @{ @$t[$i]->{subtree} } ) {
             &saveEntry( \@{ @$t[$i]->{subtree} }, $find );
@@ -350,7 +350,7 @@ sub editEntry {
             $m_sContent
                 .= qq(<tr><td><input type="hidden" name="action" value="saveTreeviewEntry"/><input type="hidden" name="rid" value="@$t[$i]->{rid}"/><input type="hidden" name="dump" value="$dmp"/></td><td><input type="submit" value="save"/></td></tr></table></form>);
             $m_sContent .= $window->windowFooter();
-            saveTree( $dump, @m_aTree );
+            saveTree( $dump, \@m_aTree );
             return;
         } elsif ( defined @{ @$t[$i]->{subtree} } ) {
             &editEntry( \@{ @$t[$i]->{subtree} }, $find );
@@ -367,11 +367,11 @@ sub sortUp {
                 $i++ if($down);
                 return if( ( $down && $i== @$t ) or ( !$down && $i== 0 ) );
                 splice @$t, $i- 1, 2, ( @$t[$i], @$t[ $i- 1 ] );
-                saveTree( $dump, @m_aTree );
+                saveTree( $dump, \@m_aTree );
             }
             if( defined @{ @$t[$i]->{subtree} } ) {
                 sortUp( \@{ @$t[$i]->{subtree} }, $find );
-                saveTree( $dump, @m_aTree );
+                saveTree( $dump, \@m_aTree );
             }
         }
     }
@@ -383,7 +383,7 @@ sub deleteEntry {
     for( my $i = 0; $i < @$t; $i++ ) {
         if( @$t[$i]->{rid}== $find ) {
             splice @$t, $i, 1;
-            saveTree( $dump, @m_aTree );
+            saveTree( $dump, \@m_aTree );
         } elsif ( defined @{ @$t[$i]->{subtree} } ) {
             deleteEntry( \@{ @$t[$i]->{subtree} }, $find );
         }
@@ -416,7 +416,7 @@ sub updateTree {
 sub rid {
     no warnings;
     $rid = 0;
-    &getRid(@m_aTree);
+    &getRid(\@m_aTree);
 
     sub getRid {
         my $t = shift;
@@ -436,7 +436,7 @@ sub load {
     $dump = $m_hrSettings->{tree}{$dmp};
     if( -e $dump ) {
         loadTree($dump);
-        *tree = \@{ $HTML::Menu::TreeView::TreeView[0] };
+        *m_aTree = \@{ $HTML::Menu::TreeView::TreeView[0] };
     }
 }
 1;
