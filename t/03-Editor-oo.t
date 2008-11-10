@@ -24,12 +24,14 @@ my %parameter = (
 
     title => "&New Message",
 
-    html => 1,    # html enabled ? 0 for bbcode
+    html => 1,
+
+    config  => "t/settings.pl",
 
 );
 
-my $editor = new HTML::Editor(\%parameter);
+my $editor = new HTML::Editor( \%parameter );
 
 use Test::More tests => 1;
-ok(length($editor->show()) > 0);
+ok( length( $editor->show() ) > 0 );
 

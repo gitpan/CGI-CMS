@@ -1,302 +1,363 @@
-# my $ACCEPT_LANGUAGE = 'de';
-
-# disable diagnostics;
-use CGI::QuickForm;
-CGI::CMS::Settings::loadSettings("$settings->{cgi}{bin}/config/settings.pl");
+CGI::CMS::Settings::loadSettings(
+    "$m_hrSettings->{cgi}{bin}/config/settings.pl");
 
 my $TITLE = 'Edit Configuration';
 my @boxes;
-my @a       = $database->fetch_AoH('select * from box ');
+my @a       = $m_oDatabase->fetch_AoH('select * from box ');
 my %options = (
-    'left'     => ['left',     'right', 'disabled'],
-    'right'    => ['right',    'left',  'disabled'],
-    'disabled' => ['disabled', 'left',  'right'],
+    'left'     => [ 'left',     'right', 'disabled' ],
+    'right'    => [ 'right',    'left',  'disabled' ],
+    'disabled' => [ 'disabled', 'left',  'right' ],
 );
-foreach (my $i = 0 ; $i <= $#a ; $i++) {
+foreach ( my $i = 0; $i <= $#a; $i++ ) {
     push @boxes,
-      {
+        {
         -LABEL     => $a[$i]->{name},
         -TYPE      => 'scrolling_list',
-        '-values'  => $options{$a[$i]->{position}},
+        '-values'  => $options{ $a[$i]->{position} },
         -size      => 1,
         -multiples => 0,
         -VALIDATE  => \&validBox,
-      };
+        };
 }
+
 show_form(
-    -HEADER   => qq(<br/><div style="padding-left:50px;"><h2>$TITLE</h2>),
+    -HEADER   => qq(<div style="padding-left:50px;"><h2>$TITLE</h2>),
     -ACCEPT   => \&on_valid_form,
-    -CHECK    => (param('checkForm') ? 1 : 0),
+    -CHECK    => ( param('checkForm') ? 1 : 0 ),
     -LANGUAGE => $ACCEPT_LANGUAGE,
     -FIELDS   => [
-        {
-            -LABEL    => 'Boxen',
+        {   -LABEL    => 'Boxen',
             -HEADLINE => 1,
             -COLSPAN  => 2,
             -END_ROW  => 1,
         },
         @boxes,
-        {
-            -LABEL   => 'action',
-            -default => 'settings',
+        {   -LABEL   => 'action',
+            -default => 'm_hrSettings',
             -TYPE    => 'hidden',
         },
-        {
-            -LABEL   => 'checkForm',
+        {   -LABEL   => 'checkForm',
             -default => 'true',
             -TYPE    => 'hidden',
         },
-        {
-            -LABEL    => 'Default',
+        {   -LABEL    => 'Default',
             -HEADLINE => 1,
             -COLSPAN  => 2,
             -END_ROW  => 1,
         },
-        {
-            -LABEL     => 'sidebarLeft',
-            -TYPE      => 'scrolling_list',
-            '-values'  => [($settings->{sidebar}{left}) ? ('Enabled', 'Disabled') : ('Disabled', 'Enabled')],
+        {   -LABEL    => 'sidebarLeft',
+            -TYPE     => 'scrolling_list',
+            '-values' => [
+                ( $m_hrSettings->{sidebar}{left} ) ? ( 'Enabled', 'Disabled' )
+                : ( 'Disabled', 'Enabled' )
+            ],
             -size      => 1,
             -multiples => 0,
             -VALIDATE  => \&enabledDisabled,
         },
-        {
-            -LABEL     => 'sidebarRight',
-            -TYPE      => 'scrolling_list',
-            '-values'  => [($settings->{sidebar}{right}) ? ('Enabled', 'Disabled') : ('Disabled', 'Enabled')],
+        {   -LABEL    => 'sidebarRight',
+            -TYPE     => 'scrolling_list',
+            '-values' => [
+                  ( $m_hrSettings->{sidebar}{right} )
+                ? ( 'Enabled', 'Disabled' )
+                : ( 'Disabled', 'Enabled' )
+            ],
             -size      => 1,
             -multiples => 0,
             -VALIDATE  => \&enabledDisabled,
         },
-        {
-            -LABEL    => 'language',
-            -default  => $settings->{language},
+        {   -LABEL    => 'language',
+            -default  => $m_hrSettings->{language},
             -VALIDATE => \&acceptLanguage,
         },
-        {
-            -LABEL    => 'defaultAction',
-            -default  => $settings->{defaultAction},
+        {   -LABEL    => 'defaultAction',
+            -default  => $m_hrSettings->{defaultAction},
             -VALIDATE => \&validDefaultAction,
         },
-        {
-            -LABEL    => 'CGI',
+        {   -LABEL    => 'CGI',
             -HEADLINE => 1,
             -COLSPAN  => 2,
             -END_ROW  => 1,
         },
-        {
-            -LABEL   => 'Homepage Title',
-            -default => $settings->{cgi}{title},
+        {   -LABEL   => 'Homepage Title',
+            -default => $m_hrSettings->{cgi}{title},
         },
-        {
-            -LABEL    => 'DocumentRoot',
+        {   -LABEL    => 'DocumentRoot',
             -VALIDATE => \&exits,
-            -default  => $settings->{cgi}{DocumentRoot},
+            -default  => $m_hrSettings->{cgi}{DocumentRoot},
         },
-        {
-            -LABEL    => 'cgi-bin',
+        {   -LABEL    => 'cgi-bin',
             -VALIDATE => \&exits,
-            -default  => $settings->{cgi}{bin},
+            -default  => $m_hrSettings->{cgi}{bin},
         },
-        {
-            -LABEL    => 'Style',
+        {   -LABEL    => 'Style',
             -VALIDATE => \&validStyle,
-            -default  => $settings->{cgi}{style},
+            -default  => $m_hrSettings->{cgi}{style},
         },
-        {
-            -LABEL   => 'CookiePath',
-            -default => $settings->{cgi}{cookiePath},
+        {   -LABEL   => 'CookiePath',
+            -default => $m_hrSettings->{cgi}{cookiePath},
         },
-        {
-            -LABEL    => 'expires',
+        {   -LABEL    => 'expires',
             -VALIDATE => \&validExpires,
-            -default  => $settings->{cgi}{expires},
+            -default  => $m_hrSettings->{cgi}{expires},
         },
-        {
-            -LABEL    => 'size',
+        {   -LABEL    => 'size',
             -VALIDATE => \&validSize,
-            -default  => $settings->{size},
+            -default  => $m_hrSettings->{size},
         },
-        {
-            -LABEL    => 'mod_rewrite',
+        {   -LABEL    => 'mod_rewrite',
             -VALIDATE => \&validRewrite,
-            -default  => $settings->{cgi}{mod_rewrite},
+            -default  => $m_hrSettings->{cgi}{mod_rewrite},
         },
-        {
-            -LABEL    => 'htmlright',
+        {   -LABEL    => 'htmlright',
             -VALIDATE => \&validhtmlright,
-            -default  => $settings->{htmlright},
+            -default  => $m_hrSettings->{htmlright},
         },
-        {
-            -LABEL   => 'Error Log',
-            -default => $settings->{cgi}{error_log},
+        {   -LABEL   => 'Error Log',
+            -default => $m_hrSettings->{cgi}{error_log},
         },
-        {
-            -LABEL   => 'Server Name',
-            -default => $settings->{cgi}{serverName},
+        {   -LABEL   => 'Server Name',
+            -default => $m_hrSettings->{cgi}{serverName},
         },
-        {
-            -LABEL    => 'Database',
+        {   -LABEL    => 'Database',
             -HEADLINE => 1,
             -COLSPAN  => 2,
             -END_ROW  => 1,
         },
-        {
-            -LABEL   => 'Databasehost',
-            -default => $settings->{database}{host},
+        {   -LABEL   => 'Databasehost',
+            -default => $m_hrSettings->{database}{host},
         },
-        {
-            -LABEL   => 'Databaseuser',
-            -default => $settings->{database}{user},
+        {   -LABEL   => 'Databaseuser',
+            -default => $m_hrSettings->{database}{user},
         },
-        {
-            -LABEL   => 'Databasepassword',
+        {   -LABEL   => 'Databasepassword',
             -TYPE    => 'password_field',
-            -default => $settings->{database}{password},
+            -default => $m_hrSettings->{database}{password},
         },
-        {
-            -LABEL   => 'Databasename',
-            -default => $settings->{database}{name},
+        {   -LABEL   => 'Databasename',
+            -default => $m_hrSettings->{database}{name},
         },
-        {
-            -LABEL    => 'admin',
+        {   -LABEL    => 'admin',
             -HEADLINE => 1,
             -COLSPAN  => 2,
             -END_ROW  => 1,
         },
-        {
-            -LABEL   => 'Email',
-            -default => $settings->{admin}{email},
+        {   -LABEL   => 'Email',
+            -default => $m_hrSettings->{admin}{email},
         },
-        {
-            -LABEL   => 'Name',
-            -default => $settings->{admin}{name},
+        {   -LABEL   => 'Name',
+            -default => $m_hrSettings->{admin}{name},
         },
-        {
-            -LABEL   => 'First Name',
-            -default => $settings->{admin}{firstname},
+        {   -LABEL   => 'First Name',
+            -default => $m_hrSettings->{admin}{firstname},
         },
-        {
-            -LABEL   => 'Street',
-            -default => $settings->{admin}{street},
+        {   -LABEL   => 'Street',
+            -default => $m_hrSettings->{admin}{street},
         },
-        {
-            -LABEL   => 'Town',
-            -default => $settings->{admin}{town},
+        {   -LABEL   => 'House Number',
+            -default => $m_hrSettings->{admin}{number},
         },
-        {
-            -LABEL    => 'News',
+        {   -LABEL   => 'postcode',
+            -default => $m_hrSettings->{admin}{postcode},
+        },
+        {   -LABEL   => 'Town',
+            -default => $m_hrSettings->{admin}{town},
+        },
+        {   -LABEL   => 'country',
+            -default => $m_hrSettings->{admin}{country},
+        },
+        {   -LABEL   => 'phonenumber',
+            -default => $m_hrSettings->{admin}{tel},
+        },
+        {   -LABEL   => 'signature',
+            -default => $m_hrSettings->{admin}{signature},
+        },
+        {   -LABEL   => 'jabber',
+            -default => $m_hrSettings->{admin}{jabber},
+        },
+        {   -LABEL   => 'icq',
+            -default => $m_hrSettings->{admin}{icq},
+        },
+        {   -LABEL   => 'msn',
+            -default => $m_hrSettings->{admin}{msn},
+        },
+        {   -LABEL   => 'jahoo',
+            -default => $m_hrSettings->{admin}{jahoo},
+        },
+        {   -LABEL   => 'skype',
+            -default => $m_hrSettings->{admin}{skype},
+        },
+        {   -LABEL   => 'aim',
+            -default => $m_hrSettings->{admin}{aim},
+        },
+
+        {   -LABEL    => 'News',
             -HEADLINE => 1,
             -COLSPAN  => 2,
             -END_ROW  => 1,
         },
-        {
-            -LABEL   => 'maxlength',
-            -default => $settings->{news}{maxlength},
+        {   -LABEL   => 'maxlength',
+            -default => $m_hrSettings->{news}{maxlength},
         },
-        {
-            -LABEL    => 'Uploads',
+        {   -LABEL    => 'Uploads',
             -HEADLINE => 1,
             -COLSPAN  => 2,
             -END_ROW  => 1,
         },
-        {
-            -LABEL     => 'activates',
-            -TYPE      => 'scrolling_list',
-            '-values'  => [($settings->{uploads}{enabled}) ? ('Enabled', 'Disabled') : ('Disabled', 'Enabled')],
+        {   -LABEL    => 'activates',
+            -TYPE     => 'scrolling_list',
+            '-values' => [
+                  ( $m_hrSettings->{uploads}{enabled} )
+                ? ( 'Enabled', 'Disabled' )
+                : ( 'Disabled', 'Enabled' )
+            ],
             -size      => 1,
             -multiples => 0,
             -VALIDATE  => \&enabledDisabled,
         },
-        {
-            -LABEL   => 'Max Upload size',
-            -default => $settings->{uploads}{maxlength},
+        {   -LABEL   => 'Max Upload size',
+            -default => $m_hrSettings->{uploads}{maxlength},
         },
-        {
-            -LABEL   => 'Upload Chmod',
-            -default => $settings->{uploads}{'chmod'},
+        {   -LABEL   => 'Upload Chmod',
+            -default => $m_hrSettings->{uploads}{'chmod'},
         },
-        {
-            -LABEL   => 'time between Posts',
-            -default => $settings->{floodtime},
+        {   -LABEL   => 'time between Posts',
+            -default => $m_hrSettings->{floodtime},
         },
 
     ],
-    -BUTTONS => [{-name => translate('save')},],
-    -FOOTER  => '</div><br/>',
+    -BUTTONS => [ { -name => translate('save') }, ],
+    -FOOTER  => '</div>',
 );
+sleep 2;
+my $htm = GetHtml();
+if( defined $htm ) {
+    my %parameter = (
+        path   => $m_hrSettings->{cgi}{bin} . '/templates',
+        style  => $m_sStyle,
+        title  => translate('m_hrSettings'),
+        server => $m_hrSettings->{serverName},
+        id     => 'quickpl',
+        class  => 'max',
+    );
+    my $window = new HTML::Window( \%parameter );
+    $m_sContent .= $window->windowHeader();
+    $m_sContent .= qq|<div align="left">$htm</div></div>|;
+    $m_sContent .= $window->windowFooter();
+}
 
 sub on_valid_form {
     my $p1 = param('Style');
-    $settings->{cgi}{style} = $p1;
+    $m_hrSettings->{cgi}{style} = $p1;
     my $p2 = param('Homepage Title');
-    $settings->{cgi}{title} = $p2;
+    $m_hrSettings->{cgi}{title} = $p2;
     my $p3 = param('DocumentRoot');
-    $settings->{cgi}{DocumentRoot} = $p3;
+    $m_hrSettings->{cgi}{DocumentRoot} = $p3;
     my $p4 = param('cgi-bin');
-    $settings->{cgi}{bin} = $p4;
+    $m_hrSettings->{cgi}{bin} = $p4;
     my $expires = param('expires');
-    $settings->{cgi}{expires} = $expires;
+    $m_hrSettings->{cgi}{expires} = $expires;
     my $s = param('size');
-    $settings->{size} = $s;
+    $m_hrSettings->{size} = $s;
     my $p5 = param('Email');
-    $settings->{admin}{email}     = $p5;
-    $settings->{admin}{name}      = param('Name');
-    $settings->{admin}{firstname} = param('First Name');
-    $settings->{admin}{street}    = param('Street');
-    $settings->{admin}{tonwn}     = param('Town');
+    $m_hrSettings->{admin}{email}     = $p5;
+    $m_hrSettings->{admin}{name}      = param('Name');
+    $m_hrSettings->{admin}{firstname} = param('First Name');
+    $m_hrSettings->{admin}{street}    = param('Street');
+    $m_hrSettings->{admin}{tonwn}     = param('Town');
+    $m_hrSettings->{admin}{number}    = param('House Number');
+    $m_hrSettings->{admin}{tel}       = param('phonenumber');
+    $m_hrSettings->{admin}{jabber}    = param('jabber');
+    $m_hrSettings->{admin}{icq}       = param('icq');
+    $m_hrSettings->{admin}{msn}       = param('msn');
+    $m_hrSettings->{admin}{country}   = param('country');
+    $m_hrSettings->{admin}{skype}     = param('skype');
+    $m_hrSettings->{admin}{aim}       = param('aim');
+    $m_hrSettings->{admin}{postcode}  = param('postcode');
+    $m_hrSettings->{admin}{signature} = param('signature');
+    $m_hrSettings->{admin}{jahoo}     = param('jahoo');
     my $p6 = param('CookiePath');
-    $settings->{cgi}{cookiePath} = $p6;
+    $m_hrSettings->{cgi}{cookiePath} = $p6;
     my $p7 = param('mod_rewrite');
-    $settings->{cgi}{mod_rewrite} = $p7;
+    $m_hrSettings->{cgi}{mod_rewrite} = $p7;
     my $p8 = param('Server Name');
-    $settings->{cgi}{serverName} = $p8;
+    $m_hrSettings->{cgi}{serverName} = $p8;
     my $p10 = param('Databasehost');
-    $settings->{database}{host} = $p10;
+    $m_hrSettings->{database}{host} = $p10;
     my $p11 = param('Databaseuser');
-    $settings->{database}{user} = $p11;
+    $m_hrSettings->{database}{user} = $p11;
     my $p12 = param('Databasepassword');
-    $settings->{database}{password} = $p12;
+    $m_hrSettings->{database}{password} = $p12;
     my $p13 = param('Databasename');
-    $settings->{database}{name} = $p13;
+    $m_hrSettings->{database}{name} = $p13;
     my $p14 = param('sidebarLeft');
-    $settings->{sidebar}{left} = ($p14 eq 'Enabled') ? 1 : 0;
+    $m_hrSettings->{sidebar}{left} = ( $p14 eq 'Enabled' ) ? 1 : 0;
     my $p15 = param('sidebarRight');
-    $settings->{sidebar}{right} = ($p15 eq 'Enabled') ? 1 : 0;
+    $m_hrSettings->{sidebar}{right} = ( $p15 eq 'Enabled' ) ? 1 : 0;
     my $htmlright = param('htmlright');
-    $settings->{htmlright} = $htmlright;
+    $m_hrSettings->{htmlright} = $htmlright;
     my $floodtime = param('time between Posts');
-    $settings->{floodtime} = $floodtime;
+    $m_hrSettings->{floodtime} = $floodtime;
 
     #general
     my $p16 = param('language');
-    $settings->{language} = $p16;
+    $m_hrSettings->{language} = $p16;
     my $p17 = param('defaultAction');
-    $settings->{defaultAction} = $p17;
-    $settings->{news}{maxlength} = param('maxlength');
+    $m_hrSettings->{defaultAction} = $p17;
+    $m_hrSettings->{news}{maxlength} = param('maxlength');
 
     #boxes
-    for(my $i = 0 ; $i <= $#a ; $i++) {$database->void("update box set `position`= '" . param($a[$i]->{name}) . "'  where name= '" . $a[$i]->{name} . "'");}
-    CGI::CMS::Settings::saveSettings("$settings->{cgi}{bin}/config/settings.pl");
-    $style = $p1;
-    print '<div align="center"><b>Done</b><br/>';
-    my @entrys = param();
-    for(my $i = 0 ; $i <= $#entrys ; $i++) {
-        print "$entrys[$i]: ", param($entrys[$i]), '<br/>';
+    for( my $i = 0; $i <= $#a; $i++ ) {
+        $m_oDatabase->void( "update box set `position`= '"
+                . param( $a[$i]->{name} )
+                . "'  where name= '"
+                . $a[$i]->{name}
+                . "'" );
     }
-    my $rs = ($settings->{cgi}{mod_rewrite}) ? '/settings.html' : "$ENV{SCRIPT_NAME}?action=settings";
-    print qq(<a href="$rs">) . translate('next') . '</a></div>';
+    CGI::CMS::Settings::saveSettings(
+        "$m_hrSettings->{cgi}{bin}/config/settings.pl");
+    $m_sStyle = $p1;
+    my $htm = GetHtml();
+    my $rs
+        = ( $m_hrSettings->{cgi}{mod_rewrite} )
+        ? '/settings.html'
+        : "$ENV{SCRIPT_NAME}?action=settings";
+    my %parameter = (
+        path   => $m_hrSettings->{cgi}{bin} . '/templates',
+        style  => $m_sStyle,
+        title  => translate('translate'),
+        server => $m_hrSettings->{serverName},
+        id     => 'translate',
+        class  => 'max',
+    );
+    my $window = new HTML::Window( \%parameter );
+
+    $m_sContent
+        .= '<div align="center"><b>Done</b><br/>'
+        . qq(<a href="$rs">)
+        . translate('next') . '</a>';
+    my @entrys = param();
+    $m_sContent .= $window->windowHeader();
+    for( my $i = 0; $i <= $#entrys; $i++ ) {
+        $m_sContent .= "$entrys[$i]: " . param( $entrys[$i] ) . '<br/>';
+    }
+    $m_sContent .= $window->windowFooter();
+    $m_sContent .= qq(<a href="$rs">) . translate('next') . '</a></div>';
 
 }
 
-sub validRewrite {return (($_[0]== 0) or ($_[0]== 1)) ? 1 : 0;}
-sub validStyle   {return -e "$settings->{cgi}{DocumentRoot}/style/$_[0]";}
-sub exits        {return -e $_[0];}
-sub enabledDisabled    {$_[0] =~ /^(Enabled|Disabled)$/;}
-sub acceptLanguage     {$_[0] =~ /^\w\w-?\w?\w?$/;}
-sub validDefaultAction {$_[0] =~ /^\w+$/;}
-sub validBox           {$_[0] =~ /^(left|right|disabled)$/;}
-sub validExpires       {$_[0] =~ /^(\+\d\d?m|\+\d\d?y|\+\d\d?d|\+\d\d?h|\+\d\d?s)$/;}
-sub validSize          {$_[0] =~ /^(16|22|32|48|64|128)$/;}
-sub validhtmlright     {$_[0] =~ /^\d+$/;}
+sub validRewrite { return ( ( $_[0]== 0 ) or ( $_[0]== 1 ) ) ? 1 : 0; }
+sub validStyle { return -e "$m_hrSettings->{cgi}{DocumentRoot}/style/$_[0]"; }
+sub exits      { return -e $_[0]; }
+sub enabledDisabled { $_[0] =~ /^(Enabled|Disabled)$/; }
+sub acceptLanguage     { $_[0] =~ /^\w\w-?\w?\w?$/; }
+sub validDefaultAction { $_[0] =~ /^\w+$/; }
+sub validBox           { $_[0] =~ /^(left|right|disabled)$/; }
+
+sub validExpires {
+    $_[0] =~ /^(\+\d\d?m|\+\d\d?y|\+\d\d?d|\+\d\d?h|\+\d\d?s)$/;
+}
+sub validSize      { $_[0] =~ /^(16|22|32|48|64|128)$/; }
+sub validhtmlright { $_[0] =~ /^\d+$/; }
 1;

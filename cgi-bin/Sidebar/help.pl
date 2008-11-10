@@ -1,19 +1,19 @@
 my %parameter = (
-    path   => $settings->{cgi}{bin} . '/templates',
-    style  => $style,
+    path   => $m_hrSettings->{cgi}{bin} . '/templates',
+    style  => $m_sStyle,
     title  => translate('help'),
-    server => $settings->{cgi}{serverName},
+    server => $m_hrSettings->{cgi}{serverName},
     id     => 'nlogin',
     class  => 'sidebar',
 );
-my $window = new HTML::Window(\%parameter);
+my $window = new HTML::Window( \%parameter );
 $window->set_closeable(1);
 $window->set_moveable(1);
 $window->set_resizeable(0);
 $window->set_collapse(1);
-print '<tr id="trwnhelp"><td valign="top">';
-print $window->windowHeader();
-print q(
+$m_sContent .= '<tr id="trwnhelp"><td valign="top" class="sidebar">';
+$m_sContent .= $window->windowHeader();
+$m_sContent .= q(
 <ul>
 <li><a href="#inst">Installation</a></li>
 <li><a href="#apache">Apache2 Config</a></li>
@@ -23,6 +23,6 @@ print q(
 <li><a href="#examples">Examples</a></li>
 <li><a href="#bbcode">BBcode tags</a></li>
 </ul>);
-print $window->windowFooter();
-print '</td></tr>';
+$m_sContent .= $window->windowFooter();
+$m_sContent .= '<br/></td></tr>';
 1;

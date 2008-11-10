@@ -2,13 +2,14 @@ package CGI::CMS::Actions;
 use strict;
 use warnings;
 require Exporter;
-use vars qw($actions $DefaultClass @EXPORT  @ISA $defaultconfig);
-@CGI::CMS::Actions::EXPORT = qw(loadActions saveActions $actions);
+use vars qw($m_hrActions $DefaultClass @EXPORT  @ISA $defaultconfig);
+@CGI::CMS::Actions::EXPORT = qw(loadActions saveActions $m_hrActions);
 use CGI::CMS::Config;
 @CGI::CMS::Actions::ISA     = qw( Exporter CGI::CMS::Config);
-$CGI::CMS::Actions::VERSION = '0.36';
-$DefaultClass               = 'CGI::CMS::Actions' unless defined $CGI::CMS::Actions::DefaultClass;
-$defaultconfig              = '%CONFIG%';
+$CGI::CMS::Actions::VERSION = '0.37';
+$DefaultClass               = 'CGI::CMS::Actions'
+    unless defined $CGI::CMS::Actions::DefaultClass;
+$defaultconfig = '%CONFIG%';
 
 =head1 NAME
 
@@ -16,11 +17,11 @@ CGI::CMS::Actions - actions for CGI::LZE
 
 =head1 SYNOPSIS
 
-        use vars qw($actions);
+        use vars qw($m_hrActions);
 
         *actions = \$CGI::CMS::Actions::actions;
 
-        $actions = {
+        $m_hrActions = {
 
                 welcome => {
 
@@ -44,7 +45,7 @@ Actions for CGI::CMS.
 
 =head2 EXPORT
 
-loadActions() saveActions() $actions
+loadActions() saveActions() $m_hrActions
 
 =head1 Public
 
@@ -53,7 +54,7 @@ loadActions() saveActions() $actions
 =cut
 
 sub new {
-    my ($class, @initializer) = @_;
+    my ( $class, @initializer ) = @_;
     my $self = {};
     bless $self, ref $class || $class || $DefaultClass;
     return $self;
@@ -64,9 +65,9 @@ sub new {
 =cut
 
 sub loadActions {
-    my ($self, @p) = getSelf(@_);
-    my $do = (defined $p[0]) ? $p[0] : $defaultconfig;
-    if(-e $do) {
+    my ( $self, @p ) = getSelf(@_);
+    my $do = ( defined $p[0] ) ? $p[0] : $defaultconfig;
+    if( -e $do ) {
         do $do;
     }
 }
@@ -76,8 +77,8 @@ sub loadActions {
 =cut
 
 sub saveActions {
-    my ($self, @p) = getSelf(@_);
-    $self->SUPER::saveConfig(@p, $actions, 'actions');
+    my ( $self, @p ) = getSelf(@_);
+    $self->SUPER::saveConfig( @p, $m_hrActions, 'actions' );
 }
 
 =head1 Private
@@ -87,8 +88,15 @@ sub saveActions {
 =cut
 
 sub getSelf {
-    return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'CGI::CMS::Actions');
-    return (defined($_[0]) && (ref($_[0]) eq 'CGI::CMS::Actions' || UNIVERSAL::isa($_[0], 'CGI::CMS::Actions'))) ? @_ : ($CGI::CMS::Actions::DefaultClass->new, @_);
+    return @_
+        if defined( $_[0] )
+            && ( !ref( $_[0] ) )
+            && ( $_[0] eq 'CGI::CMS::Actions' );
+    return (
+        defined( $_[0] )
+            && ( ref( $_[0] ) eq 'CGI::CMS::Actions'
+            || UNIVERSAL::isa( $_[0], 'CGI::CMS::Actions' ) )
+    ) ? @_ : ( $CGI::CMS::Actions::DefaultClass->new, @_ );
 }
 
 =head2 see Also

@@ -14,7 +14,7 @@ $VAR1 = {
     'size'    => 22,
     'uploads' => {
         'maxlength' => 2003153,
-        'path'      => '/htdocs/downloads/',
+        'path'      => 'htdocs/downloads/',
         'chmod'     => 420,
         'enabled'   => 1
     },
@@ -28,7 +28,7 @@ $VAR1 = {
         'town'      => 'Berlin'
     },
     'language' => 'en',
-    'version'  => '0.36',
+    'version'  => '0.37',
     'cgi'      => {
         'bin'          => 'cgi-bin/',
         'style'        => 'Crystal',
@@ -50,11 +50,11 @@ $VAR1 = {
         'left'  => 1,
         'right' => 1
     },
-    'translate' => 'cgi-bin//config/translate.pl',
-    'config'    => 'cgi-bin//config/settings.pl',
+    'translate' => 'cgi-bin/config/translate.pl',
+    'config'    => 'cgi-bin/config/settings.pl',
     'news'      => {
         'maxlength' => 5000,
         'messages'  => 10
     }
 };
-$settings = $VAR1;
+$m_hrSettings = $VAR1;

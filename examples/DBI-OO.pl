@@ -2,24 +2,22 @@
 use strict;
 use lib qw(../lib);
 use DBI::Library;
-use vars qw($db $user $host $password $settings);
+use vars qw($db $m_sUser $host $password $m_hrSettings);
 use CGI::CMS;
 use strict;
-my $cgi = CGI::CMS->new();
-$cgi->init();
-*settings = \$CGI::CMS::settings;
-print $cgi->header;
-my ($dbi, $dbh) = DBI::Library->new(
-    {
-        name     => $settings->{db}{name},
-        host     => $settings->{db}{host},
-        user     => $settings->{db}{user},
-        password => $settings->{db}{password},
+my $m_oCgi = CGI::CMS->new();
+$m_oCgi->init();
+*m_hrSettings = \$CGI::CMS::settings;
+print $m_oCgi->header;
+my ( $dbi, $m_dbh ) = DBI::Library->new(
+    {   name     => $m_hrSettings->{db}{name},
+        host     => $m_hrSettings->{db}{host},
+        user     => $m_hrSettings->{db}{user},
+        password => $m_hrSettings->{db}{password},
     }
 );
 $dbi->addexecute(
-    {
-        title       => 'select',
+    {   title       => 'select',
         description => 'show query',
         sql         => "select *from <TABLE> where `title` = ?",
         return      => "fetch_hashref",
@@ -28,7 +26,7 @@ $dbi->addexecute(
 my $showQuery = $dbi->select('select');
 local $/ = "<br/>\n";
 
-foreach my $key (keys %{$showQuery}) {
+foreach my $key ( keys %{$showQuery} ) {
     print "$key: ", $showQuery->{$key}, $/;
 }
 use showsource;

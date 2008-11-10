@@ -9,20 +9,33 @@
 <tr>
 [/menuHeader]
 [link]
-<td width="10"><img src="/style/[style/]/tabwidget/mlU.png" alt="" title="[title/]" border="0" align="middle"/></td>
+<td><table id="[id/]" border="0" cellpadding="0" cellspacing="0" summary="layoutMenuLink"><tr>
+<td width="10" ><img src="/style/[style/]/tabwidget/mlU.png" alt="" title="[title/]" border="0" align="middle"/></td>
 <td class="under" align="left">[text/]</td>
 <td width="10" class="underR"></td>
+</tr></table></td>
 [/link]
 [currentLink]
+<td><table id="[id/]" border="0" cellpadding="0" cellspacing="0" summary="layoutCurrentMenuLink"><tr>
 <td width="10"><img src="/style/[style/]/tabwidget/mlO.png" alt="" title="[title/]" border="0" align="middle" /></td>
 <td class="over" align="left" valign="middle">[text/]</td>
 <td width="10" class="overR"></td>
+</tr></table></td>
 [/currentLink]
 [javaScriptLink]
+<td><table id="[id/]" border="0" cellpadding="0" cellspacing="0" summary="layoutMenuLink"><tr>
 <td width="10" id="dynamicTab1" style="display:none;"><img src="/style/[style/]/tabwidget/mlU.png" alt="" title="[title/]" border="0" align="middle" /></td>
 <td class="under" align="left" id="dynamicTab2" style="display:none;">[text/]</td>
 <td width="10" class="underR" id="dynamicTab3" style="display:none;"></td>
+</tr></table></td>
 [/javaScriptLink]
+[adminlink]
+<td ><table id="dropdownLink" onmouseover="shown=false;" onmouseout="shown=true;"  onclick="showMenu('dropdownLink','menupopup')"  border="0" cellpadding="0" cellspacing="0" summary="layoutMenuLink"><tr>
+<td width="10" ><img src="/style/[style/]/tabwidget/mlU.png" alt="" title="[title/]" border="0" align="middle"/></td>
+<td class="under" align="left">[text/]</td>
+<td width="10" class="underR"></td>
+</tr></table></td>
+[/adminlink]
 [menuFooter]
 </tr>
 </table>
@@ -34,7 +47,7 @@
 <table align="center" border="0" cellpadding="0" cellspacing="0" summary="layoutMenu"  width="100%">
 <tr align="left" >
 <td  style=" background-position:left;background-image:url('/style/[style/]/window/wlbg.png'); background-repeat:repeat-y;"></td>
-<td align="left" valign="top" class="tabwidgetBody" width="100%" height="550">
+<td align="left" valign="top" class="tabwidgetBody" width="100%" height="640">
 [/bheader]
 [bfooter]
 </td>
@@ -46,7 +59,21 @@
 <td><img src="/style/[style/]/window/wrubg.png" alt="" width="5" height="2" border="0"/></td>
 </tr>
 </table></td></tr></table>
+<table id="menupopup" class="menupopup"  border="0" style="display:none;border-width:1px;border-style:solid;" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" style="border-width:0px;"><a onclick="location.href='[scriptName/]?action=EditAction&amp;name=[action/]'" class="menupoint">[tr=EditFile/]</a></td>
+</tr>
+<tr>
+<td align="left" ><a onclick="location.href='[scriptName/]?action=EditAction&amp;name=[action/]'" class="menupoint">[tr=EditAction/]</a></td>
+</tr>
+<tr>
+<td align="left" ><a onclick="location.href='[scriptName/]?action=EditTopMenu&amp;name=[action/]'" class="menupoint">[tr=EditVMenu/]</a></td>
+</tr>
+<tr>
+<td align="left" ><a onclick="location.href='[scriptName/]?action=EditVertMenu&amp;name=[action/]'" class="menupoint">[tr=EditHMenu/]</a></td>
+</tr>
+</table>
 [bfooter/]
 [action]
-<table align ="left" border ="0" cellpadding ="0" cellspacing="0" summary="layoutMenuItem"><tr><td valign="bottom"><img onclick="location.href='[href/]'" src="/style/Crystal/buttons/[src/]" width="20" height="20" border="0" alt="" title="[title/]" style='font-size:14px;'/></td><td valign="middle"><a class="link" href="[href/]"  style='font-size:16px;' title="[title/]">[text/]</a></td></tr></table>
+<table align ="left" border ="0" cellpadding ="0" cellspacing="0" summary="layoutMenuItem"><tr><td valign="bottom"><img onclick="location.href='[href/]'" src="/style/Crystal/buttons/[src/]" width="20" height="20" border="0" alt="" title="[title/]" style='font-size:14px;'/></td><td valign="middle"><a class="link" href="[href/]" [onclick/]  style='font-size:16px;' title="[title/]">[text/]</a></td></tr></table>
 [/action]

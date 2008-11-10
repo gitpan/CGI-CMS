@@ -41,8 +41,8 @@ Warning      => ["<font color=\"#0000ff\"><b><i>", "</b></i></font>"],
 },
 );
 
-my ($file, $out) = @_;
-open (IN, "$file") or die "$!: $file";
+my ($m_sFile, $out) = @_;
+open (IN, "$m_sFile") or die "$!: $m_sFile";
 my @lines;
 while(<IN>){
 $_=~s|#!/usr/bin/perl ?-?w?||;

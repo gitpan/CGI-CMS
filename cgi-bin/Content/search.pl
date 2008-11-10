@@ -1,44 +1,53 @@
 use HTML::Menu::Pages;
 
 sub fulltext {
-    my $search = param('query');
-    print '<div align="center">';
-    my @count = $search ? $database->fetch_array("SELECT count(*) FROM news  where `right` <= $right and MATCH (title,body) AGAINST(?)", $search) : 0;
-    if($count[0] > 0) {
+    my $search    = param('query');
+    my %parameter = (
+        path     => $m_hrSettings->{cgi}{bin} . '/templates',
+        style    => $m_sStyle,
+        template => "wnd.htm",
+        server   => $m_hrSettings->{serverName},
+        id       => 'Search',
+        class    => 'max',
+    );
+    my $window = new HTML::Window( \%parameter );
+    $m_sContent .= br() . $window->windowHeader();
+    $m_sContent .= '<div align="center">';
+    my @count
+        = $search
+        ? $m_oDatabase->fetch_array(
+        "SELECT count(*) FROM news  where `right` <= $m_nRight and MATCH (title,body) AGAINST(?)",
+        $search
+        )
+        : 0;
+    if( $count[0] > 0 ) {
         my %needed = (
-            start       => $von,
+            start       => $m_nStart,
             length      => $count[0],
-            style       => $style,
+            style       => $m_sStyle,
             mod_rewrite => 1,
             action      => "fulltext",
             append      => "&query=$search"
         );
-        print makePages(\%needed);
-        print "<br/>", $database->fulltext("$search", 'news', $right, $von, $bis);
+
+        $m_sContent .= makePages( \%needed );
+        $m_sContent
+            .= $m_oDatabase->fulltext( $search, 'news', $m_nRight, $m_nStart,
+            $m_nEnd );
+
     } else {
-        my %parameter = (
-            path   => $settings->{cgi}{bin} . '/templates',
-            style  => $style,
-            title  => qq(<div style="white-space:nowrap">$tlt</div>),
-            server => $settings->{cgi}{serverName},
-            id     => "reg$id",
-            class  => 'min',
-        );
-        my $window = new HTML::Window(\%parameter);
-        $window->set_closeable(0);
-        $window->set_moveable(1);
-        $window->set_resizeable(1);
-        print br(), $window->windowHeader();
+        $m_sContent .= br() . $window->windowHeader();
         my $ts = translate('search');
-        print
-          qq(<div align="center"><br/><div align="center"><img src="http://www.google.com/intl/en_ALL/images/logo.gif" alt="admin" border="0"/></div><br/><a href="http://www.google.com/custom?q=$search&amp;sa=Google+Search&amp;&amp;domains=$settings->{cgi}{serverName}&amp;sitesearch=$settings->{cgi}{serverName}" class="menulink">Search with Google</a><br/><br/>
+        $m_sContent
+            .= qq(<div align="center"><br/><a href="http://www.google.com/custom?q=$search&amp;sa=Google+Search&amp;&amp;domains=$m_hrSettings->{cgi}{serverName}&amp;sitesearch=$m_hrSettings->{cgi}{serverName}" class="menulink">Search with Google</a><br/><br/>
                 <form action="$ENV{SCRIPT_NAME}" name="search">
-                <input align="top" type="text" maxlength="100" size="16" style="vertical-align:top;width:100px;height:22px;" title="$ts" name="keyword" id="keyword" value="$search"/>
+                <input align="top" type="text" maxlength="100" size="16"  title="$ts" name="keyword" id="keyword" value="$search"/>
                <input  type="hidden" name="action"  value="fulltext"/>
-               <input type="submit"  name="submit" value="$ts" size="12" maxlength="15" alt="$ts" align="left" style="height:22px;vertical-align:top;"/>
+               <input type="submit"  name="submit" value="$ts" size="12" maxlength="15" alt="$ts" align="left" />
                </form></div><br/>);
-        print $window->windowFooter();
+        $m_sContent .= $window->windowFooter();
     }
-    print '</div>';
+    $m_sContent .= '</div>';
+    $m_sContent .= $window->windowFooter();
 }
 1;

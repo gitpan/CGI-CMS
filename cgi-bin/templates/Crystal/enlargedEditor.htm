@@ -6,36 +6,31 @@
 <br/><br/>
 [/previewBody]
 [editor]
-<div align="center">
-<table align="center" border="1" cellpadding="0" cellspacing="0" summary="editor" width="100%" >
-<tr >
-<td></td>
-</tr>
+<div align="center"><form name="postmodify" action="" method="post"  enctype="multipart/form-data" >
+<table align="center" border="0" cellpadding="0" cellspacing="0" summary="editor" width="100%" >
 <tr>
 <td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+<table align="center" border="0" cellpadding="1" cellspacing="1" width="100%">
 <tr>
-<td valign="top">
+<td colspan="2" align="left">
 <script language="JavaScript1.5" type="text/javascript">
- /* <![CDATA[ */
 html = [html/];
 var maxLength =[maxlength/];
 function checkLength() {
-var message = document.getElementById("txt");
-var m = message.value;
-if(m.length >= maxLength){
-message.value =  m.substring(0,maxLength);
-document.getElementById("msglength").value=0;
-document.getElementById("msglength").style.color= "red";
-}else{
-var no = (maxLength - m.length);
-document.getElementById("msglength").value = no ;
-document.getElementById("msglength").style.color= "green";
-}
+       var message = document.getElementById("txt");
+       var m = message.value;
+       if(m.length >= maxLength){
+              message.value =  m.substring(0,maxLength);
+              document.getElementById("msglength").value=0;
+              document.getElementById("msglength").style.color= "red";
+       }else{
+              var no = (maxLength - m.length);
+              document.getElementById("msglength").value = no ;
+              document.getElementById("msglength").style.color= "green";
+       }
 }
 printButtons();
 if(html) document.getElementById('htmlButton').checked = true;
- /* ]]> */
 </script>
 </td>
 </tr>
@@ -43,34 +38,39 @@ if(html) document.getElementById('htmlButton').checked = true;
 <script language="JavaScript1.5" type="text/javascript">
 /* <![CDATA[ */
 printenlarged();
-/* ]]> */
+ /* ]]> */
 </script>
 </td></tr>
 <tr>
-<td align="left"><form name="postmodify" action="" method="post"  enctype="multipart/form-data" ><a name="winedit">[tr=caption/]</a>&#160;<input name="headline" id="title" maxlength="50" value="[headline/]"  align="middle" size="50" type="text"/>[catlist/][atemp/]
-</td>
+<td width="*"><a name="winedit"></a><input name="headline" id="title" maxlength="50" value="[headline/]"  align="left" size="50" type="text" style="width:100%;"/>
+</td><td align="right">[catlist/][atemp/]</td>
 </tr>
 <tr>
-<td align="center"><textarea rows="30" cols="50" class="editForm" name="message" id="txt" onclick="checkLength()" onkeypress="checkLength()" onkeyup="checkLength()" style="width:95%;" onkeydown="checkLength()" onchange="checkLength()">[body/]</textarea>
-<script language="JavaScript1.5" type="text/javascript">
-blogThis();</script>
+<td align="center" colspan="2"><textarea rows="10" cols="50" class="editForm" name="message" id="txt" onclick="checkLength()" onkeypress="checkLength()" onkeyup="checkLength()" style="width:100%;;height:600px;" onkeydown="checkLength()" onchange="checkLength()">[body/]</textarea>
+ <script language="JavaScript1.5" type="text/javascript">
+ blogThis();</script>
 </td>
 </tr>
-[attach/]
+<tr><td colspan="2">
+<table align="center" border="0" cellpadding="0" cellspacing="0" summary="chars-left" >
 <tr>
-<td align="center">
+<td>[tr=chars/]</td><td><input value="[maxlength/]" id="msglength" style="width:50px;color:green;background-color:#E6DADE;" disabled="disabled"/></td>
+</tr>
+</table>
 <input  name="action" value="[action/]" style="display:none;"/>
 <input  name="thread" value="[thread/]" style="display:none;"/>
 <input  name="reply" value="[reply/]" style="display:none;"/>
-<input value="[maxlength/]" id="msglength" style="width:33px; font-size:14px;color:green;background-color:#E6DADE;" disabled="disabled"/>[tr=chars/]&#160;<br/>
-<table  align="center" summary="layout"  cellspacing="0" border="0" cellpadding="0">
-<tr>
-<td align="center">
-<input type="submit" name="submit" align="middle" alt="preview" value="[tr=preview/]" title="[tr=preview/]"/>
 </td>
-<td><input type="submit" style="cursor:pointer;" align="middle" value="[tr=save/]" title="[tr=save/]" onclick="return confirm('[tr=realy/] [tr=save/] ?');" /></td>
 </tr>
-</table>
+<tr>
+<td align="left" colspan="2">
+[attach/]
+</td>
+</tr>
+<tr>
+<td align="right" colspan="2">
+<input type="submit" name="submit" align="middle" alt="preview" value="[tr=preview/]" title="[tr=preview/]"/>&#160;
+ <input type="submit" style="cursor:pointer;" align="middle" value="[tr=save/]" title="[tr=save/]" onclick="return confirm('[tr=realy/] [tr=save/] ?');" />
 </td>
 </tr>
 </table>

@@ -3,45 +3,45 @@
 ###################################################################################
 #      path is set during make                                                    #
 #lze###############################################################################
-use CGI::CMS qw(:all);
-use CGI::CMS::Settings;
-use DBI::Library qw(:all);
-use HTML::Menu::TreeView qw(:all);
-loadSettings("%PATH%/config/settings.pl");
-use Template::Quick;
-use HTML::Window qw(:all);
-my %parameter = (
-    path   => "%PATH%/templates/",
-    style  => "Crystal",
-    server => "%host%",
-);
-use CGI::CMS::Main qw(:all);
-initMain(
-    {
-        template => 'blog.htm',
-        path     => "%PATH%/templates/",
-        style    => "Crystal",
-        template => 'blog.htm'
-    }
-);
-initWindow(\%parameter);
-use HTML::TabWidget qw(:all);
-initTabWidget(
-    {
-        template => 'lzetabwidget.htm',
-        path     => "%PATH%/templates/",
-        style    => "Crystal",
-    }
-);
-use HTML::Menu::Pages;
-use HTML::Editor;
-use HTML::Editor::BBCODE;
-use DBI::Library::Database qw(:all);
-use CGI::CMS::GUI;
-### 3party
-use HTML::Entities;
-use CGI::QuickForm;
-Syntax::Highlight::Engine::Kate;
+# use CGI::CMS qw(:all);
+# use CGI::CMS::Settings;
+# use DBI::Library qw(:all);
+# use HTML::Menu::TreeView qw(:all);
+# loadSettings("%PATH%/config/settings.pl");
+# use Template::Quick;
+# use HTML::Window qw(:all);
+# my %parameter = (
+#     path   => "%PATH%/templates/",
+#     style  => "Crystal",
+#     server => "%host%",
+# );
+# use CGI::CMS::Main qw(:all);
+# initMain(
+#     {
+#         template => 'blog.htm',
+#         path     => "%PATH%/templates/",
+#         style    => "Crystal",
+#         template => 'blog.htm'
+#     }
+# );
+# initWindow(\%parameter);
+# use HTML::TabWidget qw(:all);
+# initTabWidget(
+#     {
+#         template => 'lzetabwidget.htm',
+#         path     => "%PATH%/templates/",
+#         style    => "Crystal",
+#     }
+# );
+# use HTML::Menu::Pages;
+# use HTML::Editor;
+# use HTML::Editor::BBCODE;
+# use DBI::Library::Database qw(:all);
+# use CGI::CMS::GUI;
+# ### 3party
+# use HTML::Entities;
+# use CGI::QuickFormR;
+# Syntax::Highlight::Engine::Kate;
 
 # Apache2 mod perl stuff
 # enable if the mod_perl 1.0 compatibility is needed

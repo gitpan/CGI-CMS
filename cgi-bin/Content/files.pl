@@ -1,96 +1,114 @@
 use vars qw($r);
 use URI::Escape;
+use HTML::Entities;
+no warnings "uninitialized";
+
+sub EditFile {
+    my $name = defined param('name') ? param('name') : $m_hrAction;
+    my @n = $m_oDatabase->fetch_array(
+        "select file from `actions` where action=?", $name );
+    OpenFile("$m_hrSettings->{cgi}{bin}/Content/$n[0]");
+}
 
 sub showDir {
-    my $subfolder = param('subfolder') ? param('subfolder') : shift;
-    $subfolder = defined $subfolder ? $subfolder : $settings->{cgi}{bin};
-    $subfolder =~ s?/$??g;
-    my $links = $subfolder =~ ?^(.*/)[^/]+$? ? $1 : $subfolder;
+    my $m_sSubfolder = param('subfolder') ? param('subfolder') : shift;
+
+    $m_sSubfolder
+        = defined $m_sSubfolder ? $m_sSubfolder : $m_hrSettings->{cgi}{bin};
+
+    $m_sSubfolder =~ s?/$??g;
+    my $links = $m_sSubfolder =~ ?^(.*/)[^/]+$? ? $1 : $m_sSubfolder;
     $links =~ s?//?/?g;
+
     my $elinks     = uri_escape($links);
-    my $esubfolder = uri_escape($subfolder);
+    my $esubfolder = uri_escape($m_sSubfolder);
     $r = 0;
 
-    my @t = readFiles($subfolder, 0);
+    my @t = readFiles( $m_sSubfolder, 0 );
     columns(
-        a(
-            {
-                href  => "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&sort=1",
-                class => "treeviewLink$size"
+        a(  {   href =>
+                    "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&sort=1",
+                class => "treeviewLink$m_nSize"
             },
             'Name'
-          )
-          . '&#160;',
-        a(
-            {
-                href  => "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&byColumn=0",
-                class => "treeviewLink$size"
+            )
+            . '&#160;',
+        a(  {   href =>
+                    "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&byColumn=0",
+                class => "treeviewLink$m_nSize"
             },
             'Size'
-          )
-          . '&#160;',
-        a(
-            {
-                href  => "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&byColumn=1",
-                class => "treeviewLink$size"
+            )
+            . '&#160;',
+        a(  {   href =>
+                    "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&byColumn=1",
+                class => "treeviewLink$m_nSize"
             },
             'Permission'
-          )
-          . '&#160;',
-        a(
-            {
-                href  => "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&byColumn=2",
-                class => "treeviewLink$size"
+            )
+            . '&#160;',
+        a(  {   href =>
+                    "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&byColumn=2",
+                class => "treeviewLink$m_nSize"
             },
             'Last Modified'
-          )
-          . '&#160;'
+            )
+            . '&#160;'
     );
     border(1);
 
-    if(defined param('byColumn')) {
-        orderByColumn(param('byColumn'));
-    } elsif (param('sort')) {
+    if( defined param('byColumn') ) {
+        orderByColumn( param('byColumn') );
+    } elsif ( param('sort') ) {
         sortTree(1);
     }
 
-    my $hf = "$ENV{SCRIPT_NAME}?action=openFile&file=$elinks";
-
-    print div(
-        {align => 'center'},
-        a(
-            {
-                href  => $hf,
-                class => "treeviewLink$size"
+    my $hf        = "$ENV{SCRIPT_NAME}?action=openFile&file=$elinks";
+    my %parameter = (
+        path   => $m_hrSettings->{cgi}{bin} . '/templates',
+        style  => $m_sStyle,
+        title  => "",
+        server => $m_hrSettings->{serverName},
+        id     => 'showDir',
+        class  => 'min',
+    );
+    my $window = new HTML::Window( \%parameter );
+    $m_sContent .= br() . $window->windowHeader();
+    $m_sContent .= div(
+        { align => 'center' },
+        a(  {   href  => $hf,
+                class => "treeviewLink$m_nSize"
             },
             $links
-          )
-          . br()
-          . a(
-            {
-                href  => "javascript:var a = prompt('Enter File Name');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=newFile&file='+encodeURIComponent(a)+'&dir=$esubfolder';",
-                class => "treeviewLink$size"
+            )
+            . br()
+            . a(
+            {   href =>
+                    "javascript:var a = prompt('Enter File Name');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=newFile&file='+encodeURIComponent(a)+'&dir=$esubfolder';",
+                class => "treeviewLink$m_nSize"
             },
             "New File"
-          )
-          . '&#160;|&#160;'
-          . a(
-            {
-                href  => "javascript:var a = prompt('Neues Verzeichnis');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=makeDir&file=$esubfolder&d='+encodeURIComponent(a);",
-                class => "treeviewLink$size"
+            )
+            . '&#160;|&#160;'
+            . a(
+            {   href =>
+                    "javascript:var a = prompt('Neues Verzeichnis');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=makeDir&file=$esubfolder&d='+encodeURIComponent(a);",
+                class => "treeviewLink$m_nSize"
             },
             "New Directory"
-          )
-          . '&#160;|&#160;'
-          . a(
-            {
-                href  => "javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$esubfolder&chmod='+encodeURIComponent(a);",
-                class => "treeviewLink$size"
+            )
+            . '&#160;|&#160;'
+            . a(
+            {   href =>
+                    "javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$esubfolder&chmod='+encodeURIComponent(a);",
+                class => "treeviewLink$m_nSize"
             },
             "Chmod"
-          )
-          . br()
-          . Tree(\@t)
+            )
+            . br()
+            . Tree( \@t )
+            . br()
+            . $window->windowFooter()
     );
     border(0);
 
@@ -100,39 +118,50 @@ sub showDir {
         my $edir = uri_escape($dir);
         my $rk   = shift;
         $r++ if($rk);
-        if(-d "$dir" && -r "$dir") {
-            opendir DIR, $dir or die "files.pl sub readFiles: $dir $!";
-            foreach my $d (readdir(DIR)) {
+        if( -d "$dir" && -r "$dir" ) {
+            opendir DIR, $dir or warn "files.pl sub readFiles: $dir $!";
+            foreach my $d ( readdir(DIR) ) {
                 my $fl = "$dir/$d";
                 use File::stat;
                 my $sb = stat($fl);
-              TYPE: {
-                    last TYPE if($d =~ /^\.+$/);
-                    my $efl  = uri_escape($fl);
-                    my $href = "$ENV{SCRIPT_NAME}?action=openFile&amp;file=$efl";
-                    if(-d $fl) {
+            TYPE: {
+                    last TYPE if( $d =~ /^\.+$/ );
+                    my $efl = uri_escape($fl);
+                    my $href
+                        = "$ENV{SCRIPT_NAME}?action=openFile&amp;file=$efl";
+                    if( -d $fl ) {
                         push @TREEVIEW,
-                          {
+                            {
                             text    => $d,
                             href    => "$href/",
                             empty   => 1,
-                            columns => [sprintf("%s", $sb->size), sprintf("%04o", $sb->mode & 07777), sprintf("%s", scalar localtime $sb->mtime)],
+                            columns => [
+                                sprintf( "%s",   $sb->size ),
+                                sprintf( "%04o", $sb->mode & 07777 ),
+                                sprintf( "%s",   scalar localtime $sb->mtime )
+                            ],
                             addition =>
-                              qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout"><tr><td><a class="treeviewLink$size" href="javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$efl&chmod='+encodeURIComponent(a);">&#160;chmod</a></td><td><a class="treeviewLink$size" href="javascript:var a = prompt('Enter File Name');location.href = '$ENV{SCRIPT_NAME}?action=newFile&file='+encodeURIComponent(a)+'&dir=$edir';"><img src="/style/$style/$size/mimetypes/filenew.png" border="0" alt="new"/></a></td><td><a class="treeviewLink$size" href="$ENV{SCRIPT_NAME}?action=deleteFile&amp;file=$efl" onclick="return confirm('Realy delete ?')"><img src="/style/$style/$size/mimetypes/editdelete.png" border="0" alt="delete"/></a></td></td></tr></table>|
-                          };
+                                qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout"><tr><td><a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$efl&chmod='+encodeURIComponent(a);">&#160;chmod</a></td><td><a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter File Name');location.href = '$ENV{SCRIPT_NAME}?action=newFile&file='+encodeURIComponent(a)+'&dir=$edir';"><img src="/style/$m_sStyle/$m_nSize/mimetypes/filenew.png" border="0" alt="new"/></a></td><td><a class="treeviewLink$m_nSize" href="$ENV{SCRIPT_NAME}?action=deleteFile&amp;file=$efl" onclick="return confirm('Realy delete ?')"><img src="/style/$m_sStyle/$m_nSize/mimetypes/editdelete.png" border="0" alt="delete"/></a></td></td></tr></table>|
+                            };
                         last TYPE;
                     }
-                    if(-f $fl) {
+                    if( -f $fl ) {
                         my $suffix = $d =~ /\.([^\.]+)$/ ? $1 : '';
                         push @TREEVIEW,
-                          {
+                            {
                             text    => "$d",
                             href    => "$href",
-                            columns => [sprintf("%s", $sb->size), sprintf("%04o", $sb->mode & 07777), sprintf("%s", scalar localtime $sb->mtime)],
+                            columns => [
+                                sprintf( "%s",   $sb->size ),
+                                sprintf( "%04o", $sb->mode & 07777 ),
+                                sprintf( "%s",   scalar localtime $sb->mtime )
+                            ],
                             addition =>
-                              qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout"><tr><td><a class="treeviewLink$size" href="javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$efl&chmod='+encodeURIComponent(a);">&#160;chmod</a></td><td><a class="treeviewLink$size" href="$href"><img src="/style/$style/$size/mimetypes/edit.png" border="0" alt="edit"/></a></td><td><a class="treeviewLink$size" href="$ENV{SCRIPT_NAME}?action=deleteFile&amp;file=$efl" onclick="return confirm('Realy delete ?')"><img src="/style/$style/$size/mimetypes/editdelete.png" border="0" alt="delete"/></a></td></tr></table>|,
-                            image => (-e "$settings->{cgi}{DocumentRoot}/style/$style/$size/mimetypes/$suffix.png") ? "$suffix.png" : 'link.gif',
-                          };
+                                qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout"><tr><td><a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$efl&chmod='+encodeURIComponent(a);">&#160;chmod</a></td><td><a class="treeviewLink$m_nSize" href="$href"><img src="/style/$m_sStyle/$m_nSize/mimetypes/edit.png" border="0" alt="edit"/></a></td><td><a class="treeviewLink$m_nSize" href="$ENV{SCRIPT_NAME}?action=deleteFile&amp;file=$efl" onclick="return confirm('Realy delete ?')"><img src="/style/$m_sStyle/$m_nSize/mimetypes/editdelete.png" border="0" alt="delete"/></a></td></tr></table>|,
+                            image => (
+                                -e "$m_hrSettings->{cgi}{DocumentRoot}/style/$m_sStyle/$m_nSize/mimetypes/$suffix.png"
+                                ) ? "$suffix.png" : 'link.gif',
+                            };
                     }
                 }
             }
@@ -142,43 +171,61 @@ sub showDir {
     }
 }
 
-sub openFile {
-    my $f = defined param('file') ? param('file') : '';
-
-  SWITCH: {
-        if(-d $f) {
+sub OpenFile {
+    my $f = defined param('file') ? param('file') : shift;
+    return unless defined $f;
+SWITCH: {
+        if( -d $f ) {
             &showDir($f);
             last SWITCH;
         }
-        if(-T $f) {
-            &showEditor("Edit File: $f<br/>", getFile($f), 'saveFile', $f);
+        if( -T $f ) {
+            $m_sContent .= qq(<div align="center">)
+                . a( { -href => "javascript:history.back()" },
+                translate('back') )
+                . "</div>";
+            &showEditor( "Edit File: $f<br/>", getFile($f), 'saveFile', $f );
             last SWITCH;
         }
-        if($f =~ /png|jpg|jpeg|gif$/ && $f =~ m~/srv/www/htdocs/(.*)$~) {
-            print br(), qq(<div align="center"><img alt="showImage" src="/$1" align="center"/>), br(), a({-href => "javascript:history.back()"}, translate('back')), "</div>";
+        if( $f =~ /png|jpg|jpeg|gif$/ && $f =~ m~/srv/www/htdocs/(.*)$~ ) {
+            $m_sContent
+                .= br()
+                . qq(<div align="center"><img alt="" src="/$1" align="center"/>)
+                . br()
+                . a( { -href => "javascript:history.back()" },
+                translate('back') )
+                . "</div>";
             last SWITCH;
         }
-        print "Unsopported File Type", br();
+        $m_sContent
+            .= br()
+            . translate("UnsopportedFileType")
+            . br()
+            . a( { -href => "javascript:history.back()" },
+            translate('back') );
     }
 }
 
 sub saveFile {
-    my $txt  = param('txt');
-    my $file = param('file');
+    my $txt     = param('txt');
+    my $m_sFile = param('file');
     use Fcntl qw(:flock);
     use Symbol;
     my $fh = gensym();
-    unless (-d $file) {
-        open $fh, ">$file.bak" or warn "files.pl::saveFile $/ $! $/ $file $/";
+    unless ( -d $m_sFile ) {
+        open $fh, ">$m_sFile.bak"
+            or warn "files.pl::saveFile $/ $! $/ $m_sFile $/";
         flock $fh, 2;
         seek $fh, 0, 0;
         truncate $fh, 0;
         print $fh $txt;
         close $fh;
-        rename "$file.bak", $file or warn "files.pl::saveFile $/ $! $/" if(-e "$file.bak");
-        chmod(0755, $file) if($file =~ ?\.pl?);
+        rename "$m_sFile.bak", $m_sFile
+            or warn "files.pl::saveFile $/ $! $/"
+            if( -e "$m_sFile.bak" );
+        chmod( 0755, $m_sFile ) if( $m_sFile =~ ?\.pl? );
         showDir();
-    } elsif (defined param('title') && defined param('file')) {
+    } elsif ( defined param('title') && defined param('file') ) {
         my $sf = param('file') . '/' . param('title');
         open $fh, ">$sf.bak" or warn "files.pl::saveFile $/ $! $/ $sf $/";
         flock $fh, 2;
@@ -186,26 +233,41 @@ sub saveFile {
         truncate $fh, 0;
         print $fh $txt;
         close $fh;
-        rename "$sf.bak", $sf or warn "files.pl::saveFile $/ $! $/" if(-e "$sf.bak");
+        rename "$sf.bak", $sf
+            or warn "files.pl::saveFile $/ $! $/"
+            if( -e "$sf.bak" );
         showDir();
     }
 }
 
 sub showEditor {
-    my $h  = shift;
-    my $t  = shift;
-    my $a  = shift;
-    my $fi = shift;
-    print qq(
+    my $h = shift;
+    my $t = shift;
+
+    my $a         = shift;
+    my $fi        = shift;
+    my %parameter = (
+        path   => $m_hrSettings->{cgi}{bin} . '/templates',
+        style  => $m_sStyle,
+        title  => "",
+        server => $m_hrSettings->{serverName},
+        id     => 'showEditor',
+        class  => 'min',
+    );
+    my $window = new HTML::Window( \%parameter );
+    $m_sContent .= br() . $window->windowHeader();
+    $m_sContent .= qq(
 <form action ="$ENV{SCRIPT_NAME}" method="post">
- <table cellspacing="5" cellpadding="0" border="0" align="center" summary="execSql">
+ <table cellspacing="5" cellpadding="0" border="0" align="center" summary="execSql" width="95%">
   <tbody>
    <tr>
       <td>$h</td>
     </tr>
     <tr><td><script language="JavaScript1.5" type="text/javascript">html = 1;bbcode = false;printButtons();</script></td></tr>
     <tr>
-      <td><textarea name="txt" id="txt" style="width:550px;height:600px;" >$t</textarea></td>
+      <td>
+       <textarea name="txt" id="txt" style="width:100%;height:640px;">$t</textarea>
+      </td>
     </tr>
     <tr>
       <td align="right"><input type="submit" value="Save"/>
@@ -216,7 +278,8 @@ sub showEditor {
   </tbody>
 </table>
 </form>
-)
+);
+    $m_sContent .= $window->windowFooter();
 }
 
 sub getFile {
@@ -225,7 +288,7 @@ sub getFile {
     my $fh = gensym;
     my $f  = shift;
     my $err;
-    if(-f $f) {
+    if( -f $f ) {
         open $fh, $f or $err = "$!: $f";
         seek $fh, 0, 0;
         my @lines = <$fh>;
@@ -238,42 +301,42 @@ sub getFile {
 
 sub newFile {
     my $d = defined param('dir') ? param('dir') : '';
-    my $file = param('file');
-    unless (-e $file) {
-        open(IN, ">$d/$file") or die $!;
+    my $m_sFile = param('file');
+    unless ( -e $m_sFile ) {
+        open( IN, ">$d/$m_sFile" ) or die $!;
         close IN;
-        print translate('newfileadded') if -e $file;
+        $m_sContent .= translate('newfileadded') if -e $m_sFile;
     } else {
-        print translate('fileExists ') if -e $file;
+        $m_sContent .= translate('fileExists ') if -e $m_sFile;
     }
     &showDir($d);
 }
 
 sub makeDir {
-    my $d    = param('d');
-    my $file = param('file');
-    unless (-d "$file/$d") {
-        mkdir "$file/$d";
-        print translate('newfileadded') if -d $file;
+    my $d       = param('d');
+    my $m_sFile = param('file');
+    unless ( -d "$m_sFile/$d" ) {
+        mkdir "$m_sFile/$d";
+        $m_sContent .= translate('newfileadded') if -d $m_sFile;
     } else {
-        print translate('fileExists');
+        $m_sContent .= translate('fileExists');
     }
 
-    &showDir($file);
+    &showDir($m_sFile);
 }
 
 sub deleteFile {
-    my $file = param('file');
-    unlink $file if -e $file;
-    rmdir $file  if -d $file;
-    my $d = $file =~ ?^(.*)/[^/]+$? ? $1 : $settings->{cgi}{bin};
+    my $m_sFile = param('file');
+    unlink $m_sFile if -e $m_sFile;
+    rmdir $m_sFile  if -d $m_sFile;
+    my $d = $m_sFile =~ ?^(.*)/[^/]+$? ? $1 : $m_hrSettings->{cgi}{bin};
     &showDir($d);
 }
 
 sub chmodFile {
-    my $chmod = param('chmod');
-    my $file  = param('file');
-    chmod oct($chmod), $file if $chmod =~ /\d\d\d\d/ && -e $file;
-    my $d = $file =~ ?^(.*)/[^/]+$? ? $1 : $settings->{cgi}{bin};
+    my $chmod   = param('chmod');
+    my $m_sFile = param('file');
+    chmod oct($chmod), $m_sFile if $chmod =~ /\d\d\d\d/ && -e $m_sFile;
+    my $d = $m_sFile =~ ?^(.*)/[^/]+$? ? $1 : $m_hrSettings->{cgi}{bin};
     &showDir($d);
 }

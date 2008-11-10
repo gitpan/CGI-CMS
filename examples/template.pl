@@ -2,29 +2,26 @@
 use lib("../lib");
 use strict;
 my @data = (
-    {name => 'Header'},
-    {
-        name => 'link',
+    { name => 'Header' },
+    {   name => 'link',
         text => "Website",
         href => "http://lindnerei.de"
     },
-    {
-        name => 'link',
+    {   name => 'link',
         text => "Cpan",
         href => "http://search.cpan.org/~lze"
     },
-    {name => 'Footer'}
+    { name => 'Footer' }
 );
 use Template::Quick;
 my $temp = new Template::Quick(
-    {
-        path     => "./",
+    {   path     => "./",
         template => "template.html"
     }
 );
 use CGI qw(header);
 print header;
-print $temp->initArray(\@data), $/;
+print $temp->initArray( \@data ), $/;
 use showsource;
 &showSource($0);
 print "template";

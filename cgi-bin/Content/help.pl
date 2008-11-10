@@ -1,4 +1,4 @@
-print print q(
+$m_sContent .= q(
 <div align="center">
 <div align="left" style="width:75%">
 <h1>Help</h1>

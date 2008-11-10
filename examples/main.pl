@@ -10,7 +10,7 @@ my %set = (
     server => "http://localhost",
     login  => "",
 );
-my $main = new CGI::CMS::GUI::Main(\%set);
+my $main = new CGI::CMS::GUI::Main( \%set );
 use CGI::CMS qw(header);
 print header;
 print $main->Header();

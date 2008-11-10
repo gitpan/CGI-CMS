@@ -1,1 +1,43 @@
-Test it
+Style
+       ribbonbar, wnd templates für crystal style
+settings
+       alle parameter überfprüfen quick.pl
+       explois nur als warnmeldung.(adminpage überarbeiten)
+news
+       leere seite wird angezeigt wenn der letzte beitrag er seite gelöscht wird.
+       attachment wird gelöscht(aus der Datenbank) beim bearbeiten.(attachments verwalten).
+       trash (wiederherstellen)
+       links_pro_page für suche einbauen.
+lesezeichen
+       maxlength bookmarks ersetzen als neuer order einfügen
+edittree
+       confirm delete usw quote textarea
+       treeview name="#setzen" und per url# nach einfügen dort hinspringen
+Datenbank
+       pages pro seite bei tabellen benutzen, nur anzeigen wenn auch soviele beiträge vorhanden
+       Sotierung tabellen anzeigen
+       überhang anzeigen.
+       löschen wird falsch angezeigt.
+       Rechte
+       Admin menu geht nicht in datenbank.
+System
+       globale variablen großschreiben oder so ???(ungarische notation)
+              zusammenfassen
+Files
+       upload files im explorer.
+       Nach Datum sotieren geht nicht richtig status merken.
+Admin
+     Error log anzeigen / datei öffnen /queltext anzeigen
+     neue translations im admincenter anzeigen
+     Bug Buster
+     unicode
+     Passwort per build.pl setzen.
+     Auswahl Ajax mod_perl
+#Clean HTML CSS
+#testscript
+
+installer
+       pass per build.pl setzen.
+       requirments(Ajax optinal) mod_perl
+
+Demo

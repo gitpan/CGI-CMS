@@ -20,4 +20,4 @@ my %needed = (
     linkspropage => 3,
 
 );
-ok(length($test->makePages(\%needed)) > 0);
+ok( length( $test->makePages( \%needed ) ) > 0 );

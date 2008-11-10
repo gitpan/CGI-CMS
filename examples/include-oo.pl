@@ -1,13 +1,13 @@
 #!/usr/bin/perl -w
 use CGI::CMS;
 use strict;
-my $cgi = CGI::CMS->new();
-$cgi->init("/srv/www/cgi-bin/config/settings.pl");
-print $cgi->header;
-if(param('include')) {
-    $cgi->include();
-    print $cgi->a({href => "$ENV{SCRIPT_NAME}"}, 'next');
-    $cgi->clearSession();
+my $m_oCgi = CGI::CMS->new();
+$m_oCgi->init("/srv/www/cgi-bin/config/settings.pl");
+print $m_oCgi->header;
+if( param('include') ) {
+    $m_oCgi->include();
+    print $m_oCgi->a( { href => "$ENV{SCRIPT_NAME}" }, 'next' );
+    $m_oCgi->clearSession();
 } else {
     my %vars = (
         user   => 'guest',
@@ -15,9 +15,11 @@ if(param('include')) {
         file   => "./content.pl",
         sub    => 'main'
     );
-    my $qstring = $cgi->createSession(\%vars);
+    my $qstring = $m_oCgi->createSession( \%vars );
     print qq(Action wurde erzeugt.);
-    print $cgi->br(), $cgi->a({href => "$ENV{SCRIPT_NAME}?include=$qstring"}, 'next');
+    print $m_oCgi->br(),
+        $m_oCgi->a( { href => "$ENV{SCRIPT_NAME}?include=$qstring" },
+        'next' );
 }
 print "Content Source<br/>";
 use showsource;

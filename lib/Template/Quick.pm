@@ -3,15 +3,19 @@ use strict;
 use warnings;
 use CGI::CMS qw(init translate);
 require Exporter;
-use vars qw($tmp $DefaultClass @EXPORT_OK @ISA $style $mod_perl);
-@ISA                         = qw(Exporter);
-@Template::Quick::EXPORT     = qw(initTemplate appendHash Template initArray);
-%LZE::TabWidget::EXPORT_TAGS = ('all' => [qw(initTemplate appendHash Template initArray  )]);
-$Template::Quick::VERSION    = '0.36';
-$DefaultClass                = 'Template::Quick' unless defined $Template::Quick::DefaultClass;
+use vars
+    qw($defaultconfig $tmp $DefaultClass @EXPORT_OK @ISA $m_sStyle $m_bMod_perl);
+@ISA                     = qw(Exporter);
+@Template::Quick::EXPORT = qw(initTemplate appendHash Template initArray);
+%LZE::TabWidget::EXPORT_TAGS
+    = ( 'all' => [qw(initTemplate appendHash Template initArray  )] );
+$Template::Quick::VERSION = '0.37';
+$DefaultClass             = 'Template::Quick'
+    unless defined $Template::Quick::DefaultClass;
 our %tmplate;
-$style = 'Crystal';
-$mod_perl = ($ENV{MOD_PERL}) ? 1 : 0;
+$m_sStyle      = 'Crystal';
+$m_bMod_perl   = ( $ENV{MOD_PERL} ) ? 1 : 0;
+$defaultconfig = '%CONFIG%';
 
 =head1 NAME
 
@@ -25,13 +29,13 @@ Template::Quick  - A simple Template System
 
         @data = (
 
-                {name => 'Header'},
+{name => 'Header'},
 
-                {name => 'link', text => "Website", href => "http://lindnerei.de"},
+{name => 'link', text => "Website", href => "http://lindnerei.de"},
 
-                {name => 'link', text => "Cpan", href => "http://search.cpan.org~lze"},
+{name => 'link', text => "Cpan", href => "http://search.cpan.org~lze"},
 
-                {name => 'Footer'}
+{name => 'Footer'}
 
         );
 
@@ -65,7 +69,7 @@ see SYNOPSIS
 =cut
 
 sub new {
-    my ($class, @initializer) = @_;
+    my ( $class, @initializer ) = @_;
     my $self = {};
     bless $self, ref $class || $class || $DefaultClass;
     $self->initTemplate(@initializer) if(@initializer);
@@ -89,38 +93,40 @@ sub new {
 =cut
 
 sub initTemplate {
-    init() unless $mod_perl;
-    my ($self, @p) = getSelf(@_);
+    my ( $self, @p ) = getSelf(@_);
     my $hash = $p[0];
     $DefaultClass = $self;
+    my $configfile
+        = defined $hash->{config} ? $hash->{config} : $defaultconfig;
+    init($configfile) unless $m_bMod_perl;
     use Fcntl qw(:flock);
     use Symbol;
     my $fh = gensym;
-    $style = $hash->{style} if defined $hash->{style};
-    my $file = "$hash->{path}/$style/$hash->{template}";
-    open $fh, "$file" or warn "$!: $file";
+    $m_sStyle = $hash->{style} if defined $hash->{style};
+    my $m_sFile = "$hash->{path}/$m_sStyle/$hash->{template}";
+    open $fh, "$m_sFile" or warn "$!: $m_sFile";
     seek $fh, 0, 0;
     my @lines = <$fh>;
     close $fh;
-    my ($text, $o);
+    my ( $text, $o );
 
     for(@lines) {
         $text .= chomp $_;
-      SWITCH: {
-            if($_ =~ /\[([^\/|\]]+)\]([^\[\/\1\]]*)/) {
+    SWITCH: {
+            if( $_ =~ /\[([^\/|\]|']+)\]([^\[\/\1\]]*)/ ) {
                 $tmplate{$1} = $2;
                 $o = $1;
                 last SWITCH;
             }
-            if(defined $o) {
-                if($_ =~ /[^\[\/$o\]]/) {
+            if( defined $o ) {
+                if( $_ =~ /[^\[\/$o\]]/ ) {
                     $tmplate{$o} .= $_;
                     last SWITCH;
                 }
             }
         }
     }
-    $self->initArray($p[1]) if(defined $p[1]);
+    $self->initArray( $p[1] ) if( defined $p[1] );
 }
 
 =head2 Template()
@@ -130,7 +136,7 @@ see initTemplate
 =cut
 
 sub Template {
-    my ($self, @p) = getSelf(@_);
+    my ( $self, @p ) = getSelf(@_);
     return $self->initArray(@p);
 }
 
@@ -141,13 +147,13 @@ appendHash(\%hash);
 =cut
 
 sub appendHash {
-    my ($self, @p) = getSelf(@_);
+    my ( $self, @p ) = getSelf(@_);
     my $hash = $p[0];
-    my $text = $tmplate{$hash->{name}};
-    foreach my $key (keys %{$hash}) {
-        if(defined $text && defined $hash->{$key}) {
+    my $text = $tmplate{ $hash->{name} };
+    foreach my $key ( keys %{$hash} ) {
+        if( defined $text && defined $hash->{$key} ) {
 
-            if(defined $key && defined $hash->{$key}) {
+            if( defined $key && defined $hash->{$key} ) {
                 $text =~ s/\[($key)\/\]/$hash->{$key}/g;
                 $text =~ s/\[tr=(\w*)\/\]/translate($1)/eg;
             }
@@ -161,11 +167,11 @@ sub appendHash {
 =cut
 
 sub initArray {
-    my ($self, @p) = getSelf(@_);
+    my ( $self, @p ) = getSelf(@_);
     my $tree = $p[0];
-    $tmp = undef if(defined $tmp);
-    for(my $i = 0 ; $i < @$tree ; $i++) {
-        $tmp .= $self->appendHash(\%{@$tree[$i]});
+    $tmp = undef if( defined $tmp );
+    for( my $i = 0; $i < @$tree; $i++ ) {
+        $tmp .= $self->appendHash( \%{ @$tree[$i] } );
     }
     return $tmp;
 }
@@ -175,8 +181,15 @@ sub initArray {
 =cut
 
 sub getSelf {
-    return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'Template::Quick');
-    return (defined($_[0]) && (ref($_[0]) eq 'Template::Quick' || UNIVERSAL::isa($_[0], 'Template::Quick'))) ? @_ : ($Template::Quick::DefaultClass->new, @_);
+    return @_
+        if defined( $_[0] )
+            && ( !ref( $_[0] ) )
+            && ( $_[0] eq 'Template::Quick' );
+    return (
+        defined( $_[0] )
+            && ( ref( $_[0] ) eq 'Template::Quick'
+            || UNIVERSAL::isa( $_[0], 'Template::Quick' ) )
+    ) ? @_ : ( $Template::Quick::DefaultClass->new, @_ );
 }
 
 =head1 AUTHOR

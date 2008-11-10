@@ -27,10 +27,12 @@ my %parameter = (
 
     html => 1,    # html enabled ? 0 for bbcode
 
+        config  => "t/settings.pl",
+
 );
 
-initEditor(\%parameter);
+initEditor( \%parameter );
 
 use Test::More tests => 1;
 
-ok(length(show()) > 0);
+ok( length( show() ) > 0 );

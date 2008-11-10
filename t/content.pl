@@ -1,2 +1,2 @@
-return $params->{test} = "OK";
+$m_hrParams->{test} = "OK";
 1;

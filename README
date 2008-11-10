@@ -1,8 +1,8 @@
-CGI::CMS version 0.34
+CGI::CMS version 0.37
 
 ABOUT
 
-    CGI::CMS is Content Managment System that runs under mod_perl as well as cgi script.
+    CGI::CMS is a Content Managment System that runs under mod_perl as well as cgi script.
     see http://lindnerei.sourceforge.net.
 
 

@@ -36,9 +36,9 @@ my $template = qq(
 <td width="5" align="left" style=" background-position:left;background-image:url('/style/[style/]/window/wrbg.png');background-repeat:repeat-y;"></td>
 </tr>
 <tr align="left">
-<td  width="5"><img src="/style/[style/]/window/wlubg.png" alt="wrubg" width="5" height="2" border="0"></td>
+<td  width="5"><img src="/style/[style/]/window/wlubg.png" alt="" width="5" height="2" border="0"></td>
 <td style=" background-image:url('/style/[style/]/window/wdcubg.png'); background-repeat:repeat-x;"></td>
-<td><img src="/style/[style/]/window/wrubg.png" alt="wrubg" width="5" height="2" border="0"></td>
+<td><img src="/style/[style/]/window/wrubg.png" alt="" width="5" height="2" border="0"></td>
 </tr>
 </table>
 [bfooter/]
@@ -52,23 +52,22 @@ my %template = (
     template => "test.html",
 );
 my @data = (
-    {name => 'menuHeader',},
-    {
-        name  => 'links',
+    { name => 'menuHeader', },
+    {   name  => 'links',
         style => "Crystal",
         text  => "Link",
         title => "Link"
     },
-    {name => 'menuFooter'},
+    { name => 'menuFooter' },
 );
 use Template::Quick;
 my $temp = new Template::Quick();
-$temp->initTemplate(\%template);
-my $t1 = $temp->initArray(\@data);
+$temp->initTemplate( \%template );
+my $t1 = $temp->initArray( \@data );
 use Test::More tests => 3;
-ok(length($t1) > 0);
-ok(length($t1) < length($template));
-my $t2 = initTemplate(\%template, \@data);
-ok(length($t1)== length($t2));
+ok( length($t1) > 0 );
+ok( length($t1) < length($template) );
+my $t2 = initTemplate( \%template, \@data );
+ok( length($t1)== length($t2) );
 system("rm test.html");
 1;

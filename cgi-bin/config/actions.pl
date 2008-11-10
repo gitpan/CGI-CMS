@@ -6,4 +6,4 @@ $VAR1 = {
         'name'  => 'Lindner',
     },
 };
-$actions = $VAR1;
+$m_hrActions = $VAR1;

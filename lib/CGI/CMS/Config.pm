@@ -5,9 +5,10 @@ require Exporter;
 use vars qw($config $DefaultClass @EXPORT  @ISA $defaultconfig);
 @CGI::CMS::Config::EXPORT  = qw(loadConfig saveConfig $config);
 @ISA                       = qw(Exporter);
-$CGI::CMS::Config::VERSION = '0.36';
-$DefaultClass              = 'CGI::CMS::Config' unless defined $CGI::CMS::Config::DefaultClass;
-$defaultconfig             = '%CONFIG%';
+$CGI::CMS::Config::VERSION = '0.37';
+$DefaultClass              = 'CGI::CMS::Config'
+    unless defined $CGI::CMS::Config::DefaultClass;
+$defaultconfig = '%CONFIG%';
 
 =head1 NAME
 
@@ -28,7 +29,7 @@ loadConfig() saveConfig() $config
 =cut
 
 sub new {
-    my ($class, @initializer) = @_;
+    my ( $class, @initializer ) = @_;
     my $self = {};
     bless $self, ref $class || $class || $DefaultClass;
     return $self;
@@ -39,9 +40,9 @@ sub new {
 =cut
 
 sub loadConfig {
-    my ($self, @p) = getSelf(@_);
-    my $do = (defined $p[0]) ? $p[0] : $defaultconfig;
-    if(-e $do) {
+    my ( $self, @p ) = getSelf(@_);
+    my $do = ( defined $p[0] ) ? $p[0] : $defaultconfig;
+    if( -e $do ) {
         do $do;
     }
 }
@@ -51,7 +52,7 @@ sub loadConfig {
 =cut
 
 sub saveConfig {
-    my ($self, @p) = getSelf(@_);
+    my ( $self, @p ) = getSelf(@_);
     my $saveAs = defined $p[0] ? $p[0] : $defaultconfig;
     $config = defined $p[1] ? $p[1] : $config;
     my $var = defined $p[2] ? $p[2] : 'config';
@@ -64,15 +65,23 @@ sub saveConfig {
     my $rsas = $saveAs =~ /^(\S+)$/ ? $1 : 0;
 
     if($rsas) {
-        open $fh, ">$rsas.bak" or warn "$/CGI::CMS::Config::saveConfig$/ $! $/ File: $rsas $/Caller: " . caller() . $/;
+        open $fh, ">$rsas.bak"
+            or warn
+            "$/CGI::CMS::Config::saveConfig$/ $! $/ File: $rsas $/Caller: "
+            . caller()
+            . $/;
         flock $fh, 2;
         seek $fh, 0, 0;
         truncate $fh, 0;
         print $fh $content;
         close $fh;
     }
-    if(-e "$rsas.bak") {
-        rename "$rsas.bak", $rsas or warn "$/CGI::CMS::Config::saveConfig$/ $! $/ File: $rsas $/Caller: " . caller() . $/;
+    if( -e "$rsas.bak" ) {
+        rename "$rsas.bak", $rsas
+            or warn
+            "$/CGI::CMS::Config::saveConfig$/ $! $/ File: $rsas $/Caller: "
+            . caller()
+            . $/;
         do $rsas;
     }
 }
@@ -86,8 +95,15 @@ see L<HTML::Menu::TreeView>
 =cut
 
 sub getSelf {
-    return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'CGI::CMS::Config');
-    return (defined($_[0]) && (ref($_[0]) eq 'CGI::CMS::Config' || UNIVERSAL::isa($_[0], 'CGI::CMS::Config'))) ? @_ : ($CGI::CMS::Config::DefaultClass->new, @_);
+    return @_
+        if defined( $_[0] )
+            && ( !ref( $_[0] ) )
+            && ( $_[0] eq 'CGI::CMS::Config' );
+    return (
+        defined( $_[0] )
+            && ( ref( $_[0] ) eq 'CGI::CMS::Config'
+            || UNIVERSAL::isa( $_[0], 'CGI::CMS::Config' ) )
+    ) ? @_ : ( $CGI::CMS::Config::DefaultClass->new, @_ );
 }
 
 =head2 see Also

@@ -2,9 +2,9 @@
 use HTML::Editor;
 use HTML::Editor::BBCODE;
 use CGI::CMS qw(:all);
-use vars qw($settings);
+use vars qw($m_hrSettings);
 init();
-*settings= \$CGI::CMS::settings;
+*m_hrSettings= \$CGI::CMS::settings;
 print header;
 print start_html(-title => 'HTML::Editor', -script => [{-type => 'text/javascript', -src => '/javascript/editor.js'}], -style => '/style/Crystal/editor.css',);
 if(param('action') && param('action') eq 'add') {
@@ -32,11 +32,11 @@ if(param('action') && param('action') eq 'add') {
 
                 maxlength => '100',
 
-                path => "$settings->{cgi}{bin}/templates/",
+                path => "$m_hrSettings->{cgi}{bin}/templates/",
 
                 reply => '',
 
-                server => "$settings->{cgi}{serverName}",
+                server => "$m_hrSettings->{cgi}{serverName}",
 
                 style => 'Crystal',
 

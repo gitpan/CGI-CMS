@@ -2,13 +2,14 @@ package CGI::CMS::Settings;
 use strict;
 use warnings;
 require Exporter;
-use vars qw($settings $DefaultClass @EXPORT  @ISA $defaultconfig);
-@CGI::CMS::Settings::EXPORT = qw(loadSettings saveSettings $settings);
+use vars qw($m_hrSettings $DefaultClass @EXPORT  @ISA $defaultconfig);
+@CGI::CMS::Settings::EXPORT = qw(loadSettings saveSettings $m_hrSettings);
 use CGI::CMS::Config;
 @ISA                         = qw(Exporter CGI::CMS::Config);
-$CGI::CMS::Settings::VERSION = '0.36';
-$DefaultClass                = 'CGI::CMS::Settings' unless defined $CGI::CMS::Settings::DefaultClass;
-$defaultconfig               = '%CONFIG%';
+$CGI::CMS::Settings::VERSION = '0.37';
+$DefaultClass                = 'CGI::CMS::Settings'
+    unless defined $CGI::CMS::Settings::DefaultClass;
+$defaultconfig = '%CONFIG%';
 
 =head1 NAME
 
@@ -18,15 +19,15 @@ CGI::CMS::Settings - manage CGI::CMS properties
 
         use CGI::CMS::Settings;
 
-        use vars qw($settings);
+        use vars qw($m_hrSettings);
 
-        *settings = \$CGI::CMS::Settings::settings;
+        *m_hrSettings = \$CGI::CMS::Settings::m_hrSettings;
 
         loadSettings('./config.pl');
 
-        print $settings->{key};
+        print $m_hrSettings->{key};
 
-        $settings->{key} = 'value';
+        $m_hrSettings->{key} = 'value';
 
         saveSettings("./config.pl");
 
@@ -37,7 +38,7 @@ settings for CGI::CMS.
 
 =head2 EXPORT
 
-loadSettings() saveSettings() $settings
+loadSettings() saveSettings() $m_hrSettings
 
 =head1 Public
 
@@ -46,7 +47,7 @@ loadSettings() saveSettings() $settings
 =cut
 
 sub new {
-    my ($class, @initializer) = @_;
+    my ( $class, @initializer ) = @_;
     my $self = {};
     bless $self, ref $class || $class || $DefaultClass;
     return $self;
@@ -57,9 +58,9 @@ sub new {
 =cut
 
 sub loadSettings {
-    my ($self, @p) = getSelf(@_);
-    my $do = (defined $p[0]) ? $p[0] : $defaultconfig;
-    if(-e $do) {
+    my ( $self, @p ) = getSelf(@_);
+    my $do = ( defined $p[0] ) ? $p[0] : $defaultconfig;
+    if( -e $do ) {
         do $do;
     }
 }
@@ -69,9 +70,9 @@ sub loadSettings {
 =cut
 
 sub saveSettings {
-    my ($self, @p) = getSelf(@_);
+    my ( $self, @p ) = getSelf(@_);
     my $l = defined $p[0] ? $p[0] : $defaultconfig;
-    $self->SUPER::saveConfig($l, $settings, 'settings');
+    $self->SUPER::saveConfig( $l, $m_hrSettings, 'm_hrSettings' );
 }
 
 =head1 Private
@@ -81,8 +82,15 @@ sub saveSettings {
 =cut
 
 sub getSelf {
-    return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'CGI::CMS::Settings');
-    return (defined($_[0]) && (ref($_[0]) eq 'CGI::CMS::Settings' || UNIVERSAL::isa($_[0], 'CGI::CMS::Settings'))) ? @_ : ($CGI::CMS::Settings::DefaultClass->new, @_);
+    return @_
+        if defined( $_[0] )
+            && ( !ref( $_[0] ) )
+            && ( $_[0] eq 'CGI::CMS::Settings' );
+    return (
+        defined( $_[0] )
+            && ( ref( $_[0] ) eq 'CGI::CMS::Settings'
+            || UNIVERSAL::isa( $_[0], 'CGI::CMS::Settings' ) )
+    ) ? @_ : ( $CGI::CMS::Settings::DefaultClass->new, @_ );
 }
 
 =head2 see Also

@@ -4,33 +4,36 @@ use CGI::CMS qw(translate);
 use strict;
 use warnings;
 use vars qw(
-  $catlist
-  $class
-  $DefaultClass @EXPORT  @ISA
-  $path
-  $right
-  $server
-  $style
-  $title
-  $body
-  $maxlength
-  $action
-  $reply
-  $thread
-  $headline
-  $html
-  $template
-  $atemp
+    $defaultconfig
+    $catlist
+    $class
+    $DefaultClass @EXPORT  @ISA
+    $path
+    $m_nRight
+    $server
+    $m_sStyle
+    $m_sTitle
+    $body
+    $maxlength
+    $m_hrAction
+    $reply
+    $thread
+    $headline
+    $html
+    $template
+    $atemp
 );
 require Exporter;
 use Template::Quick;
 @HTML::Editor::ISA         = qw( Exporter Template::Quick);
 @HTML::Editor::EXPORT_OK   = qw(initEditor show );
-%HTML::Editor::EXPORT_TAGS = ('all' => [qw(initEditor show )]);
+%HTML::Editor::EXPORT_TAGS = ( 'all' => [qw(initEditor show )] );
 
-$HTML::Editor::VERSION = '0.36';
+$HTML::Editor::VERSION = '0.37';
 
 $DefaultClass = 'HTML::Editor' unless defined $HTML::Editor::DefaultClass;
+
+$defaultconfig = '%CONFIG%';
 
 =head1 NAME
 
@@ -52,7 +55,7 @@ Here is a list of the function sets you can import:
 =cut
 
 sub new {
-    my ($class, @initializer) = @_;
+    my ( $class, @initializer ) = @_;
     my $self = {};
     bless $self, ref $class || $class || $DefaultClass;
     $self->initEditor(@initializer) if(@initializer);
@@ -79,7 +82,7 @@ sub new {
 
                 server   => "http://localhost", #default : 'http://localhost'
 
-                style    =>  $style, #default : 'Crystal'
+                style    =>  $m_sStyle, #default : 'Crystal'
 
                 thread   =>  'news',#default : ''
 
@@ -98,30 +101,35 @@ sub new {
 =cut
 
 sub initEditor {
-    my ($self, @p) = getSelf(@_);
+    my ( $self, @p ) = getSelf(@_);
     my $hash = $p[0];
-    $server    = defined $hash->{server}    ? $hash->{server}    : 'http://localhost';
-    $style     = defined $hash->{style}     ? $hash->{style}     : 'Crystal';
-    $title     = defined $hash->{title}     ? $hash->{title}     : 'Editor';
-    $path      = defined $hash->{path}      ? $hash->{path}      : '/srv/www/cgi-bin/templates';
+    $server = defined $hash->{server} ? $hash->{server} : 'http://localhost';
+    $m_sStyle = defined $hash->{style} ? $hash->{style} : 'Crystal';
+    $m_sTitle = defined $hash->{title} ? $hash->{title} : 'Editor';
+    $path
+        = defined $hash->{path}
+        ? $hash->{path}
+        : '/srv/www/cgi-bin/templates';
     $body      = defined $hash->{body}      ? $hash->{body}      : 'Text';
     $maxlength = defined $hash->{maxlength} ? $hash->{maxlength} : '300';
-    $action    = defined $hash->{action}    ? $hash->{action}    : 'addMessage';
-    $reply     = defined $hash->{reply}     ? $hash->{reply}     : '';
-    $thread    = defined $hash->{thread}    ? $hash->{thread}    : 'news';
-    $headline  = defined $hash->{headline}  ? $hash->{headline}  : 'headline';
-    $catlist   = defined $hash->{catlist}   ? $hash->{catlist}   : '';
-    $right     = defined $hash->{right}     ? $hash->{right}     : 0;
-    $html      = $hash->{html}              ? $hash->{html}      : 0;
-    $template  = defined $hash->{template}  ? $hash->{template}  : "editor.htm";
-    $atemp     = defined $hash->{atemp}     ? $hash->{atemp}     : '';
-    $class = 'min' unless (defined $class);
+    $m_hrAction = defined $hash->{action} ? $hash->{action} : 'addMessage';
+    $reply      = defined $hash->{reply}  ? $hash->{reply}  : '';
+    $thread     = defined $hash->{thread} ? $hash->{thread} : 'news';
+    $headline = defined $hash->{headline} ? $hash->{headline} : 'headline';
+    $catlist  = defined $hash->{catlist}  ? $hash->{catlist}  : '';
+    $m_nRight = defined $hash->{right}    ? $hash->{right}    : 0;
+    $html     = $hash->{html}             ? $hash->{html}     : 0;
+    $template = defined $hash->{template} ? $hash->{template} : "editor.htm";
+    $atemp    = defined $hash->{atemp}    ? $hash->{atemp}    : '';
+    my $config = defined $hash->{config} ? $hash->{config} : $defaultconfig;
+    $class = 'min' unless ( defined $class );
     my %template = (
         path     => $hash->{path},
-        style    => $style,
+        style    => $m_sStyle,
         template => $template,
+        config   => $config,
     );
-    $self->SUPER::initTemplate(\%template);
+    $self->SUPER::initTemplate( \%template );
 }
 
 =head2 show()
@@ -129,28 +137,32 @@ sub initEditor {
 =cut
 
 sub show {
-    my ($self, @p) = getSelf(@_);
+    my ( $self, @p ) = getSelf(@_);
     $self->initEditor(@p) if(@p);
     my %parameter = (
         path   => $path,
-        style  => $style,
-        title  => $title,
+        style  => $m_sStyle,
+        title  => $m_sTitle,
         server => $server,
         id     => 'winedit',
         class  => $class,
     );
     my $output = '<br/>';
-    my $window = new HTML::Window(\%parameter);
+    my $window = new HTML::Window( \%parameter );
     $output .= $window->windowHeader();
-    my $att = ($right >= 2) ? '<tr><td align="center">' . translate('chooseFile') . ':<input name="file" type="file" accept="text/*" maxlength="2097152" size ="30" title="Datei zum Hochladen ausw&#228;hlen"/></td></tr>' : "";
+    my $att
+        = ( $m_nRight >= 2 )
+        ? translate('choosefile')
+        . ':<input name="file" type="file" accept="text/*" maxlength="2097152" size ="30" />'
+        : "";
     my %editor = (
         name      => 'editor',
         server    => $server,
-        style     => $style,
-        title     => $title,
+        style     => $m_sStyle,
+        title     => $m_sTitle,
         body      => $body,
         maxlength => $maxlength,
-        action    => $action,
+        action    => $m_hrAction,
         reply     => $reply,
         thread    => $thread,
         headline  => $headline,
@@ -159,7 +171,7 @@ sub show {
         html      => $html,
         atemp     => $atemp,
     );
-    $output .= $self->SUPER::appendHash(\%editor);
+    $output .= $self->SUPER::appendHash( \%editor );
     $output .= $window->windowFooter();
     return $output;
 
@@ -170,8 +182,15 @@ sub show {
 =cut
 
 sub getSelf {
-    return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'HTML::Editor');
-    return (defined($_[0]) && (ref($_[0]) eq 'HTML::Editor' || UNIVERSAL::isa($_[0], 'HTML::Editor'))) ? @_ : ($HTML::Editor::DefaultClass->new, @_);
+    return @_
+        if defined( $_[0] )
+            && ( !ref( $_[0] ) )
+            && ( $_[0] eq 'HTML::Editor' );
+    return (
+        defined( $_[0] )
+            && ( ref( $_[0] ) eq 'HTML::Editor'
+            || UNIVERSAL::isa( $_[0], 'HTML::Editor' ) )
+    ) ? @_ : ( $HTML::Editor::DefaultClass->new, @_ );
 }
 
 =head1 AUTHOR

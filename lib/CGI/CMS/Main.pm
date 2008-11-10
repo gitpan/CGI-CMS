@@ -3,16 +3,17 @@ use Template::Quick;
 use strict;
 use warnings;
 require Exporter;
-use vars qw($DefaultClass @EXPORT  @ISA  $login $right $htmlright $template $zoom);
-our $style = 'Crystal';
-our $title = '';
-our $size  = 16;
+use vars
+    qw($DefaultClass @EXPORT  @ISA  $login $m_nRight $htmlright $template $zoom);
+our $m_sStyle = 'Crystal';
+our $m_sTitle = '';
+our $m_nSize  = 16;
 our $server;
 @CGI::CMS::Main::EXPORT_OK   = qw(all initMain Header Footer);
-%CGI::CMS::Main::EXPORT_TAGS = ('all' => [qw(initMain Header Footer)]);
+%CGI::CMS::Main::EXPORT_TAGS = ( 'all' => [qw(initMain Header Footer)] );
 @CGI::CMS::Main::ISA         = qw( Exporter Template::Quick);
-$CGI::CMS::Main::VERSION     = '0.36';
-$DefaultClass                = 'CGI::CMS::Main' unless defined $CGI::CMS::Main::DefaultClass;
+$CGI::CMS::Main::VERSION     = '0.37';
+$DefaultClass = 'CGI::CMS::Main' unless defined $CGI::CMS::Main::DefaultClass;
 
 =head1 NAME
 
@@ -39,7 +40,7 @@ L<CGI::CMS::GUI> L<Template::Quick>
 =cut
 
 sub new {
-    my ($class, @initializer) = @_;
+    my ( $class, @initializer ) = @_;
     my $self = {};
     bless $self, ref $class || $class || $DefaultClass;
     $self->initMain(@initializer) if(@initializer);
@@ -69,23 +70,23 @@ sub new {
 =cut
 
 sub initMain {
-    my ($self, @p) = getSelf(@_);
+    my ( $self, @p ) = getSelf(@_);
     my $hash = $p[0];
     $server    = $hash->{server};
-    $style     = defined $hash->{style} ? $hash->{style} : 'Crystal';
-    $size      = defined $hash->{size} ? $hash->{size} : 16;
-    $title     = defined $hash->{title} ? $hash->{title} : '';
+    $m_sStyle  = defined $hash->{style} ? $hash->{style} : 'Crystal';
+    $m_nSize   = defined $hash->{size} ? $hash->{size} : 16;
+    $m_sTitle  = defined $hash->{title} ? $hash->{title} : '';
     $zoom      = defined $hash->{zoom} ? $hash->{zoom} : '';
     $login     = defined $hash->{login} ? $hash->{login} : '';
-    $right     = defined $hash->{right} ? $hash->{right} : 0;
+    $m_nRight  = defined $hash->{right} ? $hash->{right} : 0;
     $htmlright = defined $hash->{htmlright} ? $hash->{htmlright} : 2;
     $template  = defined $hash->{template} ? $hash->{template} : "index.htm";
     my %template = (
         path     => $hash->{path},
-        style    => $style,
+        style    => $m_sStyle,
         template => $template,
     );
-    $self->SUPER::initTemplate(\%template);
+    $self->SUPER::initTemplate( \%template );
 }
 
 =head2 Header()
@@ -93,19 +94,19 @@ sub initMain {
 =cut
 
 sub Header {
-    my ($self, @p) = getSelf(@_);
+    my ( $self, @p ) = getSelf(@_);
     my %header = (
         name      => 'bodyHeader',
-        size      => $size,
+        size      => $m_nSize,
         server    => $server,
-        style     => $style,
-        title     => $title,
+        style     => $m_sStyle,
+        title     => $m_sTitle,
         login     => $login,
-        right     => $right,
+        right     => $m_nRight,
         htmlright => $htmlright,
         zoom      => $zoom
     );
-    $self->SUPER::appendHash(\%header);
+    $self->SUPER::appendHash( \%header );
 }
 
 =head2 Footer()
@@ -113,13 +114,13 @@ sub Header {
 =cut
 
 sub Footer {
-    my ($self, @p) = getSelf(@_);
+    my ( $self, @p ) = getSelf(@_);
     my %footer = (
         name  => 'bodyFooter',
-        style => $style,
+        style => $m_sStyle,
         zoom  => $zoom
     );
-    $self->SUPER::appendHash(\%footer);
+    $self->SUPER::appendHash( \%footer );
 }
 
 =head1 PRIVAT
@@ -131,8 +132,15 @@ see L<HTML::Menu::TreeView>
 =cut
 
 sub getSelf {
-    return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'CGI::CMS::Main');
-    return (defined($_[0]) && (ref($_[0]) eq 'CGI::CMS::Main' || UNIVERSAL::isa($_[0], 'CGI::CMS::Main'))) ? @_ : ($CGI::CMS::Main::DefaultClass->new, @_);
+    return @_
+        if defined( $_[0] )
+            && ( !ref( $_[0] ) )
+            && ( $_[0] eq 'CGI::CMS::Main' );
+    return (
+        defined( $_[0] )
+            && ( ref( $_[0] ) eq 'CGI::CMS::Main'
+            || UNIVERSAL::isa( $_[0], 'CGI::CMS::Main' ) )
+    ) ? @_ : ( $CGI::CMS::Main::DefaultClass->new, @_ );
 }
 
 =head1 AUTHOR

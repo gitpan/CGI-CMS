@@ -1,0 +1,100 @@
+[menuHeader]
+<table align="center" border="0" cellpadding="0" cellspacing="0" summary="" width="100%">
+<tr>
+<td>
+<table align="center" border="0"  cellpadding="0" cellspacing="0" summary="layoutMenu" width="100%">
+<tr>
+<td  width="10" valign="bottom"><img src="/style/lze/tabwidget/linksOben1K.png" style="vertical-align:bottom;" width="10" height="10" alt="" border="0"/></td>
+<td class="underline">
+<table align="center" border="0" cellpadding="0" cellspacing="0" summary="layoutMenuLinks"><tr>
+[/menuHeader]
+[link]
+<td><table id="[id/]" border="0" cellpadding="0" cellspacing="0" summary="layoutMenuLink"><tr>
+<td width="10" ><img src="/style/[style/]/tabwidget/mlU.png" alt="" title="[title/]" border="0" align="middle"/></td>
+<td class="under" align="left">[text/]</td>
+<td width="10" class="underR"></td>
+</tr></table></td>
+[/link]
+[currentLink]
+<td><table id="[id/]" border="0" cellpadding="0" cellspacing="0" summary="layoutCurrentMenuLink"><tr>
+<td width="10"><img src="/style/[style/]/tabwidget/mlO.png" alt="" title="[title/]" border="0" align="middle" /></td>
+<td class="over" align="left" valign="middle">[text/]</td>
+<td width="10" class="overR"></td>
+</tr></table></td>
+[/currentLink]
+[javaScriptLink]
+<td><table id="[id/]" border="0" cellpadding="0" cellspacing="0" summary="layoutMenuLink"><tr>
+<td width="10" id="dynamicTab1" style="display:none;"><img src="/style/[style/]/tabwidget/mlU.png" alt="" title="[title/]" border="0" align="middle" /></td>
+<td class="under" align="left" id="dynamicTab2" style="display:none;">[text/]</td>
+<td width="10" class="underR" id="dynamicTab3" style="display:none;"></td>
+</tr></table></td>
+[/javaScriptLink]
+[adminlink]
+<td ><table id="dropdownLink" onmouseover="shown =false;" onmouseout="shown=true;"  onclick="showMenu('dropdownLink','menupopup')"  border="0" cellpadding="0" cellspacing="0" summary="layoutMenuLink"><tr>
+<td width="10" ><img src="/style/[style/]/tabwidget/mlU.png" alt="" title="[title/]" border="0" align="middle"/></td>
+<td class="under" align="left">[text/]</td>
+<td width="10" class="underR"></td>
+</tr></table></td>
+[/adminlink]
+[menuFooter]
+</tr>
+</table>
+</td>
+<td class="underline" width="2"></td>
+</tr>
+<tr>
+<td><img src="/style/lze/tabwidget/linksObenK.png" class="lorkg" width="10" height="10" alt="" border="0"/></td>
+<td class="bodyTab" ></td>
+<td class="rechtsk" width="2"><img src="/style/lze/tabwidget/str.jpg" width="2" height="2" border="0" alt=""/></td>
+</tr>
+</table>
+[/menuFooter]
+[bheader]
+<table align="center" border="0" cellpadding="0" cellspacing="0" summary="" width="100%">
+<tr>
+<td width="2" class="linksTab"><img src="/style/lze/tabwidget/str.jpg" width="2" height="2" border="0" alt=""/></td>
+<td align="left" valign="top" style="height:1000px;" class="tabwidgetBody" width="100%" height="640">
+[/bheader]
+[bfooter]
+</td>
+<td class="rechtsk" width="2" ><img src="/style/lze/tabwidget/str.jpg" width="2" height="2" border="0" alt=""/></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table align="left" border="0" cellpadding="0" cellspacing="0" summary="" width="100%">
+<tr>
+<td class="bodyTab">
+<table  align="center" border="0" cellpadding="0" summary="" cellspacing="0"  width="100%">
+<tr>
+<td width="2" height="10" class="linksTab" align="left"><img src="/style/lze/tabwidget/str.jpg" width="2" height="2" border="0" alt=""/></td>
+<td class="hor" valign="bottom"><img src="/style/lze/tabwidget/str.jpg" width="2" height="2" border="0" alt=""/></td>
+</tr>
+</table>
+</td>
+<td width="10" ><img src="/style/lze/tabwidget/rechtsUntenK.png" class="obrkg"  alt="" width="10" height="10" hspace="0" vspace="0" border="0"/></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<table id="menupopup" class="menupopup"  border="0" style="display:none;border-width:1px;border-style:solid;" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" style="border-width:0px;"><a onclick="location.href='[scriptName/]?action=EditFile&amp;name=[action/]'" class="menupoint">[tr=EditFile/]</a></td>
+</tr>
+<tr>
+<td align="left" ><a onclick="location.href='[scriptName/]?action=EditAction&amp;name=[action/]'" class="menupoint">[tr=EditAction/]</a></td>
+</tr>
+<tr>
+<td align="left" ><a onclick="location.href='[scriptName/]?action=EditTopMenu&amp;name=[action/]'" class="menupoint">[tr=EditVMenu/]</a></td>
+</tr>
+<tr>
+<td align="left" ><a onclick="location.href='[scriptName/]?action=EditVertMenu&amp;name=[action/]'" class="menupoint">[tr=EditHMenu/]</a></td>
+</tr>
+</table>
+[bfooter/]
+[action]
+<table align ="left" border ="0" cellpadding ="0" cellspacing="0" summary="layoutMenuItem"><tr><td valign="middle"><img onclick="location.href='[href/]'" src="/style/lze/buttons/[src/]" width="16" height="16" border="0" alt="" title="[title/]" style="font-size:14px;"/></td><td valign="middle"><a class="link" href="[href/]"  style="font-size:16px;padding-left:2px;" [onclick/] title="[title/]">[text/]</a></td></tr></table>
+[/action]

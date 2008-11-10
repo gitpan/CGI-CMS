@@ -3,21 +3,30 @@ use strict;
 use warnings;
 require Exporter;
 use vars qw($DefaultClass @EXPORT  @ISA $class $server $hidden $template);
-our $style = 'Crystal';
-our $title = '';
-our $id    = 'a';
-our ($collapse, $resizeable, $closeable, $moveable) = (0) x 4;
+our $m_sStyle = 'Crystal';
+our $m_sTitle = '';
+our $id       = 'a';
+our ( $collapse, $resizeable, $closeable, $moveable ) = (0) x 4;
 
 @ISA = qw(Exporter);
 use Template::Quick;
-@HTML::Window::ISA         = qw(Template::Quick);
-@HTML::Window::EXPORT_OK   = qw( set_title set_class set_style set_closeable set_resizeable set_collapse set_moveable initWindow windowHeader windowFooter);
-%HTML::Window::EXPORT_TAGS = ('all' => [qw(set_title set_class set_style set_closeable set_resizeable set_collapse set_moveable initWindow windowHeader windowFooter)]);
-$HTML::Window::VERSION     = '0.36';
+@HTML::Window::ISA = qw(Template::Quick);
+@HTML::Window::EXPORT_OK
+    = qw( set_title set_class set_style set_closeable set_resizeable set_collapse set_moveable initWindow windowHeader windowFooter);
+%HTML::Window::EXPORT_TAGS = (
+    'all' => [
+        qw(set_title set_class set_style set_closeable set_resizeable set_collapse set_moveable initWindow windowHeader windowFooter)
+    ]
+);
+$HTML::Window::VERSION = '0.37';
 
 $DefaultClass = 'HTML::Window' unless defined $HTML::Window::DefaultClass;
 
-%HTML::Window::EXPORT_TAGS = ('all' => [qw(set_title set_class set_style set_closeable set_resizeable set_collapse set_moveable initWindow windowHeader windowFooter)],);
+%HTML::Window::EXPORT_TAGS = (
+    'all' => [
+        qw(set_title set_class set_style set_closeable set_resizeable set_collapse set_moveable initWindow windowHeader windowFooter)
+    ],
+);
 
 =head1 NAME
 
@@ -29,7 +38,7 @@ use HTML::Window qw(:all);
 
        my %parameter =(
 
-              cgiBin   => "path to cgi-bin",
+              path   => "path to cgi-bin",
 
               style    => "style to use",
 
@@ -42,9 +51,9 @@ use HTML::Window qw(:all);
               class    => min or max,
 
        );
-      $mod_perl = ($ENV{MOD_PERL}) ? 1 : 0;
+      $m_bMod_perl = ($ENV{MOD_PERL}) ? 1 : 0;
 
-      initWindow(\%parameter) unless($mod_perl);
+      initWindow(\%parameter) unless($m_bMod_perl);
 
       windowHeader();
 
@@ -88,7 +97,7 @@ to update, test and distribute it  standalone.
 =cut
 
 sub new {
-    my ($class, @initializer) = @_;
+    my ( $class, @initializer ) = @_;
     my $self = {
         closeable  => 0,
         resizeable => 0,
@@ -107,11 +116,11 @@ default: Crystal;
 =cut
 
 sub set_style {
-    my ($self, @p) = getSelf(@_);
-    if(defined $p[0] && $p[0] =~ /(\w+)/) {
-        $style = $1;
+    my ( $self, @p ) = getSelf(@_);
+    if( defined $p[0] && $p[0] =~ /(\w+)/ ) {
+        $m_sStyle = $1;
     } else {
-        return $style;
+        return $m_sStyle;
     }
 }
 
@@ -122,8 +131,8 @@ default: 0;
 =cut
 
 sub set_closeable {
-    my ($self, @p) = getSelf(@_);
-    if(defined $p[0] && $p[0] =~ /(0|1)/) {
+    my ( $self, @p ) = getSelf(@_);
+    if( defined $p[0] && $p[0] =~ /(0|1)/ ) {
         $closeable = $1;
     } else {
         return $closeable;
@@ -137,8 +146,8 @@ default = 0;
 =cut
 
 sub set_resizeable {
-    my ($self, @p) = getSelf(@_);
-    if(defined $p[0] && $p[0] =~ /(0|1)/) {
+    my ( $self, @p ) = getSelf(@_);
+    if( defined $p[0] && $p[0] =~ /(0|1)/ ) {
         $resizeable = $1;
     } else {
         return $resizeable;
@@ -152,8 +161,8 @@ default = 0;
 =cut
 
 sub set_collapse {
-    my ($self, @p) = getSelf(@_);
-    if(defined $p[0] && $p[0] =~ /(0|1)/) {
+    my ( $self, @p ) = getSelf(@_);
+    if( defined $p[0] && $p[0] =~ /(0|1)/ ) {
         $collapse = $1;
     } else {
         return $collapse;
@@ -167,8 +176,8 @@ default = 0;
 =cut
 
 sub set_moveable {
-    my ($self, @p) = getSelf(@_);
-    if(defined $p[0] && $p[0] =~ /(0|1)/) {
+    my ( $self, @p ) = getSelf(@_);
+    if( defined $p[0] && $p[0] =~ /(0|1)/ ) {
         $moveable = $1;
     } else {
         return $moveable;
@@ -182,11 +191,11 @@ default = 0;
 =cut
 
 sub set_title {
-    my ($self, @p) = getSelf(@_);
-    if(defined $p[0] && $p[0] =~ /(\w+)/) {
-        $title = $1;
+    my ( $self, @p ) = getSelf(@_);
+    if( defined $p[0] && $p[0] =~ /(\w+)/ ) {
+        $m_sTitle = $1;
     } else {
-        return $title;
+        return $m_sTitle;
     }
 }
 
@@ -197,8 +206,8 @@ default = 0;
 =cut
 
 sub set_class {
-    my ($self, @p) = getSelf(@_);
-    if(defined $p[0] && $p[0] =~ /(\w+)/) {
+    my ( $self, @p ) = getSelf(@_);
+    if( defined $p[0] && $p[0] =~ /(\w+)/ ) {
         $class = $1;
     } else {
         return $class;
@@ -230,21 +239,24 @@ sub set_class {
 =cut
 
 sub initWindow {
-    my ($self, @p) = getSelf(@_);
+    my ( $self, @p ) = getSelf(@_);
     my $hash = $p[0];
     $server   = $hash->{server};
-    $style    = defined $hash->{style} ? $hash->{style} : 'Crystal';
-    $title    = defined $hash->{title} ? $hash->{title} : $title;
+    $m_sStyle = defined $hash->{style} ? $hash->{style} : 'Crystal';
+    $m_sTitle = defined $hash->{title} ? $hash->{title} : $m_sTitle;
     $id       = defined $hash->{id} ? $hash->{id} : $id;
     $class    = defined $hash->{class} ? $hash->{class} : 'min';
-    $hidden   = defined $hash->{hidden} ? 'style="visibility:hidden;position:absolute;' : '';
+    $hidden
+        = defined $hash->{hidden}
+        ? 'style="visibility:hidden;position:absolute;'
+        : '';
     $template = defined $hash->{template} ? $hash->{template} : "window.htm";
     my %template = (
         path     => $hash->{path},
-        style    => $style,
+        style    => $m_sStyle,
         template => $template,
     );
-    $self->SUPER::initTemplate(\%template);
+    $self->SUPER::initTemplate( \%template );
 }
 
 =head2 windowHeader()
@@ -252,32 +264,41 @@ sub initWindow {
 =cut
 
 sub windowHeader {
-    my ($self, @p) = getSelf(@_);
+    my ( $self, @p ) = getSelf(@_);
     eval 'use CGI qw(cookie)';
     unless ($@) {
-        my $co = cookie(-name => 'windowStatus') ? cookie(-name => 'windowStatus') : '';
+        my $co
+            = cookie( -name => 'windowStatus' )
+            ? cookie( -name => 'windowStatus' )
+            : '';
         my @wins = split /:/, $co;
-        for(my $i = 0 ; $i <= $#wins ; $i++) {
-            $hidden = 'style="visibility:hidden;position:absolute;"' if($id eq $wins[$i]);
+        for( my $i = 0; $i <= $#wins; $i++ ) {
+            $hidden = 'style="visibility:hidden;position:absolute;"'
+                if( $id eq $wins[$i] );
         }
     }
     my $menu = " ";
-    unless ($moveable eq 0 && $collapse eq 0 && $resizeable eq 0 && $closeable eq 0) {
+    unless ( $moveable eq 0
+        && $collapse   eq 0
+        && $resizeable eq 0
+        && $closeable  eq 0 )
+    {
 
-        $menu .= qq(<script language="javascript" type="text/javascript">menu('$id','$moveable','$collapse','$resizeable','$closeable');</script>);
+        $menu
+            .= qq(<script language="javascript" type="text/javascript">menu('$id','$moveable','$collapse','$resizeable','$closeable');</script>);
     }
     my %header = (
         name   => 'windowheader',
         server => $server,
-        style  => $style,
-        title  => $title,
+        style  => $m_sStyle,
+        title  => $m_sTitle,
         menu   => $menu,
         id     => $id,
         class  => $class,
         hidden => $hidden,
 
     );
-    $self->SUPER::appendHash(\%header);
+    $self->SUPER::appendHash( \%header );
 }
 
 =head2 windowFooter()
@@ -285,13 +306,13 @@ sub windowHeader {
 =cut
 
 sub windowFooter {
-    my ($self, @p) = getSelf(@_);
+    my ( $self, @p ) = getSelf(@_);
     my %footer = (
         name  => 'windowfooter',
-        style => $style,
+        style => $m_sStyle,
         id    => $id,
     );
-    $self->SUPER::appendHash(\%footer);
+    $self->SUPER::appendHash( \%footer );
 }
 
 =head2 getSelf()
@@ -299,8 +320,15 @@ sub windowFooter {
 =cut
 
 sub getSelf {
-    return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'HTML::Window');
-    return (defined($_[0]) && (ref($_[0]) eq 'HTML::Window' || UNIVERSAL::isa($_[0], 'HTML::Window'))) ? @_ : ($HTML::Window::DefaultClass->new, @_);
+    return @_
+        if defined( $_[0] )
+            && ( !ref( $_[0] ) )
+            && ( $_[0] eq 'HTML::Window' );
+    return (
+        defined( $_[0] )
+            && ( ref( $_[0] ) eq 'HTML::Window'
+            || UNIVERSAL::isa( $_[0], 'HTML::Window' ) )
+    ) ? @_ : ( $HTML::Window::DefaultClass->new, @_ );
 }
 
 =head2 see Also

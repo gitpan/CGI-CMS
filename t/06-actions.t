@@ -1,16 +1,16 @@
 use CGI::CMS::Actions;
 use strict;
-use vars qw($actions);
-*actions = \$CGI::CMS::Actions::actions;
-$actions = {
+use vars qw($m_hrActions);
+*m_hrActions = \$CGI::CMS::Actions::m_hrActions;
+$m_hrActions = {
     actions => "???actions.pl",
     Actions => "./actions.pl"
 };
 saveActions("./actions.pl");
 loadActions("./actions.pl");
-my $t1 = $actions->{actions};
-my $t2 = $actions->{Actions};
+my $t1 = $m_hrActions->{actions};
+my $t2 = $m_hrActions->{Actions};
 use Test::More tests => 2;
-ok($t1 eq "???actions.pl");
-ok($t2 eq "./actions.pl");
+ok( $t1 eq "???actions.pl" );
+ok( $t2 eq "./actions.pl" );
 system('rm ./actions.pl');

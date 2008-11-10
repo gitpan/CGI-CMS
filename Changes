@@ -1,7 +1,20 @@
-Revision history for Perl CGI::CMS 0.35
+Revision history for Perl CGI::CMS 0.37
+
+0.37
+       This Version is not Backward Compatible !
+       Enlarged Database Editor.
+       New default style.
+       Import / Export Opera Bookmarks Drag&drop TreeView Items
+       Ajax support(cgi::cms required no ajax, but if youe want use it take a look in lze.pl)
+       Antiflood.
+       links_pro_page
+       layout editor
+       Current Action Menu (edit file menu action).
+
+0.36   Some changes for the new Style
+
 0.35
        thread anzeigen bei bearbeiten news.pl
-
        Doku.
 0.34
        A few Security fixes !!!!

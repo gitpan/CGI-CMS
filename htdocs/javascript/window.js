@@ -61,7 +61,7 @@ function maxMin(id){
 
 function undock(id){
     var wname = "window"+id
-            var element = document.getElementById(wname);
+    var element = document.getElementById(wname);
     var caption = document.getElementById("tr"+id);
     var pos = element.style.position;
     var o = getElementPosition(wname);
@@ -69,8 +69,10 @@ function undock(id){
     if(pos == "absolute"){
         element.style.position ="";
         caption.style.cursor ="pointer";
+        element.className = 'min';
     }else{
-        move(wname,o.x,o.y);
+         if(  element.className == "max"  ||   element.className == "min" ) element.className = 'floating';
+         move(wname,o.x,o.y);
     }
 }
 function displayWin(id){
@@ -126,7 +128,6 @@ function getElementPosition(id){
     return position;
 
 }
-// move(Id, x, y)
 function move(id,x,y){
     Element = document.getElementById(id);
     Element.style.position = "absolute";
@@ -138,63 +139,65 @@ function leaveFrame(){
         parent.location.href = location.href;
     }
 }
-
 var windows = new Array();
 function addWindow(win){
-if(document.getElementById('window'+win) && document.getElementById('tr'+win)){
-     document.getElementById('window'+win).style.position ="absolute";
-     windows.push(win);
-     visible('dynamicTab1');
-     visible('dynamicTab2');
-     visible('dynamicTab3');
-     visible('showWindows');
-     document.getElementById('window'+win).style.visibility='hidden';
-     document.getElementById('tr'+win).style.visibility='hidden';
-     
-     }
+       if(document.getElementById('window'+win)){
+              document.getElementById('window'+win).style.position ="absolute";
+              windows.push(win);
+              visible('dynamicTab1');
+              visible('dynamicTab2');
+              visible('dynamicTab3');
+              visible('showWindows');
+              document.getElementById('window'+win).style.visibility='hidden';
+              document.getElementById('tr'+win).style.visibility='hidden';
+              document.getElementById('window'+win).style.visibility='hidden';
+              if(document.getElementById('trw'+win)) document.getElementById('trw'+win).style.display='none';
+              var date = new Date();
+              date = new Date(date.getTime() +1000*60*60*24*365);
+              if(windows.length == 1)
+              document.cookie = 'windowStatus='+windows+'; expires='+date.toGMTString()+';';
+              if(windows.length > 1)
+              document.cookie = 'windowStatus='+windows.join(":")+'; expires='+date.toGMTString()+';';
+       }
 }
 function displayWindows(){
-     hide('dynamicTab1');
-     hide('dynamicTab2');
-     hide('dynamicTab3');
-     hide('showWindows');
-
-     for(var i = 0; i < windows.length;i++){
-      if( document.getElementById('window'+windows[i]) &&  document.getElementById('tr'+windows[i])){
-          document.getElementById('window'+windows[i]).style.position ="";
-          document.getElementById('tr'+windows[i]).style.position ="";
-          document.getElementById('window'+windows[i]).style.visibility='';
-          document.getElementById('tr'+windows[i]).style.visibility='';
-     }
-     }
-     document.cookie = 'windowStatus=n1; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-     windows = new Array();
-}
-function windowStatus(){
-        var date = new Date();
-        date = new Date(date.getTime() +1000*60*60*24*1);
-        document.cookie = 'windowStatus='+windows.join(":")+'; expires='+date.toGMTString()+';'; 
+       hide('dynamicTab1');
+       hide('dynamicTab2');
+       hide('dynamicTab3');
+       hide('showWindows');
+       for(var i = 0; i < windows.length;i++){
+              document.getElementById('window'+windows[i]).style.position ="";
+              document.getElementById('tr'+windows[i]).style.position ="";
+              document.getElementById('window'+windows[i]).style.visibility='';
+              document.getElementById('tr'+windows[i]).style.visibility='';
+              if(document.getElementById('trw'+windows[i])) document.getElementById('trw'+windows[i]).style.display='';
+       }
+       document.cookie = 'windowStatus='+windows.join(":")+'; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+       windows = new Array();
 }
 function restoreStatus(){
-        if(document.cookie){
-        var co  = document.cookie;
-        var wi = co.substr(co.search('windowStatus=')+13,co.search(';'));
-        var w = wi.split(":");
-                for(var i = 0; i < w.length;i++){
-                    addWindow(w[i]);
-                }
-                if(w.length > 1){
-                        visible('dynamicTab1');
-                        visible('dynamicTab2');
-                        visible('dynamicTab3');
-                }
-        }
+       if(document.cookie){
+              var txt  = document.cookie;
+              var i = 0;
+              while(i < txt.length){
+                     if(txt.substr(i,13) == 'windowStatus='){
+                            var s = i+13;
+                            do{
+                                   i++;
+                            }while(txt.substr(i,1) != ";" && i < txt.length);
+                            var wi = txt.substr(s,i-s);
+                            var w = wi.split(":");
+                            for(var j = 0; j < w.length;j++)
+                            addWindow(w[j]);
+                     }
+                     i++;
+              }
+       }
 }
 function hide(id){
 if(document.getElementById(id))
      document.getElementById(id).style.display = "none";
 }
-// visible(Id);
 function visible(id){
 if(document.getElementById(id))
      document.getElementById(id).style.display = "";

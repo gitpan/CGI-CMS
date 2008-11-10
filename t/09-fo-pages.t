@@ -22,4 +22,4 @@ my %needed = (
 );
 
 # print $test->makePages(\%needed);
-ok(length($test->makePages(\%needed)) > 0);
+ok( length( $test->makePages( \%needed ) ) > 0 );

@@ -1,105 +1,140 @@
-use vars qw($akt $end $length $start $thread $replyId $replylink);
+use vars qw($akt $m_nEnd $length $m_nStart $thread $replyId );
 
 sub show {
-    my $threadlength = $database->tableLength('news');
-    $von = $von > $threadlength ? $threadlength- 1 : $von;
+    my $threadlength = $m_oDatabase->tableLength('news');
+    $m_nStart = $m_nStart > $threadlength ? $threadlength- 1 : $m_nStart;
     my %needed = (
         action => 'news',
-        start  => $von,
-        end    => $bis,
+        start  => $m_nStart,
+        end    => $m_nEnd,
         thread => 'news',
         id     => 'c',
     );
-    my $newMessage = translate('newMessage');
-    print
-      qq(<table align ="center" border ="0" cellpadding ="0" cellspacing="0" summary="layoutMenuItem"><tr><td><img onclick="location.href='#winedit'" src="/style/$style/buttons/new.png" width="20" height="20" border="0" alt="" title="$newMessage" style='cursor:pointer;font-size:14px;vertical-align:bottom;'/></td><td><a class="link" href="#winedit"  style='font-size:14px;vertical-align:bottom;'>$newMessage</a></td></tr></table>)
-      if($right >= $settings->{news}{right});
-    print showThread(\%needed);
+
+    $m_sContent .= showThread( \%needed );
     my $catlist   = readcats('news');
     my %parameter = (
-        action    => 'addNews',
-        body      => translate('body'),
-        class     => 'max',
-        attach    => $right >= $settings->{upload}{right} ? $settings->{uploads}{enabled} : 0,
-        maxlength => $settings->{news}{maxlength},
-        path      => "$settings->{cgi}{bin}/templates",
+        action => 'addNews',
+        body   => translate('body'),
+        class  => 'max',
+        attach => $m_nRight >= $m_hrSettings->{uploads}{right}
+        ? $m_hrSettings->{uploads}{enabled}
+        : 0,
+        maxlength => $m_hrSettings->{news}{maxlength},
+        path      => "$m_hrSettings->{cgi}{bin}/templates",
         reply     => 'none',
-        server    => $settings->{cgi}{serverName},
-        style     => $style,
+        server    => $m_hrSettings->{cgi}{serverName},
+        style     => $m_sStyle,
         thread    => 'news',
         headline  => translate('headline'),
         title     => translate('newMessage'),
         catlist   => $catlist,
-        right     => $right,
+        right     => $m_nRight,
         html      => 0,
-        atemp     => qq(<input  name="von" value="$von" style="display:none;"/><input  name="bis" value="$bis" style="display:none;"/>),
+        atemp =>
+            qq(<input  name="von" value="$m_nStart" style="display:none;"/><input  name="bis" value="$m_nEnd" style="display:none;"/>),
     );
     use HTML::Editor;
-    my $editor = new HTML::Editor(\%parameter);
-    print '<div align="center">';
-    print $editor->show() if($right >= $settings->{news}{right});
-    print '</div>';
+    my $editor = new HTML::Editor( \%parameter );
+    $m_sContent .= '<div align="center">';
+    $m_sContent .= $editor->show()
+        if( $m_nRight >= $m_hrSettings->{news}{right} );
+    $m_sContent .= '</div>';
 }
 
 sub showEditor {
+    my $catlist   = readcats('news');
     my %parameter = (
-        action    => 'addNews',
-        body      => translate('body'),
-        class     => 'max',
-        attach    => $right >= $settings->{upload}{right} ? $settings->{uploads}{enabled} : 0,
-        maxlength => $settings->{news}{maxlength},
-        path      => "$settings->{cgi}{bin}/templates",
+        action => 'addNews',
+        body   => translate('body'),
+        class  => 'max',
+        attach => $m_nRight >= $m_hrSettings->{uploads}{right}
+        ? $m_hrSettings->{uploads}{enabled}
+        : 0,
+        maxlength => $m_hrSettings->{news}{maxlength},
+        path      => "$m_hrSettings->{cgi}{bin}/templates",
         reply     => 'none',
-        server    => $settings->{cgi}{serverName},
-        style     => $style,
+        server    => $m_hrSettings->{cgi}{serverName},
+        style     => $m_sStyle,
         thread    => 'news',
         headline  => translate('headline'),
         title     => translate('newMessage'),
         catlist   => $catlist,
-        right     => $right,
+        right     => $m_nRight,
         html      => 0,
         template  => "enlargedEditor.htm",
     );
     use HTML::Editor;
-    my $editor = new HTML::Editor(\%parameter);
-    print '<div align="center">';
-    print $editor->show() if($right >= $settings->{news}{right});
-    print '</div>';
+    my $editor = new HTML::Editor( \%parameter );
+    $m_sContent .= '<div align="center">';
+    $m_sContent .= $editor->show()
+        if( $m_nRight >= $m_hrSettings->{news}{right} );
+    $m_sContent .= '</div>';
 }
 
 sub addNews {
     my $sbm = param('submit') ? param('submit') : 'save';
-    if(not defined $sbm or ($sbm ne translate('preview'))) {
-        if(defined param('message') && defined param('headline') && defined param('thread') && defined param('catlist')) {
+    if( not defined $sbm or ( $sbm ne translate('preview') ) ) {
+        if(    defined param('message')
+            && defined param('headline')
+            && defined param('thread')
+            && defined param('catlist') )
+        {
             my $message = param('message');
-            my $max     = $settings->{news}{maxlength};
-            $message = ($message =~ /^(.{3,$max})$/s) ? $1 : 'Invalid body';
+            my $max     = $m_hrSettings->{news}{maxlength};
+            $message = ( $message =~ /^(.{3,$max})$/s ) ? $1 : 'Invalid body';
             my $headline = param('headline');
-            $headline = ($headline =~ /^(.{3,100})$/s) ? $1 : 'Invalid headline';
+            $headline
+                = ( $headline =~ /^(.{3,100})$/s ) ? $1 : 'Invalid headline';
             my $thread = param('thread');
-            $thread = ($thread =~ /^(\w+)$/) ? $1 : 'trash';
+            $thread = ( $thread =~ /^(\w+)$/ ) ? $1 : 'trash';
             my $cat = param('catlist');
-            &saveUpload() if $right >= $settings->{upload}{right};
-            my $attach = (defined param('file')) ? (split(/[\\\/]/, param('file')))[-1] : 0;
-            my $cit = (defined $attach) ? $attach =~ /^(\S+)\.[^\.]+$/ ? $1 : 0 : 0;
-            my $type = (defined $attach) ? ($attach =~ /\.([^\.]+)$/) ? $1 : 0 : 0;
+            &saveUpload() if $m_nRight >= $m_hrSettings->{uploads}{right};
+            my $attach
+                = ( defined param('file') )
+                ? ( split( /[\\\/]/, param('file') ) )[-1]
+                : 0;
+            my $cit
+                = ( defined $attach )
+                ? $attach =~ /^(\S+)\.[^\.]+$/
+                    ? $1
+                    : 0
+                : 0;
+            my $type
+                = ( defined $attach )
+                ? ( $attach =~ /\.([^\.]+)$/ )
+                    ? $1
+                    : 0
+                : 0;
             $cit =~ s/("|'|\s| )//g;
-            my $sra = ($cit && $type) ? "$cit.$type" : undef;
+            my $sra = ( $cit && $type ) ? "$cit.$type" : undef;
             my $format = param('format') eq 'on' ? 'html' : 'bbcode';
 
-            if(defined $headline && defined $message && defined $thread && $right >= $settings->{news}{right}) {
+            if(    defined $headline
+                && defined $message
+                && defined $thread
+                && $m_nRight >= $m_hrSettings->{news}{right} )
+            {
                 my %message = (
                     title  => $headline,
                     body   => $message,
                     thread => $thread,
-                    user   => $user,
+                    user   => $m_sUser,
                     cat    => $cat,
                     attach => $sra,
                     format => $format,
                     ip     => remote_addr()
                 );
-                $database->addMessage(\%message);
-                print '<div align="center">Nachricht wurde erstellt.<br/></div>';
+                if( $m_oDatabase->addMessage( \%message ) ) {
+                    $m_sContent
+                        .= '<div align="center">Nachricht wurde erstellt.<br/></div>';
+                } else {
+                    $m_sContent
+                        .= '<div align="center">'
+                        . translate('floodtext')
+                        . '<br/></div>';
+                }
+
             }
         }
         &show();
@@ -109,21 +144,29 @@ sub addNews {
 }
 
 sub saveedit {
-    if(not defined param('submit') or (param('submit') ne translate('preview'))) {
+    if( not defined param('submit')
+        or ( param('submit') ne translate('preview') ) )
+    {
         my $thread = param('thread');
-        $thread = ($thread =~ /^(\w+)$/) ? $1 : 'trash';
+        $thread = ( $thread =~ /^(\w+)$/ ) ? $1 : 'trash';
         my $id = param('reply');
-        $id = ($id =~ /^(\d+)$/) ? $1 : 0;
+        $id = ( $id =~ /^(\d+)$/ ) ? $1 : 0;
         my $headline = param('headline');
-        $headline = ($headline =~ /^(.{3,50})$/) ? $1 : 0;
+        $headline = ( $headline =~ /^(.{3,50})$/ ) ? $1 : 0;
         my $body = param('message');
-        $body = ($body =~ /^(.{3,$max})$/s) ? $1 : 'Invalid body';
-        &saveUpload() if $right >= $settings->{upload}{right};
-        my $attach = (defined param('file')) ? (split(/[\\\/]/, param('file')))[-1] : 0;
-        my $cit = (defined $attach) ? $attach =~ /^(\S+)\.[^\.]+$/ ? $1 : 0 : 0;
-        my $type = (defined $attach) ? ($attach =~ /\.([^\.]+)$/) ? $1 : 0 : 0;
+        my $max  = $m_hrSettings->{news}{maxlength};
+        $body = ( $body =~ /^(.{3,$max})$/s ) ? $1 : 'Invalid body';
+        &saveUpload() if $m_nRight >= $m_hrSettings->{uploads}{right};
+        my $attach
+            = ( param('file') )
+            ? ( split( /[\\\/]/, param('file') ) )[-1]
+            : 0;
+        my $cit
+            = ( defined $attach ) ? $attach =~ /^(\S+)\.[^\.]+$/ ? $1 : 0 : 0;
+        my $type
+            = ( defined $attach ) ? ( $attach =~ /\.([^\.]+)$/ ) ? $1 : 0 : 0;
         $cit =~ s/("|'|\s| )//g;
-        my $sra = ($cit && $type) ? "$cit.$type" : undef;
+        my $sra = ( $cit && $type ) ? "$cit.$type" : undef;
         my $format  = param('format') eq 'on' ? 'html' : 'bbcode';
         my $cat     = param('catlist');
         my %message = (
@@ -135,15 +178,16 @@ sub saveedit {
             attach => $sra,
             format => $format,
             id     => $id,
-            user   => $user,
+            user   => $m_sUser,
             cat    => $cat,
             ip     => remote_addr()
         );
-        $database->editMessage(\%message);
+        $m_oDatabase->editMessage( \%message );
         my $rid = $id;
 
-        if($thread eq 'replies') {
-            my @tid = $database->fetch_array("select refererId from  `replies` where id = '$id'");
+        if( $thread eq 'replies' ) {
+            my @tid = $m_oDatabase->fetch_array(
+                "select refererId from  `replies` where id = '$id'");
             $rid = $tid[0];
         }
         &showMessage($rid);
@@ -154,77 +198,89 @@ sub saveedit {
 
 sub editNews {
     my $id = param('edit');
-    $id = ($id =~ /^(\d+)$/) ? $1 : 0;
+    $id = ( $id =~ /^(\d+)$/ ) ? $1 : 0;
     my $th = param('thread');
-    $th = ($th =~ /^(\w+)$/) ? $1 : 'news';
-    if(not defined param('submit') or (param('submit') ne translate('preview'))) {
+    $th = ( $th =~ /^(\w+)$/ ) ? $1 : 'news';
+    if( not defined param('submit')
+        or ( param('submit') ne translate('preview') ) )
+    {
 
-        my @data      = $database->fetch_array("select title,body,date,id,user,attach,format,cat from  `$th`  where `id` = '$id'  and  (`user` = '$user'  or `right` < '$right' );") if(defined $th);
-        my $catlist   = readcats($data[7]);
+        my @data
+            = $m_oDatabase->fetch_array(
+            "select title,body,date,id,user,attach,format,cat from  `$th`  where `id` = '$id'  and  (`user` = '$m_sUser'  or `right` < '$m_nRight' );"
+            ) if( defined $th );
+        my $catlist   = readcats( $data[7] );
         my $html      = $data[6] eq 'html' ? 1 : 0;
         my %parameter = (
-            action    => 'saveedit',
-            body      => $data[1],
-            class     => 'max',
-            attach    => $right >= $settings->{upload}{right} ? $settings->{uploads}{enabled} : 0,
-            maxlength => $settings->{news}{maxlength},
-            path      => "$settings->{cgi}{bin}/templates",
+            action => 'saveedit',
+            body   => $data[1],
+            class  => 'max',
+            attach => $m_nRight >= $m_hrSettings->{uploads}{right}
+            ? $m_hrSettings->{uploads}{enabled}
+            : 0,
+            maxlength => $m_hrSettings->{news}{maxlength},
+            path      => "$m_hrSettings->{cgi}{bin}/templates",
             reply     => $id,
-            server    => $settings->{cgi}{serverName},
-            style     => $style,
+            server    => $m_hrSettings->{cgi}{serverName},
+            style     => $m_sStyle,
             thread    => $th,
             headline  => $data[0],
             title     => translate('editMessage'),
-            right     => $right,
-            catlist   => ($th eq 'news') ? $catlist : '&#160;',
+            right     => $m_nRight,
+            catlist   => ( $th eq 'news' ) ? $catlist : '&#160;',
             html      => $html,
-            atemp     => qq(<input  name="von" value="$von" style="display:none;"/><input  name="bis" value="$bis" style="display:none;"/>),
+            atemp =>
+                qq(<input  name="von" value="$m_nStart" style="display:none;"/><input  name="bis" value="$m_nEnd" style="display:none;"/>),
         );
         use HTML::Editor;
-        my $editor = new HTML::Editor(\%parameter);
-        print '<div align="center"><br/>';
-        print $editor->show();
-        print '</div>';
+        my $editor = new HTML::Editor( \%parameter );
+        $m_sContent .= '<div align="center"><br/>';
+        $m_sContent .= $editor->show();
+        $m_sContent .= '</div>';
     } else {
         &preview();
     }
     my $rid = $id;
-    if($thread eq 'replies') {
-        my @tid = $database->fetch_array("select refererId from  `replies` where id = '$id'");
+    if( $thread eq 'replies' ) {
+        my @tid = $m_oDatabase->fetch_array(
+            "select refererId from  `replies` where id = '$id'");
         $rid = $tid[0];
     }
     &showMessage($rid);
 }
 
-sub reply {
+sub replyNews {
     my $id = param('reply');
-    $id = ($id =~ /^(\d+)$/) ? $1 : 0;
+    $id = ( $id =~ /^(\d+)$/ ) ? $1 : 0;
     my $th = param('thread');
-    $th = ($th =~ /^(\w+)$/) ? $1 : 'trash';
+    $th = ( $th =~ /^(\w+)$/ ) ? $1 : 'trash';
     my %parameter = (
-        action    => 'addreply',
-        body      => translate('insertText'),
-        class     => 'max',
-        attach    => $right >= $settings->{upload}{right} ? $settings->{uploads}{enabled} : 0,
-        maxlength => $settings->{news}{maxlength},
-        path      => "$settings->{cgi}{bin}/templates",
+        action => 'addreply',
+        body   => translate('insertText'),
+        class  => 'max',
+        attach => $m_nRight >= $m_hrSettings->{uploads}{right}
+        ? $m_hrSettings->{uploads}{enabled}
+        : 0,
+        maxlength => $m_hrSettings->{news}{maxlength},
+        path      => "$m_hrSettings->{cgi}{bin}/templates",
         reply     => $id,
-        server    => $settings->{cgi}{serverName},
-        style     => $style,
+        server    => $m_hrSettings->{cgi}{serverName},
+        style     => $m_sStyle,
         thread    => $th,
         headline  => translate('headline'),
         title     => translate('reply'),
-        right     => $right,
+        right     => $m_nRight,
         catlist   => "",
         html      => 0,
-        atemp     => qq(<input  name="von" value="$von" style="display:none;"/><input  name="bis" value="$bis" style="display:none;"/>),
+        atemp =>
+            qq(<input  name="von" value="$m_nStart" style="display:none;"/><input  name="bis" value="$m_nEnd" style="display:none;"/>),
     );
     use HTML::Editor;
-    my $editor = new HTML::Editor(\%parameter);
-    print '<div align="center"><br/>';
-    print $editor->show();
-    print '</div>';
-    &saveUpload() if $right >= $settings->{upload}{right};
+    my $editor = new HTML::Editor( \%parameter );
+    $m_sContent .= '<div align="center"><br/>';
+    $m_sContent .= $editor->show();
+    $m_sContent .= '</div>';
+    &saveUpload() if $m_nRight >= $m_hrSettings->{uploads}{right};
     &showMessage($id);
 }
 
@@ -232,35 +288,40 @@ sub addReply {
     my $body     = param('message');
     my $headline = param('headline');
     my $reply    = param('reply');
-    my $format   = param('format') eq 'on' ? 'html' : 'bbcode';
-    if(not defined param('submit') or (param('submit') ne translate("preview"))) {
-        if(param('file')) {
-            my $attach = (split(/[\\\/]/, param('file')))[-1];
+    my $format   = 'bbcode';
+    if( defined $format ) {
+        $format = 'html' if param('format') eq 'on';
+    }
+    if( not defined param('submit')
+        or ( param('submit') ne translate("preview") ) )
+    {
+        if( param('file') ) {
+            my $attach = ( split( /[\\\/]/, param('file') ) )[-1];
             my $cit = $attach =~ /^(\S+)\.[^\.]+$/ ? $1 : 0;
-            my $type = ($attach =~ /\.([^\.]+)$/) ? $1 : 0;
+            my $type = ( $attach =~ /\.([^\.]+)$/ ) ? $1 : 0;
             $cit =~ s/("|'|\s| )//g;
             my $sra   = "$cit.$type";
             my %reply = (
                 title  => $headline,
                 body   => $body,
                 id     => $reply,
-                user   => $user,
+                user   => $m_sUser,
                 attach => $sra,
-                format => $html,
+                format => $format,
             );
-            $database->reply(\%reply);
+            $m_oDatabase->reply( \%reply );
         } else {
             my %reply = (
                 title  => $headline,
                 body   => $body,
                 id     => $reply,
-                user   => $user,
+                user   => $m_sUser,
                 format => $format,
                 ip     => remote_addr()
             );
-            $database->reply(\%reply);
+            $m_oDatabase->reply( \%reply );
         }
-        &saveUpload() if $right >= $settings->{upload}{right};
+        &saveUpload() if $m_nRight >= $m_hrSettings->{uploads}{right};
     } else {
         &preview();
     }
@@ -269,78 +330,96 @@ sub addReply {
 
 sub deleteNews {
     my $th = param('thread');
-    $th = ($th =~ /^(\w+)$/) ? $1 : 'trash';
+    $th = ( $th =~ /^(\w+)$/ ) ? $1 : 'trash';
     my $del = param('delete');
-    $del = ($del =~ /^(\d+)$/) ? $1 : 0;
-    if($th eq 'replies') {
-        my @tid = $database->fetch_array("select refererId from  `replies` where id = ?", $del);
-        $rid = $tid[0];
-        $database->deleteMessage($th, $del);
-        &showMessage($tid[0]);
+    $del = ( $del =~ /^(\d+)$/ ) ? $1 : 0;
+    if( $th eq 'replies' ) {
+        my @tid = $m_oDatabase->fetch_array(
+            "select refererId from  `replies` where id = ?", $del );
+        $m_oDatabase->deleteMessage( $th, $del );
+        &showMessage( $tid[0] );
     } else {
-        $database->deleteMessage($th, $del);
-        $database->void("DELETE FROM `replies` where `refererId`  = ?", $del) if($th eq 'news');
+        $m_oDatabase->deleteMessage( $th, $del );
+        $m_oDatabase->void( "DELETE FROM `replies` where `refererId`  = ?",
+            $del )
+            if( $th eq 'news' );
         &show();
     }
 }
 
 sub showMessage {
     my $id = shift;
-    if(defined param('reply') && param('reply') =~ /(\d+)/) {
-        $id = $1 unless (defined $id);
+    if( defined param('reply') && param('reply') =~ /(\d+)/ ) {
+        $id = $1 unless ( defined $id );
     }
-    my $sql_read = qq/select title,body,date,id,user,attach,format from  news where `id` = $id && `right` <= $right/;
-    my $ref      = $database->fetch_hashref($sql_read);
-    if($ref->{id}== $id) {
-        my $title     = $ref->{title};
+
+    my $sql_read
+        = qq/select title,body,date,id,user,attach,format from  news where `id` = $id && `right` <= $m_nRight/;
+    my $ref = $m_oDatabase->fetch_hashref($sql_read);
+
+    if( $ref->{id}== $id ) {
+
+        my $m_sTitle  = $ref->{title};
         my %parameter = (
-            path   => $settings->{cgi}{bin} . '/templates',
-            style  => $style,
-            title  => qq(<div style="white-space:nowrap">$title</div>),
-            server => $settings->{cgi}{serverName},
+            path   => $m_hrSettings->{cgi}{bin} . '/templates',
+            style  => $m_sStyle,
+            title  => qq(<div style="white-space:nowrap">$m_sTitle</div>),
+            server => $m_hrSettings->{cgi}{serverName},
             id     => "n$id",
             class  => 'min',
         );
-        my $window = new HTML::Window(\%parameter);
+        my $window = new HTML::Window( \%parameter );
         $window->set_closeable(0);
         $window->set_moveable(1);
         $window->set_resizeable(1);
         $ref->{body} =~ s/\[previewende\]//s;
-        BBCODE(\$ref->{body}, $ACCEPT_LANGUAGE) if($ref->{format} eq 'bbcode');
-        my $menu       = "";
-        my $answerlink = $settings->{cgi}{mod_rewrite} ? "/replynews-$ref->{id}.html" : "$ENV{SCRIPT_NAME}?action=reply&amp;reply=$ref->{id}&amp;thread=news";
-        my %reply      = (
+        BBCODE( \$ref->{body}, $ACCEPT_LANGUAGE )
+            if( $ref->{format} eq 'bbcode' );
+        my $menu = "";
+
+        my $answerlink
+            = $m_hrSettings->{cgi}{mod_rewrite}
+            ? "/replynews-$ref->{id}.html"
+            : "$ENV{SCRIPT_NAME}?action=reply&amp;reply=$ref->{id}&amp;thread=news";
+        my %reply = (
             title    => translate('reply'),
             descr    => translate('reply'),
             src      => 'reply.png',
             location => $answerlink,
-            style    => $style,
+            style    => $m_sStyle,
         );
         my $thread = defined param('thread') ? param('thread') : 'news';
-        $menu .= action(\%reply) unless ($thread =~ /.*\d$/ && $right < 5);
-        my $editlink = $settings->{cgi}{mod_rewrite} ? "/edit$thread-$ref->{id}.html" : "$ENV{SCRIPT_NAME}?action=edit&amp;edit=$ref->{id}&amp;thread=news&amp;von=$von&amp;bis=$bis;";
+
+        $menu .= action( \%reply )
+            unless ( $thread =~ /.*\d$/ && $m_nRight < 5 );
+        my $editlink
+            = $m_hrSettings->{cgi}{mod_rewrite}
+            ? "/edit$thread-$ref->{id}.html"
+            : "$ENV{SCRIPT_NAME}?action=edit&amp;edit=$ref->{id}&amp;thread=news&amp;von=$m_nStart&amp;bis=$m_nEnd;";
         my %edit = (
             title    => translate('edit'),
             descr    => translate('edit'),
             src      => 'edit.png',
             location => $editlink,
-            style    => $style,
+            style    => $m_sStyle,
         );
-        $menu .= action(\%edit) if($right >= 5);
+        $menu .= action( \%edit ) if( $m_nRight >= 5 );
         my $trdelete = translate('delete');
-        my $deletelink =
-          $settings->{cgi}{mod_rewrite}
-          ? "javascript:if(confirm('$trdelete ?')) location.href='/delete.html&amp;delete=$ref->{id}&amp;thread=news&amp;von=$von&amp;bis=$bis;'"
-          : "javascript:if(confirm('$trdelete ?')) location.href='$ENV{SCRIPT_NAME}?action=delete&amp;delete=$ref->{id}&amp;thread=news&amp;von=$von&amp;bis=$bis;'";
+
+        my $deletelink
+            = $m_hrSettings->{cgi}{mod_rewrite}
+            ? "javascript:if(confirm('$trdelete ?')) location.href='/delete.html&amp;delete=$ref->{id}&amp;thread=news&amp;von=$m_nStart&amp;bis=$m_nEnd;'"
+            : "javascript:if(confirm('$trdelete ?')) location.href='$ENV{SCRIPT_NAME}?action=delete&amp;delete=$ref->{id}&amp;thread=news&amp;von=$m_nStart&amp;bis=$m_nEnd;'";
         my %delete = (
             title    => translate('delete'),
             descr    => translate('delete'),
             src      => 'delete.png',
             location => $deletelink,
-            style    => $style,
+            style    => $m_sStyle,
         );
-        $menu .= action(\%delete) if($right >= 5);
-        print br(), $window->windowHeader(), qq(
+        $menu .= action( \%delete ) if( $m_nRight >= 5 );
+
+        $m_sContent .= br() . $window->windowHeader() . qq(
                 <table align="left" border ="0" cellpadding="0" cellspacing="0" summary ="0"  width="100%">
                 <tr >
                 <td align='left'>$menu</td></tr>
@@ -354,21 +433,27 @@ sub showMessage {
                         </td>
                         </tr>
                         <tr><td align='left'>$ref->{body}</td></tr>);
-        print qq(<tr><td><a href="/downloads/$ref->{attach}">$ref->{attach}</a></td></tr>) if(-e "$settings->{uploads}{path}/$ref->{attach}");
-        print "</table>", $window->windowFooter();
-        my @rps = $database->fetch_array("select count(*) from replies where refererId = $id;");
+        $m_sContent
+            .= qq(<tr><td><a href="/downloads/$ref->{attach}">$ref->{attach}</a></td></tr>)
+            if( -e "$m_hrSettings->{uploads}{path}/$ref->{attach}" );
+        $m_sContent .= "</table>" . $window->windowFooter();
 
-        if($rps[0] > 0) {
-            $von = $von > $rps[0] ? $rps[0]- 1 : $von;
+        my @rps = $m_oDatabase->fetch_array(
+            "select count(*) from replies where refererId = $id;");
+
+        if( $rps[0] > 0 ) {
+            $m_nStart = $m_nStart > $rps[0] ? $rps[0]- 1 : $m_nStart;
             my %needed = (
                 action  => 'showthread',
-                start   => $von,
-                end     => $bis,
+                start   => $m_nStart,
+                end     => $m_nEnd,
                 thread  => 'replies',
                 replyId => $id,
                 id      => 'c',
             );
-            print showThread(\%needed);
+
+            $m_sContent .= showThread( \%needed );
+
         }
     } else {
         &show();
@@ -378,11 +463,16 @@ sub showMessage {
 # privat
 sub readcats {
     my $selected = lc(shift);
-    my @cats     = $database->fetch_AoH("select * from cats where `right` <= ?", $right);
-    my $list     = '<select name="catlist" size="1">';
-    for(my $i = 0 ; $i <= $#cats ; $i++) {
-        my $catname = lc($cats[$i]->{name});
-        $list .= ($catname eq $selected) ? qq(<option value="$catname"  selected="selected">$catname</option>) : qq(<option value="$catname">$catname</option>);
+    my @cats
+        = $m_oDatabase->fetch_AoH( "select * from cats where `right` <= ?",
+        $m_nRight );
+    my $list = '<select name="catlist" size="1">';
+    for( my $i = 0; $i <= $#cats; $i++ ) {
+        my $catname = lc( $cats[$i]->{name} );
+        $list .=
+            ( $catname eq $selected )
+            ? qq(<option value="$catname"  selected="selected">$catname</option>)
+            : qq(<option value="$catname">$catname</option>);
     }
     $list .= '</select>';
     return $list;
@@ -390,221 +480,281 @@ sub readcats {
 
 sub preview {
     my $thread = param('thread');
-    $thread = ($thread =~ /^(\w+)$/) ? $1 : 'trash';
+    $thread = ( $thread =~ /^(\w+)$/ ) ? $1 : 'trash';
     my $id = param('reply');
-    $id = ($id =~ /^(\d+)$/) ? $1 : 0;
+    $id = ( $id =~ /^(\d+)$/ ) ? $1 : 0;
     my $headline = param('headline');
-    $headline = ($headline =~ /^(.{3,50})$/) ? $1 : 0;
+    $headline = ( $headline =~ /^(.{3,50})$/ ) ? $1 : 0;
     my $body       = param('message');
     my $selected   = param('catlist');
     my $catlist    = readcats($selected);
     my %wparameter = (
-        path   => "$settings->{cgi}{bin}/templates",
-        style  => $style,
+        path   => "$m_hrSettings->{cgi}{bin}/templates",
+        style  => $m_sStyle,
         title  => $headline,
         server => "http://localhost",
         id     => "previewWindow",
         class  => "min",
     );
-    my $win = new HTML::Window(\%wparameter);
+    my $win = new HTML::Window( \%wparameter );
     $win->set_closeable(1);
     $win->set_collapse(1);
     $win->set_moveable(1);
     $win->set_resizeable(1);
-    print "<br/>";
-    print $win->windowHeader();
-    my $html = param('format') eq 'on' ? 1 : 0;
-    BBCODE(\$body, $ACCEPT_LANGUAGE) unless ($html);
-    print qq(<table align="left" border ="0" cellpadding="0" cellspacing="0" summary ="0"  width="500"><tr ><td align='left'>$body</td></tr></table>);
-    print $win->windowFooter();
+    $m_sContent .= "<br/>";
+    $m_sContent .= $win->windowHeader();
+    my $html = defined param('format') ? param('format') : 'off';
+    $html = $html eq 'on' ? 1 : 0;
+    BBCODE( \$body, $ACCEPT_LANGUAGE ) unless ($html);
+    $m_sContent
+        .= qq(<table align="left" border ="0" cellpadding="0" cellspacing="0" summary ="0"  width="100%"><tr ><td align="left">$body</td></tr></table>);
+    $m_sContent .= $win->windowFooter();
     my %parameter = (
-        action    => $action,
-        body      => param('message'),
-        class     => 'max',
-        attach    => $right >= $settings->{upload}{right} ? $settings->{uploads}{enabled} : 0,
-        maxlength => $settings->{news}{maxlength},
-        path      => "$settings->{cgi}{bin}/templates",
+        action => $m_hrAction,
+        body   => param('message'),
+        class  => 'max',
+        attach => $m_nRight >= $m_hrSettings->{uploads}{right}
+        ? $m_hrSettings->{uploads}{enabled}
+        : 0,
+        maxlength => $m_hrSettings->{news}{maxlength},
+        path      => "$m_hrSettings->{cgi}{bin}/templates",
         reply     => $id,
-        server    => $settings->{cgi}{serverName},
-        style     => $style,
+        server    => $m_hrSettings->{cgi}{serverName},
+        style     => $m_sStyle,
         thread    => $thread,
         headline  => $headline,
         title     => translate("editMessage"),
-        right     => $right,
-        catlist   => ($thread eq 'news') ? $catlist : '&#160;',
+        right     => $m_nRight,
+        catlist   => ( $thread eq 'news' ) ? $catlist : '&#160;',
         html      => $html,
         template  => 'enlargedEditor.htm',
-        atemp     => qq(<input  name="von" value="$von" style="display:none;"/><input  name="bis" value="$bis" style="display:none;"/>),
+        atemp =>
+            qq(<input  name="von" value="$m_nStart" style="display:none;"/><input  name="bis" value="$m_nEnd" style="display:none;"/>),
     );
     use HTML::Editor;
-    my $editor = new HTML::Editor(\%parameter);
-    print '<div align="center"><br/>';
-    print $editor->show();
-    print '</div>';
+    my $editor = new HTML::Editor( \%parameter );
+    $m_sContent .= '<div align="center"><br/>';
+    $m_sContent .= $editor->show();
+    $m_sContent .= '</div>';
 }
 
 sub showThread {
     my $needed = shift;
     $akt       = $needed->{action};
-    $end       = $needed->{end};
-    $start     = $needed->{start};
+    $m_nEnd       = $needed->{end};
+    $m_nStart     = $needed->{start};
     $thread    = $needed->{thread};
     $replyId   = $needed->{replyId};
-    $replylink = defined $replyId ? $replyId : '';
+    $replylink = defined $replyId ? "&reply=$replyId" : ' ';
 
-    my @rp = $database->fetch_array("select count(*) from news where `right` <= $right");
-    $length = $rp[0] =~ /(\d+)/ ? $rp[0] : 0 unless ($thread eq 'replies');
-    if(defined $needed->{replyId}) {
-        my @rps = $database->fetch_array("select count(*) from replies where refererId = $needed->{replyId};");
-        if($rps[0] > 0) {
+    my @rp = $m_oDatabase->fetch_array(
+        "select count(*) from news where `right` <= $m_nRight");
+    $length = $rp[0] =~ /(\d+)/ ? $rp[0] : 0 unless ( $thread eq 'replies' );
+    if( defined $needed->{replyId} ) {
+        my @rps
+            = $m_oDatabase->fetch_array(
+            "select count(*) from replies where refererId = $needed->{replyId};"
+            );
+        if( $rps[0] > 0 ) {
             $length = $rps[0];
         } else {
             $length = 0;
         }
     }
-    $length = 0 unless (defined $length);
-    my $itht = '<table align="center" border ="0" cellpadding ="2" cellspacing="10" summary="newTopic" width="100%" >';
+    $length = 0 unless ( defined $length );
+    my $lpp
+        = defined param('links_pro_page')
+        ? param('links_pro_page') =~ /(\d\d?\d?)/
+            ? $1
+            : 10
+        : 10;
 
-    if(defined $start && defined $end) {
-        $start = 0       if($start < 0);
-        $end   = $length if($end > $length);
-        $itht .= &ebis() if($length > 10);
-        $itht .= '<tr><td>' . &threadBody($thread) . '</td></tr>';
-        $itht .= &ebis() if($length > 10);
-    }
+    my $itht
+        = '<table align="center" border ="0" cellpadding ="0" cellspacing="0" summary="showThread" width="100%" >';
+
+    $itht .= Tr(
+        td( div({ align => 'right' },
+                (   $m_nRight >= $m_hrSettings->{news}{right}
+                    ? a({   href  => "$ENV{SCRIPT_NAME}?action=showEditor",
+                            class => 'menuLink3'
+                        },
+                        translate('newmessage')
+                        )
+                        . ( $length > 5 ? '&#160;/&#160;' : '&#160;' )
+                    : ''
+                    )
+                    . (
+                    $length > 5
+                    ? translate('news_pro_page') . '&#160;|&#160;'
+                    : ''
+                    )
+                    . (
+                    $length > 5
+                    ? a({   href =>
+                                "$ENV{SCRIPT_NAME}?action=$akt&links_pro_page=5&von=$m_nStart$replylink",
+                            class => ( $lpp== 5 ? 'menuLink2' : 'menuLink3' )
+                        },
+                        '5'
+                        )
+                        . '&#160;'
+                    : ''
+                    )
+                    . (
+                    $length > 10
+                    ? a({   href =>
+                                "$ENV{SCRIPT_NAME}?action=$akt&links_pro_page=10&von=$m_nStart$replylink",
+                            class => ( $lpp== 10 ? 'menuLink2' : 'menuLink3' )
+                        },
+                        '10'
+                        )
+                        . '&#160;'
+                    : ''
+                    )
+                    . (
+                    $length > 30
+                    ? a({   href =>
+                                "$ENV{SCRIPT_NAME}?action=$akt&links_pro_page=30&von=$m_nStart$replylink",
+                            class => ( $lpp== 30 ? 'menuLink2' : 'menuLink3' )
+                        },
+                        '30'
+                        )
+                    : ''
+                    )
+            )
+        )
+    );
+
+    my %needed = (
+        start          => $m_nStart,
+        length         => $length,
+        style          => $m_sStyle,
+        mod_rewrite    => $m_hrSettings->{cgi}{mod_rewrite},
+        action         => $akt,
+        append         => "links_pro_page=$lpp$replylink",
+        path           => $m_hrSettings->{cgi}{bin},
+        links_pro_page => $lpp,
+    );
+    my $pages = makePages( \%needed );
+    $itht .= '<tr><td>' . $pages . '</td></tr>';
+    $itht .= '<tr><td>' . &threadBody($thread) . '</td></tr>';
+    $itht .= '<tr><td>' . $pages . '</td></tr>';
     $itht .= '</table>';
     return $itht;
-}
-
-sub ebis {
-    my $prev  = $start- 10;
-    my $next1 = $start;
-    $next1 = 10 if($prev < 0);
-    $prev  = 0  if($prev < 0);
-    my $seiten  = translate('sites');
-    my $ebis    = qq(<tr><td align="center"><a class="menuLink2" name ="pages">$seiten:</a>);
-    my $npevbis = ($settings->{cgi}{mod_rewrite}) ? "/$prev/$next1/$akt$replylink.html" : "$ENV{SCRIPT_NAME}?action=$akt&amp;von=$prev&amp;bis=$next1&amp;reply=$replylink";
-    $ebis .= qq(<a class="menuLink2" href="$npevbis"><img src="/style/$style/prev.png" alt="previous" border="0" title="previous" style="cursor:pointer;"/></a>&#160;) if($start- 10 >= 0);
-
-    my $sites = (int($length/ 10)+ 1)* 10 unless ($length % 10== 0);
-    $sites = (int($length/ 10))* 10 if($length % 10== 0);
-    my $beginn = $start/ 10;
-    $beginn = (int($start/ 10)+ 1)* 10 unless ($start % 10== 0);
-    $beginn = 0 if($beginn < 0);
-    my $b = ($sites >= 10) ? $beginn : 0;
-    $b = ($beginn- 5 >= 0) ? $beginn- 5 : 0;
-    my $end = ($sites >= 10) ? $b+ 10 : $sites;
-  ECT: {
-
-        while($b < $end) {
-            my $c = $b* 10;
-            my $d = $c+ 10;
-            $d = $length if($d > $length);
-            my $svbis = ($settings->{cgi}{mod_rewrite}) ? "/$c/$d/$akt$replylink.html" : "$ENV{SCRIPT_NAME}?action=$akt&amp;von=$c&amp;bis=$d&amp;reply=$replylink";
-            if($b* 10 eq $start) {
-                $ebis .= qq(<a class="menuLink3" href="$svbis">$b</a>&#160;);
-            } else {
-                $ebis .= qq(<a class="menuLink2" href="$svbis">$b</a>&#160;);
-            }
-            last ECT if($d eq $length);
-            $b++;
-        }
-    }
-    my $v    = $start+ 10;
-    my $next = $v+ 10;
-    $next = $length if($next > $length);
-    my $esvbis = ($settings->{cgi}{mod_rewrite}) ? "/$v/$next/$akt$replylink.html" : "$ENV{SCRIPT_NAME}?action=$akt&amp;von=$v&amp;bis=$next&amp;reply=$replylink";
-    $ebis .= qq(<a class="menuLink2" href="$esvbis"><img src="/style/$style/next.png" border="0" alt="next" title="next" style="cursor:pointer;"/></a>&#160;) if($v < $length);
-    $ebis .= '</td></tr>';
-    return $ebis;
 }
 
 sub threadBody {
     my $th = shift;
     my @output;
-    my ($db_clause, $table) = (" FROM $1", $2) if $th =~ /(.*)\.(.*)/;
-
-    $db_clause = defined $db_clause ? $db_clause : ' ';
-    if(($database->tableExists($th))) {
-        push @output, '<table border="0" cellpadding="0" cellspacing="10" summary="contentLayout" width="100%">';
-        my $answers  = defined $replyId ? " && refererId =$replyId" : '';
-        my $sql_read = qq/select title,body,date,id,user,attach,format from $th where `right` <= $right $answers order by date desc LIMIT $start,10 /;
-        my $sth      = $dbh->prepare($sql_read);
+    if( ( $m_oDatabase->tableExists($th) ) ) {
+        push @output,
+            '<table border="0" cellpadding="0" cellspacing="10" summary="contentLayout" width="100%">';
+        my $answers = defined $replyId ? " && refererId =$replyId" : '';
+        my $lpp
+            = defined param('links_pro_page')
+            ? param('links_pro_page') =~ /(\d\d?\d?)/
+                ? $1
+                : 10
+            : 10;
+        my $sql_read
+            = qq/select title,body,date,id,user,attach,format from $th where `right` <= $m_nRight $answers order by date desc LIMIT $m_nStart,$lpp /;
+        my $sth = $m_dbh->prepare($sql_read);
         $sth->execute();
-        while(my @data = $sth->fetchrow_array()) {
-            my $headline  = $data[0];
-            my $body      = $data[1];
-            my $datum     = $data[2];
-            my $id        = $data[3];
-            my $username  = $data[4];
-            my $attach    = $data[5];
-            my $format    = $data[6];
-            my $replylink = $settings->{cgi}{mod_rewrite} ? "/news$id.html" : "$ENV{SCRIPT_NAME}?action=showthread&amp;reply=$id&amp;thread=$th";
-            my $answer    = translate('answers');
-            my @rps       = $database->fetch_array("select count(*) from replies where refererId = $id;");
-            my $reply     = (($rps[0] > 0) && $th eq 'news') ? qq(<br/><a href="$replylink" class="link" >$answer:$rps[0]</a>) : '<br/>';
-            my $menu      = "";
+        while( my @data = $sth->fetchrow_array() ) {
+            my $headline    = $data[0];
+            my $body        = $data[1];
+            my $datum       = $data[2];
+            my $id          = $data[3];
+            my $m_sUsername = $data[4];
+            my $attach      = $data[5];
+            my $format      = $data[6];
+            my $replylink
+                = $m_hrSettings->{cgi}{mod_rewrite}
+                ? "/news$id.html"
+                : "$ENV{SCRIPT_NAME}?action=showthread&amp;reply=$id&amp;thread=$th";
+            my $answer = translate('answers');
+            my @rps    = $m_oDatabase->fetch_array(
+                "select count(*) from replies where refererId = $id;");
+            my $reply
+                = ( ( $rps[0] > 0 ) && $th eq 'news' )
+                ? qq(<br/><a href="$replylink" class="link" >$answer:$rps[0]</a>)
+                : '<br/>';
+            my $menu = "";
 
-            if($th ne 'replies') {
-                my $answerlink = $settings->{cgi}{mod_rewrite} ? "/reply$th-$id.html" : "$ENV{SCRIPT_NAME}?action=reply&amp;reply=$id&amp;thread=$th";
+            if( $th ne 'replies' ) {
+                my $answerlink
+                    = $m_hrSettings->{cgi}{mod_rewrite}
+                    ? "/reply$th-$id.html"
+                    : "$ENV{SCRIPT_NAME}?action=reply&amp;reply=$id&amp;thread=$th";
                 my %reply = (
                     title    => translate('reply'),
                     descr    => translate('reply'),
                     src      => 'reply.png',
                     location => $answerlink,
-                    style    => $style,
+                    style    => $m_sStyle,
                 );
-                $menu .= action(\%reply);
+                $menu .= action( \%reply );
             }
-            my $editlink = $settings->{cgi}{mod_rewrite} ? "/edit$th-$id.html" : "$ENV{SCRIPT_NAME}?action=edit&amp;edit=$id&amp;thread=$th&amp;von=$von&amp;bis=$bis;";
+            my $editlink
+                = $m_hrSettings->{cgi}{mod_rewrite}
+                ? "/edit$th-$id.html"
+                : "$ENV{SCRIPT_NAME}?action=edit&amp;edit=$id&amp;thread=$th&amp;von=$m_nStart&amp;bis=$m_nEnd;";
             my %edit = (
                 title    => translate('edit'),
                 descr    => translate('edit'),
                 src      => 'edit.png',
                 location => $editlink,
-                style    => $style,
+                style    => $m_sStyle,
             );
-            $menu .= action(\%edit) if($right > 1);
+            $menu .= action( \%edit ) if( $m_nRight > 1 );
             my $trdelete = translate('delete');
-            my $deletelink =
-              $settings->{cgi}{mod_rewrite}
-              ? "javascript:if(confirm('$trdelete ?')) location.href='/delete.html&amp;delete=$id&amp;thread=$th&amp;von=$von&amp;bis=$bis'"
-              : "javascript:if(confirm('$trdelete ?')) location.href='$ENV{SCRIPT_NAME}?action=delete&amp;delete=$id&amp;thread=$th&amp;von=$von&amp;bis=$bis'";
+            my $deletelink
+                = $m_hrSettings->{cgi}{mod_rewrite}
+                ? "javascript:if(confirm('$trdelete ?')) location.href='/delete.html&amp;delete=$id&amp;thread=$th&amp;von=$m_nStart&amp;bis=$m_nEnd'"
+                : "javascript:if(confirm('$trdelete ?')) location.href='$ENV{SCRIPT_NAME}?action=delete&amp;delete=$id&amp;thread=$th&amp;von=$m_nStart&amp;bis=$m_nEnd'";
             my %delete = (
                 title    => translate('delete'),
                 descr    => translate('delete'),
                 src      => 'delete.png',
                 location => $deletelink,
-                style    => $style,
+                style    => $m_sStyle,
             );
-            $menu .= action(\%delete) if($right >= 5);
+            $menu .= action( \%delete ) if( $m_nRight >= 5 );
             my %parameter = (
-                path   => "$settings->{cgi}{bin}/templates",
-                style  => $style,
-                title  => qq(<div style="white-space:nowrap;">$headline</div>),
-                server => $settings->{cgi}{serverName},
+                path  => "$m_hrSettings->{cgi}{bin}/templates",
+                style => $m_sStyle,
+                title => qq(<div style="white-space:nowrap;">$headline</div>),
+                server => $m_hrSettings->{cgi}{serverName},
                 id     => $id,
                 class  => 'min',
             );
 
-            my $win = new HTML::Window(\%parameter);
+            my $win = new HTML::Window( \%parameter );
             $win->set_closeable(1);
             $win->set_collapse(1);
             $win->set_moveable(1);
             $win->set_resizeable(1);
-            my $h1       = qq(<tr id="trw$id"><td valign="top">) . $win->windowHeader();
+            my $h1 = qq(<tr id="trw$id"><td valign="top">)
+                . $win->windowHeader();
             my $readmore = translate('readmore');
-            $reply .= qq(&#160;<a href="$replylink" class="link" >$readmore</a>) if $body =~ /\[previewende\]/ && $thread eq "news";
-            my $permalink = $settings->{cgi}{mod_rewrite} ? "/news$id.html" : "$ENV{SCRIPT_NAME}?action=showthread&amp;thread=$th&amp;reply=$id";
+            $reply
+                .= qq(&#160;<a href="$replylink" class="link" >$readmore</a>)
+                if $body =~ /\[previewende\]/ && $thread eq "news";
+            my $permalink
+                = $m_hrSettings->{cgi}{mod_rewrite}
+                ? "/news$id.html"
+                : "$ENV{SCRIPT_NAME}?action=showthread&amp;thread=$th&amp;reply=$id";
 
-            if($th eq 'news') {
-                $reply .= qq(&#160;<a href="$permalink" class="link" >Permalink</a>);
+            if( $th eq 'news' ) {
+                $reply
+                    .= qq(&#160;<a href="$permalink" class="link" >Permalink</a>);
                 $body =~ s/([^\[previewende\]]+)\[previewende\](.*)$/$1/s;
             }
-            BBCODE(\$body, $ACCEPT_LANGUAGE) if($format eq 'bbcode');
-            $h1 .=
-              qq(<table align="left" border ="0" cellpadding="0" cellspacing="0" summary="threadBody"  width="100%"><tr ><td align="left">$menu</td></tr><tr><td align="left"><table align="left" border ="0" cellpadding="0" cellspacing="0" summary="user_datum"  width="100%"><tr><td align="left">$username</td><td align="right">$datum</td></tr></table></td></tr><tr><td align="left">$body</td></tr>);
-            $h1 .= qq(<tr><td><a href="/downloads/$attach">$attach</a></td></tr>) if(-e "$settings->{uploads}{path}/$attach");
+            BBCODE( \$body, $ACCEPT_LANGUAGE ) if( $format eq 'bbcode' );
+            $h1
+                .= qq(<table align="left" border ="0" cellpadding="0" cellspacing="0" summary="threadBody"  width="100%"><tr ><td align="left">$menu</td></tr><tr><td align="left"><table align="left" border ="0" cellpadding="0" cellspacing="0" summary="user_datum"  width="100%"><tr><td align="left">$m_sUsername</td><td align="right">$datum</td></tr></table></td></tr><tr><td align="left">$body</td></tr>);
+            $h1
+                .= qq(<tr><td><a href="/downloads/$attach">$attach</a></td></tr>)
+                if( -e "$m_hrSettings->{uploads}{path}/$attach" );
             $h1 .= qq(<tr><td align="left">$reply</td></tr></table>);
             $h1 .= $win->windowFooter();
             push @output, "$h1</td></tr>";
@@ -616,27 +766,31 @@ sub threadBody {
 
 sub saveUpload {
     my $ufi = param('file');
-    if($right >= $settings->{upload}{right}) {
+    if( $m_nRight >= $m_hrSettings->{uploads}{right} ) {
         if($ufi) {
-            my $attach = (split(/[\\\/]/, param('file')))[-1];
+            my $attach = ( split( /[\\\/]/, param('file') ) )[-1];
             my $cit = $attach =~ /^(\S+)\.[^\.]+$/ ? $1 : 0;
-            my $type = ($attach =~ /\.([^\.]+)$/) ? $1 : 0;
+            my $type = ( $attach =~ /\.([^\.]+)$/ ) ? $1 : 0;
             $cit =~ s/("|'|\s| )//g;
             my $sra = "$cit.$type";
             my $up  = upload('file');
             use Symbol;
             my $fh = gensym();
 
-            #my $ctype = uploadInfo($ufi)->{'Content-Type'};#do something with it
-            open $fh, ">$settings->{uploads}{path}/$sra.bak" or warn "news.pl::saveUpload: $!";
+            open $fh, ">$m_hrSettings->{uploads}{path}/$sra.bak"
+                or warn "news.pl::saveUpload: $!";
 
             while(<$up>) {
                 print $fh $_;
             }
             close $fh;
 
-            rename "$settings->{uploads}{path}/$sra.bak", "$settings->{uploads}{path}/$cit.$type" or warn "news.pl::saveUpload: $!";
-            chmod("$settings->{'uploads'}{'chmod'}", "$settings->{uploads}{path}/$sra") if(-e "$settings->{uploads}{path}/$sra");
+            rename "$m_hrSettings->{uploads}{path}/$sra.bak",
+                "$m_hrSettings->{uploads}{path}/$cit.$type"
+                or warn "news.pl::saveUpload: $!";
+            chmod( "$m_hrSettings->{'uploads'}{'chmod'}",
+                "$m_hrSettings->{uploads}{path}/$sra" )
+                if( -e "$m_hrSettings->{uploads}{path}/$sra" );
         }
     }
 }
