@@ -1,19 +1,19 @@
 # use CGI::QuickFormR;
 # use CGI::CMS::Translate;
 #todo createVars benutzen.
-use vars qw($lang)
+use vars qw($m_hrLng});
 loadTranslate( $m_hrSettings->{translate} );
-*lng = \$CGI::CMS::Translate::lang;
+*m_hrLng = \$CGI::CMS::Translate::lang;
 my $TITLE = translate('Edit Translation');
 my @translate;
 my $lg = param('lang') ? param('lang') : 'de';
 foreach my $key ( sort keys %{ $m_hrLng->{$lg} } ) {
     push @translate,
-        {
+{
         -LABEL  => $key,
         -TYPE   => '',
         -values => $m_hrLng->{$lg}{$key},
-        }
+}
         unless $key eq 'action';
 }
 my @l;
@@ -35,18 +35,18 @@ show_form(
     -CHECK    => ( param('checkFormsddfsds') ? 1 : 0 ),
     -LANGUAGE => $ACCEPT_LANGUAGE,
     -FIELDS   => [
-        {   -LABEL   => 'action',
+{   -LABEL   => 'action',
             -default => 'translate',
             -TYPE    => 'hidden',
-        },
-        {   -LABEL   => 'checkFormsddfsds',
+},
+{   -LABEL   => 'checkFormsddfsds',
             -default => 'true',
             -TYPE    => 'hidden',
-        },
-        {   -LABEL   => 'lang',
+},
+{   -LABEL   => 'lang',
             -default => $lg,
             -TYPE    => 'hidden',
-        },
+},
         @translate,
     ],
     -BUTTONS => [ { -name => translate('save') }, ],
@@ -73,7 +73,7 @@ sub on_valid_form {
     my $rs
         = ( $m_hrSettings->{cgi}{mod_rewrite} )
         ? '/translate.html'
-        : "$ENV{SCRIPT_NAME}?action=translate";
+       : "$ENV{SCRIPT_NAME}?action=translate";
     my %parameter = (
         path   => $m_hrSettings->{cgi}{bin} . '/templates',
         style  => $m_sStyle,
@@ -99,7 +99,7 @@ sub on_valid_form {
             or ( $rkey eq 'checkFormsddfsds' ) );
         $m_hrLng->{$lg}{$rkey} = param( $entrys[$i] )
             unless ( $rkey eq 'action' or ( $rkey eq 'checkFormsddfsds' ) );
-    }
+}
     saveTranslate( $m_hrSettings->{translate} );
     $m_sContent .= '</div></div>';
     $m_sContent .= $window->windowFooter();

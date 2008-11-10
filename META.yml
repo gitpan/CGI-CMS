@@ -1,6 +1,6 @@
 ---
 name: CGI-CMS
-version: 0.37
+version: 0.38
 author:
   - 'Dirk Lindner <lze@cpan.org>'
 abstract: CMS
@@ -12,46 +12,44 @@ requires:
   DBI: '>=1.50'
   HTML::Menu::TreeView: '>=1.04'
   HTML::Parser: '>=3.56'
-  LWP::UserAgent: '>= 5.813'
   MD5: '>=2.03'
   Module::Build: '>=0.2808'
   Syntax::Highlight::Engine::Kate: '>=0.04'
   Test::More: '>=0.7'
-  XML::RSS: '>=1.33'
 provides:
   CGI::CMS:
     file: lib/CGI/CMS.pm
-    version: 0.37
+    version: 0.38
   CGI::CMS::Actions:
     file: lib/CGI/CMS/Actions.pm
-    version: 0.37
+    version: 0.38
   CGI::CMS::Config:
     file: lib/CGI/CMS/Config.pm
-    version: 0.37
+    version: 0.38
   CGI::CMS::GUI:
     file: lib/CGI/CMS/GUI.pm
-    version: 0.37
+    version: 0.38
   CGI::CMS::Main:
     file: lib/CGI/CMS/Main.pm
-    version: 0.37
+    version: 0.38
   CGI::CMS::Session:
     file: lib/CGI/CMS/Session.pm
-    version: 0.37
+    version: 0.38
   CGI::CMS::Settings:
     file: lib/CGI/CMS/Settings.pm
-    version: 0.37
+    version: 0.38
   CGI::CMS::Translate:
     file: lib/CGI/CMS/Translate.pm
-    version: 0.37
+    version: 0.38
   CGI::QuickFormR:
     file: lib/CGI/QuickFormR.pm
     version: 1.93
   DBI::Library:
     file: lib/DBI/Library.pm
-    version: 0.37
+    version: 0.38
   DBI::Library::Database:
     file: lib/DBI/Library/Database.pm
-    version: 0.37
+    version: 0.38
   DBI::Library::Database::db:
     file: lib/DBI/Library/Database.pm
   DBI::Library::Database::st:
@@ -62,22 +60,22 @@ provides:
     file: lib/DBI/Library.pm
   HTML::Editor:
     file: lib/HTML/Editor.pm
-    version: 0.37
+    version: 0.38
   HTML::Editor::BBCODE:
     file: lib/HTML/Editor/BBCODE.pm
-    version: 0.37
+    version: 0.38
   HTML::Menu::Pages:
     file: lib/HTML/Menu/Pages.pm
-    version: 0.37
+    version: 0.38
   HTML::TabWidget:
     file: lib/HTML/TabWidget.pm
-    version: 0.37
+    version: 0.38
   HTML::Window:
     file: lib/HTML/Window.pm
-    version: 0.37
+    version: 0.38
   Template::Quick:
     file: lib/Template/Quick.pm
-    version: 0.37
+    version: 0.38
 generated_by: Module::Build version 0.2808
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

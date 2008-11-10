@@ -9,7 +9,7 @@ use vars
 @Template::Quick::EXPORT = qw(initTemplate appendHash Template initArray);
 %LZE::TabWidget::EXPORT_TAGS
     = ( 'all' => [qw(initTemplate appendHash Template initArray  )] );
-$Template::Quick::VERSION = '0.37';
+$Template::Quick::VERSION = '0.38';
 $DefaultClass             = 'Template::Quick'
     unless defined $Template::Quick::DefaultClass;
 our %tmplate;

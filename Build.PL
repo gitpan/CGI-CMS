@@ -227,9 +227,8 @@ my $inctance = $class->new(
         'HTML::Parser'                    => ">=3.56",
         'Syntax::Highlight::Engine::Kate' => ">=0.04",
         'MD5'                             => ">=2.03",
-#        'CGI::Ajax'                       => ">=0.706",
-        'XML::RSS'                        => ">=1.33",
-        'LWP::UserAgent'                  => ">= 5.813",
+#         'CGI::Ajax'                       => ">=0.706",
+# Mail::Sendmail
     },
     ($] >= 5.005 ? (AUTHOR => 'Dirk Lindner <lze@cpan.org>') : ()),
     dist_abstract      => "CMS",
@@ -363,7 +362,7 @@ $m_hrSettings = {
         navigation => "$inctance->{properties}{cgi}/config/tree.pl",
         links      => "$inctance->{properties}{cgi}/config/links.pl"
     },
-    version   => '0.37',
+    version   => '0.38',
     session   => "$inctance->{properties}{cgi}/config/session.pl",
     actions   => "$inctance->{properties}{cgi}/config/actions.pl",
     translate => "$inctance->{properties}{cgi}/config/translate.pl",

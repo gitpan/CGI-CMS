@@ -82,7 +82,7 @@ use vars qw(
     = qw(action ContentHeader Body maxlength openFile ChangeDb action Unique);
 @ISA = qw(Exporter CGI::CMS);
 
-$CGI::CMS::GUI::VERSION = '0.37';
+$CGI::CMS::GUI::VERSION = '0.38';
 $m_bMod_perl = ( $ENV{MOD_PERL} ) ? 1 : 0;
 
 local $^W = 0;

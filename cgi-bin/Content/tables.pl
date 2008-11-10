@@ -761,8 +761,8 @@ sub MultipleAction {
             .= qq(<div  class="dumpBox" style="padding-top:5px;width:100%;padding-right:2px;"><textarea style="width:100%;height:800px;overflow:auto;">);
     }
     for( my $i = 0; $i <= $#params; $i++ ) {
-        if( $m_hrParams[$i] =~ /markBox\d?/ ) {
-            my $col = param( $m_hrParams[$i] );
+        if( $params[$i] =~ /markBox\d?/ ) {
+            my $col = param( $params[$i] );
             $col = $m_oDatabase->quote($col);
         SWITCH: {
                 if( $a eq "delete" ) {
@@ -836,8 +836,8 @@ sub MultipleDbAction {
         ShowDbHeader( $m_sCurrentDb, 0, 'Show' );
     }
     for( my $i = 0; $i <= $#params; $i++ ) {
-        if( $m_hrParams[$i] =~ /markBox\d?/ ) {
-            my $tbl  = param( $m_hrParams[$i] );
+        if( $params[$i] =~ /markBox\d?/ ) {
+            my $tbl  = param( $params[$i] );
             my $tbl2 = $m_dbh->quote_identifier($tbl);
         SWITCH: {
                 if( $a eq "delete" ) {
@@ -1078,13 +1078,13 @@ sub SaveEntry {
         my $p_key = $m_oDatabase->GetPrimaryKey($tbl);
         while( $i < $#params ) {
             $i++;
-            my $pa = param( $m_hrParams[$i] );
-            if( $m_hrParams[$i] =~ /tbl.*/ ) {
-                $m_hrParams[$i] =~ s/tbl//;
-                $eid = $pa if( $m_hrParams[$i] eq $p_key );
+            my $pa = param( $params[$i] );
+            if( $params[$i] =~ /tbl.*/ ) {
+                $params[$i] =~ s/tbl//;
+                $eid = $pa if( $params[$i] eq $p_key );
                 unshift @rows,
                       ""
-                    . $m_dbh->quote_identifier( $m_hrParams[$i] ) . " = "
+                    . $m_dbh->quote_identifier( $params[$i] ) . " = "
                     . $m_oDatabase->quote($pa);
             }
         }
@@ -1117,9 +1117,9 @@ sub NewEntry {
         my $i   = 0;
         while( $i < $#params ) {
             $i++;
-            my $pa = param( $m_hrParams[$i] );
-            if( $m_hrParams[$i] =~ /tbl.*/ ) {
-                $m_hrParams[$i] =~ s/tbl//;
+            my $pa = param( $params[$i] );
+            if( $params[$i] =~ /tbl.*/ ) {
+                $params[$i] =~ s/tbl//;
                 $sql .= "'" . $pa . "'";
                 $sql .= "," if( $i+ 3 < $#params );
             }

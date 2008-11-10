@@ -6,7 +6,7 @@ use vars qw($m_hrActions $DefaultClass @EXPORT  @ISA $defaultconfig);
 @CGI::CMS::Actions::EXPORT = qw(loadActions saveActions $m_hrActions);
 use CGI::CMS::Config;
 @CGI::CMS::Actions::ISA     = qw( Exporter CGI::CMS::Config);
-$CGI::CMS::Actions::VERSION = '0.37';
+$CGI::CMS::Actions::VERSION = '0.38';
 $DefaultClass               = 'CGI::CMS::Actions'
     unless defined $CGI::CMS::Actions::DefaultClass;
 $defaultconfig = '%CONFIG%';
